@@ -34,6 +34,7 @@ LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
     'customers.apps.CustomersConfig',
     'doctors.apps.DoctorsConfig',
+    'ptup_messages.apps.PtupMessagesConfig',
 ]
 
 INSTALLED_APPS = DJANGO_DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
