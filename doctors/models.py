@@ -23,7 +23,18 @@ class Doctor(models.Model):
     field_of_study_residence = models.CharField(max_length=255, verbose_name='رشته تحصیلی ارشد')
     city_of_residence = models.CharField(max_length=255, verbose_name='شهر محل اقامت')
     treatment_history = models.PositiveSmallIntegerField(default=0, verbose_name='سابقه درمانی')
+    is_verify = models.BooleanField(default=False, verbose_name='اجازه شروع فعالیت')
+
     # approach_used_treatment
 
     def __str__(self):
         return f"دکتر {self.first_name} {self.last_name}"
+
+
+class IdentificationDocument(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='دکتر ')
+    title = models.CharField(max_length=255, verbose_name='عنوان فایل ')
+    file = models.FileField(verbose_name='فایل ')
+
+    def __str__(self):
+        return f"{self.title} : {self.doctor}"
