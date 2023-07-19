@@ -22,9 +22,8 @@ class Doctor(models.Model):
     field_of_study_bachelor = models.CharField(max_length=255, verbose_name='رشته تحصیلی لیسانس')
     field_of_study_residence = models.CharField(max_length=255, verbose_name='رشته تحصیلی ارشد')
     city_of_residence = models.CharField(max_length=255, verbose_name='شهر محل اقامت')
-
+    treatment_history = models.PositiveSmallIntegerField(default=0, verbose_name='سابقه درمانی')
     # approach_used_treatment
-    # treatment_history
 
     def __str__(self):
         return f"دکتر {self.first_name} {self.last_name}"

@@ -58,3 +58,10 @@ class User(AbstractBaseUser):
     @property
     def is_admin(self):
         return self.is_staff
+
+
+class SiteRules(models.Model):
+    rule = models.CharField(max_length=300, verbose_name='قانون')
+
+    def __str__(self):
+        return self.rule
