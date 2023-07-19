@@ -1,4 +1,17 @@
 .idea/
+.vituralenv
+# Virtual Environment
+venv/
+.venv/
+# Database-Info
+bar/env.py
+# Database
+db.sqlite3
+
+# Migrations
+accounts/migrations/0*
+
+.idea/
 ## Django ###
 *.log
 *.pot
