@@ -10,6 +10,7 @@ db.sqlite3
 
 # Migrations
 accounts/migrations/0*
+customers/migrations/0*
 
 .idea/
 ## Django ###

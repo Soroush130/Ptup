@@ -1,7 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 from django.db import models
-from datetime import datetime
 
 
 class UserManager(BaseUserManager):
@@ -59,6 +58,3 @@ class User(AbstractBaseUser):
     @property
     def is_admin(self):
         return self.is_staff
-
-
-
