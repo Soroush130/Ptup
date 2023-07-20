@@ -7,6 +7,13 @@ class GenderChoices(models.IntegerChoices):
     WOMEN = 2, 'زن'
 
 
+class ApproachUsedTreatment(models.Model):
+    title = models.CharField(max_length=255, verbose_name='عنوان ')
+
+    def __str__(self):
+        return self.title
+
+
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="کاربر")
     first_name = models.CharField(max_length=255, verbose_name='نام')
@@ -23,9 +30,9 @@ class Doctor(models.Model):
     field_of_study_residence = models.CharField(max_length=255, verbose_name='رشته تحصیلی ارشد')
     city_of_residence = models.CharField(max_length=255, verbose_name='شهر محل اقامت')
     treatment_history = models.PositiveSmallIntegerField(default=0, verbose_name='سابقه درمانی')
+    approach_used_treatment = models.ForeignKey(ApproachUsedTreatment, on_delete=models.SET_NULL, null=True,
+                                                verbose_name='رویکرد مورد استفاده در درمان ')
     is_verify = models.BooleanField(default=False, verbose_name='اجازه شروع فعالیت')
-
-    # approach_used_treatment
 
     def __str__(self):
         return f"دکتر {self.first_name} {self.last_name}"
