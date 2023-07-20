@@ -140,4 +140,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "static", "media_root")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
+
+# Messages
+# MESSAGE_TAGS = {
+#     messages.DEBUG: 'debug',
+#     messages.INFO: 'info',
+#     messages.SUCCESS: 'success',
+#     messages.WARNING: 'warning',
+#     messages.ERROR: 'error',
+# }

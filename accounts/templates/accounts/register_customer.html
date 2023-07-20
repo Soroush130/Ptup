@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Login</title>
+    <title>Registration</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -19,25 +19,28 @@
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-    <div class="login-logo">
+<body class="hold-transition register-page">
+<div class="register-box">
+    <div class="register-logo">
         <b>Ptup</b>
     </div>
-    <!-- /.login-logo -->
-    <div class="card">
-        <div class="card-body login-card-body">
 
-            <form action="" method="POST">
+    <div class="card">
+        <div class="card-body register-card-body">
+            <p class="login-box-msg">ثبت نام مراجع</p>
+            <form action="{% url 'accounts:register_customer' %}" method="POST">
                 {% csrf_token %}
                 <div class="input-group mb-3">
                     <input type="text" name="phone" class="form-control" placeholder="شماره تلفن">
                     <div class="input-group-append">
                         <div class="input-group-text">
-                            <span class="fas fa-phone"></span>
+                            <span class="fas fa-user"></span>
                         </div>
                     </div>
                 </div>
+                {% if register_form.phone.errors %}
+                    <span style="color: red">{{ register_form.phone.errors }}</span>
+                {% endif %}
                 <div class="input-group mb-3">
                     <input type="password" name="password" class="form-control" placeholder="رمز عبور">
                     <div class="input-group-append">
@@ -46,39 +49,46 @@
                         </div>
                     </div>
                 </div>
+                <div class="input-group mb-3">
+                    <input type="password" name="re_password" class="form-control" placeholder="تکرار رمز عبور">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                {% if register_form.re_password.errors %}
+                    <span style="color: red">{{ register_form.re_password.errors }}</span>
+                {% endif %}
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-9">
                         <div class="icheck-primary">
-                            <input type="checkbox" id="remember">
-                            <label for="remember">
-                                Remember Me
+                            <input type="checkbox" id="agreeTerms" name="is_accept_rules" value="False">
+                            <label for="agreeTerms">
+                                من <a href="#">قوانین</a> سایت را می پذیرم
                             </label>
                         </div>
                     </div>
+                    {% if register_form.is_accept_rules.errors %}
+                        <span style="color: red">{{ register_form.is_accept_rules.errors }}</span>
+                    {% endif %}
                     <!-- /.col -->
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">ورود</button>
+                    <div class="col-12">
+                        <br>
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">ثبت نام</button>
+                        <br>
                     </div>
                     <!-- /.col -->
                 </div>
             </form>
 
-            <br>
-            <br>
 
-            <p class="mb-1">
-                <a href="#">فراموشی رمز عبور</a>
-            </p>
-            <p class="mb-0">
-                <a href="{% url 'accounts:register_customer' %}" class="text-center">ثبت نام به عنوان مراجع</a>
-                <br>
-                <a href="{% url 'accounts:register_doctor' %}" class="text-center">ثبت نام به عنوان دکتر</a>
-            </p>
+            <a href="{% url 'accounts:login' %}" class="text-center">ورود</a>
         </div>
-        <!-- /.login-card-body -->
-    </div>
+        <!-- /.form-box -->
+    </div><!-- /.card -->
 </div>
-<!-- /.login-box -->
+<!-- /.register-box -->
 
 {% if messages %}
     {% for message in messages %}
@@ -95,6 +105,5 @@
 <script src="{% static "plugins/jquery/jquery.min.js" %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static "plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
-
 </body>
 </html>
