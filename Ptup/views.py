@@ -7,7 +7,11 @@ from doctors.utility import check_information_doctor
 @login_required(login_url='accounts:login')
 @is_complete_information_doctor
 def home(request):
-    return render(request, 'index.html', {})
+    role = request.user.role
+    DOCTOR = 1
+    _template_name = 'home_doctor.html' if role == DOCTOR else 'home_customer.html'
+    print(_template_name)
+    return render(request, _template_name, {})
 
 
 def header(request):

@@ -63,7 +63,7 @@
                 <div class="row">
                     <div class="col-9">
                         <div class="icheck-primary">
-                            <input type="checkbox" id="agreeTerms" name="is_accept_rules" value="False">
+                            <input type="checkbox" id="agreeTerms" name="is_accept_rules" value="agree">
                             <label for="agreeTerms">
                                 من <a href="#">قوانین</a> سایت را می پذیرم
                             </label>
@@ -83,7 +83,7 @@
             </form>
 
 
-            <a href="{% url 'accounts:login' %}" class="text-center">ورود</a>
+            <a href="{% url 'accounts:login' %}" class="text-center" style="float: right">ورود</a>
         </div>
         <!-- /.form-box -->
     </div><!-- /.card -->
