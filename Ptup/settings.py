@@ -35,6 +35,7 @@ LOCAL_APPS = [
     'customers.apps.CustomersConfig',
     'doctors.apps.DoctorsConfig',
     'ptup_messages.apps.PtupMessagesConfig',
+    'ptup_utilities.apps.PtupUtilitiesConfig',
 ]
 
 INSTALLED_APPS = DJANGO_DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -152,6 +153,6 @@ AUTH_USER_MODEL = 'accounts.User'
 #     messages.ERROR: 'error',
 # }
 
-
+# Setting Session App
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 86400

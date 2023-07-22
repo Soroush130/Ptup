@@ -3,12 +3,13 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.decorators import method_decorator
 
+from customers.models import Customer
 from .decorators import is_complete_information_doctor
 from .models import Doctor, IdentificationDocument, ApproachUsedTreatment
-from .forms import DoctorForm, IdentificationDocumentForm
+from .forms import DoctorForm, IdentificationDocumentForm, NickNameForm
 from django.contrib import messages
 
-from .utility import check_information_doctor
+from .utility import check_information_doctor, get_customer_list_each_doctor
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -80,3 +81,29 @@ class DeleteIdentificationDocument(View):
         document.delete()
         messages.success(request, "مدرک شناسایی شما با موفقیت حذف شد")
         return redirect('doctors:get_identification_document_doctor')
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class ListCustomerEachDoctor(View):
+    def get(self, request):
+        customers = Customer.objects.filter(treating_doctor=request.user.doctor).defer("treating_doctor")
+        customers = get_customer_list_each_doctor(customers)
+        print(customers)
+        context = {
+            'customers': customers,
+        }
+        return render(request, 'doctors/list_customers_requested_each_doctor.html', context)
+
+    def post(self, request):
+        nick_name_form = NickNameForm(request.POST)
+        if nick_name_form.is_valid():
+            customer_id = nick_name_form.cleaned_data['customer_id']
+            nick_name = nick_name_form.cleaned_data['nick_name']
+            customer = Customer.objects.get(id=int(customer_id))
+            customer.nick_name = nick_name
+            customer.save()
+            messages.info(request, "نام مستعار ویرایش شد")
+            return redirect(request.META.get("HTTP_REFERER"))
+        else:
+            print(">>>>>>>>>>>>> ERRORS <<<<<<<<<<<")
+            print(nick_name_form.errors)

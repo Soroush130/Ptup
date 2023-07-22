@@ -10,4 +10,5 @@ urlpatterns = [
          name='get_identification_document_doctor'),
     path('delete_document/<int:pk>/', views.DeleteIdentificationDocument.as_view(),
          name='delete_document'),
+    path('list_customers_requested/', views.ListCustomerEachDoctor.as_view(), name="list_customers_requested"),
 ]

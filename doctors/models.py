@@ -37,6 +37,10 @@ class Doctor(models.Model):
     def __str__(self):
         return f"دکتر {self.first_name} {self.last_name}"
 
+    @property
+    def get_full_name(self):
+        return self.__str__()
+
 
 class IdentificationDocument(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='دکتر ')

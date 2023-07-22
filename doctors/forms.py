@@ -35,3 +35,8 @@ class IdentificationDocumentForm(forms.ModelForm):
     class Meta:
         model = IdentificationDocument
         fields = ('title', 'file')
+
+
+class NickNameForm(forms.Form):
+    customer_id = forms.IntegerField(widget=forms.HiddenInput)
+    nick_name = forms.CharField()

@@ -1,0 +1,99 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+
+{% block title %}
+    لیست بیماران
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1016.95px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>بیماران</h1>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" style="float: right">لیست بیماران {{ request.user.doctor }}</h3>
+
+                                <div class="card-tools" style="float: left">
+                                    <div class="input-group input-group-sm" style="width: 150px;">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" name="table_search" class="form-control float-right"
+                                               placeholder="Search">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0" style="height: 300px;">
+                                <table class="table table-head-fixed">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>شماره تلفن</th>
+                                        <th>نام مستعار</th>
+                                        <th>سن</th>
+                                        <th>جنسیت</th>
+                                        <th>اجازه شروع درمان</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for customer in customers %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ customer.phone }}</td>
+                                            <td>
+                                                <form action="" method="POST">
+                                                    {% csrf_token %}
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <input type="hidden" name="customer_id"
+                                                                   value="{{ customer.id }}">
+
+                                                            <div class="form-group">
+                                                                <input type="text" name="nick_name" class="form-control"
+                                                                       placeholder="نام مستعار"
+                                                                       value="{{ customer.nick_name }}">
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <button type="submit" class="btn btn-block btn-info">
+                                                                ویرایش
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                            <td>{{ customer.age }}</td>
+                                            <td>{{ customer.gender }}</td>
+                                            <td>{{ customer.permission_start_treatment }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+{% endblock %}
