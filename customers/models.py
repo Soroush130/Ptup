@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import User
+from accounts.utilites import phone_number_decryption
 from doctors.models import Doctor
 
 
@@ -19,3 +20,8 @@ class Customer(models.Model):
     def __str__(self):
         return f"{self.user} : {self.nick_name}"
 
+    @property
+    def phone(self):
+        phone = self.user.phone
+        phone = phone_number_decryption(phone)
+        return phone

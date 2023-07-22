@@ -1,5 +1,8 @@
 from django.db import models
+from django.utils import timezone
+
 from accounts.models import User
+from datetime import datetime
 
 
 class GenderChoices(models.IntegerChoices):
@@ -46,6 +49,7 @@ class IdentificationDocument(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='دکتر ')
     title = models.CharField(max_length=255, verbose_name='عنوان فایل ')
     file = models.FileField(verbose_name='فایل ')
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.title} : {self.doctor}"

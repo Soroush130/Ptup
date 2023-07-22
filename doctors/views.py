@@ -9,7 +9,6 @@ from .models import Doctor, IdentificationDocument, ApproachUsedTreatment
 from .forms import DoctorForm, IdentificationDocumentForm, NickNameForm
 from django.contrib import messages
 
-from .utility import check_information_doctor, get_customer_list_each_doctor
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -87,8 +86,6 @@ class DeleteIdentificationDocument(View):
 class ListCustomerEachDoctor(View):
     def get(self, request):
         customers = Customer.objects.filter(treating_doctor=request.user.doctor).defer("treating_doctor")
-        customers = get_customer_list_each_doctor(customers)
-        print(customers)
         context = {
             'customers': customers,
         }
