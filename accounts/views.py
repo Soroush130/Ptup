@@ -7,6 +7,7 @@ from .models import User, RoleChoices
 from .utilites import phone_number_encryption
 from django.contrib import messages
 
+
 @login_not_required
 def login_page(request):
     url = request.META.get("HTTP_REFERER")
@@ -69,9 +70,7 @@ def register_page_doctor(request):
         if register_form.is_valid():
             is_accept_rules = register_form.cleaned_data['is_accept_rules']
             phone = register_form.cleaned_data['phone']
-            phone = phone_number_encryption(phone)
             password = register_form.cleaned_data["password"]
-
             if is_accept_rules:
                 new_user = User.objects.create_user(phone=phone, role=RoleChoices.DOCTER, password=password)
                 new_user.is_accept_rules = True

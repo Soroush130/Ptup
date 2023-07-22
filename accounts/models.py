@@ -26,8 +26,8 @@ class UserManager(BaseUserManager):
 
 
 class RoleChoices(models.IntegerChoices):
-    DOCTER = 0, 'دکتر'
-    ADMIN = 1, 'ادمین'
+    ADMIN = 0, 'ادمین'
+    DOCTER = 1, 'دکتر'
     CUSTOMER = 2, 'بیمار'
 
 

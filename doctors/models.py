@@ -30,7 +30,7 @@ class Doctor(models.Model):
     field_of_study_residence = models.CharField(max_length=255, verbose_name='رشته تحصیلی ارشد')
     city_of_residence = models.CharField(max_length=255, verbose_name='شهر محل اقامت')
     treatment_history = models.PositiveSmallIntegerField(default=0, verbose_name='سابقه درمانی')
-    approach_used_treatment = models.ForeignKey(ApproachUsedTreatment, on_delete=models.SET_NULL, null=True,
+    approach_used_treatment = models.ForeignKey(ApproachUsedTreatment, on_delete=models.SET_NULL, null=True, blank=True,
                                                 verbose_name='رویکرد مورد استفاده در درمان ')
     is_verify = models.BooleanField(default=False, verbose_name='اجازه شروع فعالیت')
 
