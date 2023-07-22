@@ -14,12 +14,16 @@ def login_page(request):
     if request.method == "POST":
         login_form = LoginUserForm(request.POST)
         if login_form.is_valid():
-            phone, password = login_form.cleaned_data['phone'], login_form.cleaned_data['password']
+            phone, password, remember_me = login_form.cleaned_data['phone'], login_form.cleaned_data['password'], \
+                                           login_form.cleaned_data.get('remember_me', False)
+
             doctor = authenticate(request, phone=phone, password=password)
             customer = authenticate(request, phone=phone_number_encryption(phone), password=password)
             user = doctor if doctor is not None else customer
             if user:
                 login(request, user)
+                if not remember_me:
+                    request.session.set_expiry(0)
                 messages.success(request, "با موافقیت وارد شدید")
                 return redirect('/')
             else:
