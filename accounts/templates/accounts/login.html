@@ -25,10 +25,10 @@
         <b>Ptup</b>
     </div>
     <!-- /.login-logo -->
-    <div class="card">
+    <div class="card" >
         <div class="card-body login-card-body">
 
-            <form action="" method="POST">
+            <form action="" method="POST" >
                 {% csrf_token %}
                 <div class="input-group mb-3">
                     <input type="text" name="phone" class="form-control" placeholder="شماره تلفن">
@@ -66,13 +66,14 @@
             <br>
             <br>
 
-            <p class="mb-1">
-                <a href="#">فراموشی رمز عبور</a>
+            <p class="mb-1" >
+                <a href="#" style="float: right">فراموشی رمز عبور</a>
+                <br>
             </p>
             <p class="mb-0">
-                <a href="{% url 'accounts:register_customer' %}" class="text-center">ثبت نام به عنوان مراجع</a>
+                <a href="{% url 'accounts:register_customer' %}" class="text-center" style="float: right">ثبت نام به عنوان مراجع</a>
                 <br>
-                <a href="{% url 'accounts:register_doctor' %}" class="text-center">ثبت نام به عنوان دکتر</a>
+                <a href="{% url 'accounts:register_doctor' %}" class="text-center" style="float: right">ثبت نام به عنوان دکتر</a>
             </p>
         </div>
         <!-- /.login-card-body -->
@@ -84,7 +85,9 @@
     {% for message in messages %}
         <div class="col-3" style="position: absolute; right: 10px; top: 10px; z-index:90000;">
             <div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"
+                        style="position: absolute;left: 0;right: auto;">X
+                </button>
                 {{ message }}
             </div>
         </div>

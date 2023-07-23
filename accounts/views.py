@@ -1,11 +1,14 @@
 from django.contrib.auth import login, authenticate, logout
-from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from doctors.models import Doctor
 from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm
 from .decorators import login_not_required
 from .models import User, RoleChoices
 from .utilites import phone_number_encryption
 from django.contrib import messages
+from django.views import View
+from django.core.paginator import Paginator
 
 
 @login_not_required
@@ -93,3 +96,22 @@ def log_out(request):
     logout(request)
     messages.success(request, "با موافقیت خارج شدید")
     return redirect('accounts:login')
+
+
+class ConfirmationDoctorByStaff(View):
+    """
+        Confirmation of the doctor by the site administrator or staff
+    """
+
+    def get(self, request):
+        doctors = Doctor.objects.all()
+        paginator = Paginator(doctors, 9)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context = {
+            "page_obj": page_obj,
+            "doctors": doctors,
+        }
+        return render(request, 'accounts/confirmation_doctor.html', context)
+
+

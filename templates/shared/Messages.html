@@ -2,8 +2,10 @@
     {% for message in messages %}
         <div class="col-3" style="position: absolute; right: 10px; top: 10px; z-index:90000;">
             <div {% if message.tags %}class="alert alert-{{ message.tags }} alert-dismissible"{% endif %}>
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                    {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"
+                        style="position: absolute;left: 0;right: auto;">X
+                </button>
+                {{ message }}
             </div>
         </div>
     {% endfor %}

@@ -8,4 +8,6 @@ urlpatterns = [
     path('register/customer/', views.register_page_customer, name='register_customer'),
     path('register/doctor/', views.register_page_doctor, name='register_doctor'),
     path('logout/', views.log_out, name='logout'),
+
+    path('confirm_doctor/', views.ConfirmationDoctorByStaff.as_view(), name='confirm_doctor'),
 ]

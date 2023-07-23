@@ -35,6 +35,7 @@ class Doctor(models.Model):
     treatment_history = models.PositiveSmallIntegerField(default=0, verbose_name='سابقه درمانی')
     approach_used_treatment = models.ForeignKey(ApproachUsedTreatment, on_delete=models.SET_NULL, null=True, blank=True,
                                                 verbose_name='رویکرد مورد استفاده در درمان ')
+    image_profile = models.ImageField(upload_to='files/image_profile_doctors/', verbose_name='عکس')
     is_verify = models.BooleanField(default=False, verbose_name='اجازه شروع فعالیت')
 
     def __str__(self):
@@ -44,12 +45,32 @@ class Doctor(models.Model):
     def get_full_name(self):
         return self.__str__()
 
+    @property
+    def get_image_profile_url(self):
+        image_profile_url = self.image_profile.url
+        if image_profile_url:
+            return image_profile_url
+        return ''
+
 
 class IdentificationDocument(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='دکتر ')
     title = models.CharField(max_length=255, verbose_name='عنوان فایل ')
-    file = models.FileField(verbose_name='فایل ')
+    file = models.FileField(verbose_name='فایل ', upload_to='files/identification_document/')
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.title} : {self.doctor}"
+
+    @property
+    def get_file_size_as_str(self):
+        file_size_bytes = self.file.size
+        # Define the size units and their corresponding labels
+        size_units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+        index = 0
+
+        while file_size_bytes >= 1024 and index < len(size_units) - 1:
+            file_size_bytes /= 1024
+            index += 1
+
+        return f"{file_size_bytes:.2f} {size_units[index]}"

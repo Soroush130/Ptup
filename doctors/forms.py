@@ -21,6 +21,7 @@ class DoctorForm(forms.ModelForm):
             'city_of_residence',
             'treatment_history',
             'approach_used_treatment',
+            'image_profile',
         )
 
 
@@ -40,3 +41,8 @@ class IdentificationDocumentForm(forms.ModelForm):
 class NickNameForm(forms.Form):
     customer_id = forms.IntegerField(widget=forms.HiddenInput)
     nick_name = forms.CharField()
+
+
+# class ConfirmationDoctorForm(forms.Form):
+#     doctor_id = forms.IntegerField(widget=forms.HiddenInput)
+#     is_verify = forms.BooleanField()

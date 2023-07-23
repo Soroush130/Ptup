@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -9,6 +10,52 @@ from .models import Doctor, IdentificationDocument, ApproachUsedTreatment
 from .forms import DoctorForm, IdentificationDocumentForm, NickNameForm
 from django.contrib import messages
 
+from doctors.utility import check_information_doctor, check_owner_info
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class DetailDoctor(View):
+    def get(self, request, doctor_id, *args, **kwargs):
+        try:
+            # TODO: handle Error DoseNotExsists
+            doctor = Doctor.objects.get(id=doctor_id)
+            identification_document_list = IdentificationDocument.objects.filter(doctor_id=doctor_id)
+            approach_used_treatment = ApproachUsedTreatment.objects.all()
+            is_owner_info = check_owner_info(request.user)
+            context = {
+                "doctor": doctor,
+                "identification_document_list": identification_document_list,
+                "is_owner_info": is_owner_info,
+                "approach_used_treatment": approach_used_treatment,
+            }
+            return render(request, 'doctors/doctor_detail.html', context)
+        except Doctor.DoesNotExist:
+            return redirect('page_404')
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class IsVerifyDoctorByStaff(View):
+    def get(self, request, *args, **kwargs):
+        doctor_id = request.GET['doctor_id']
+        doctor = Doctor.objects.get(id=doctor_id)
+        if doctor.is_verify == True:
+            doctor.is_verify = False
+            doctor.save()
+            response = {
+                'is_taken': True,
+                'doctor_id': doctor.id,
+                'is_verify': doctor.is_verify
+            }
+            return JsonResponse(response)
+        else:
+            doctor.is_verify = True
+            doctor.save()
+            response = {
+                'is_taken': True,
+                'doctor_id': doctor.id,
+                'is_verify': doctor.is_verify
+            }
+            return JsonResponse(response)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -28,7 +75,7 @@ class CompletionInformationDoctor(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        doctor_form = DoctorForm(request.POST)
+        doctor_form = DoctorForm(request.POST, request.FILES)
 
         if doctor_form.is_valid():
             doctor_new = doctor_form.save(commit=False)
@@ -40,6 +87,21 @@ class CompletionInformationDoctor(View):
             print('>>>>>>>>>>>>>>> ERRORS <<<<<<<<<<<<<<<')
             print(doctor_form.errors)
             print('-' * 60)
+            return redirect(request.META.get("HTTP_REFERER"))
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class UpdateInformationDoctor(View):
+    def post(self, request):
+        doctor_form = DoctorForm(request.POST, request.FILES, instance=request.user.doctor)
+        if doctor_form.is_valid():
+            doctor_form.save()
+            messages.success(request, "اطلاعات ویرایش شد")
+            return redirect(request.META.get("HTTP_REFERER"))
+        else:
+            print(">>>>>>>>>> ERRORS <<<<<<<<<<<<<<<<")
+            print(doctor_form.errors)
+            messages.error(request, f"{doctor_form.errors}")
             return redirect(request.META.get("HTTP_REFERER"))
 
 

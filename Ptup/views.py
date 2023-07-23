@@ -23,6 +23,7 @@ def header(request):
     user_role = user.role
     is_complete_information = check_information_doctor(user)
     context = {
+        'user': user,
         'user_role': user_role,
         'is_complete_information': is_complete_information,
     }
@@ -31,3 +32,7 @@ def header(request):
 
 def footer(request):
     return render(request, 'shared/Footer.html', {})
+
+
+def page_404(request):
+    return render(request, 'page_404.html', {})

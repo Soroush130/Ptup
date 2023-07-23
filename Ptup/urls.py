@@ -12,6 +12,7 @@ urlpatterns = [
     path('footer', views.footer, name="footer"),
 
     path('', views.home, name="home"),
+    path('page_404/', views.page_404, name="page_404"),
 
     # apps
     path('accounts/', include("accounts.urls")),
