@@ -10,6 +10,7 @@ def normalize_data_filter_customer(customers: QuerySet) -> dict:
     customers_dict = {}
     for customer in customers:
         customers_dict[customer.id] = {
+            "id": customer.id,
             "phone": customer.phone,
             "nick_name": customer.nick_name,
             "age": customer.age,
