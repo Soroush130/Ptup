@@ -1,0 +1,388 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+
+{% block title %}
+    لیست درمانگر ها
+{% endblock %}
+
+{% block header_ref %}
+
+    <style>
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>پروفایل {{ doctor.get_full_name }}</h1>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+
+                        <!-- Profile Image -->
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <img class="profile-user-img img-fluid img-circle"
+                                         src="{{ doctor.get_image_profile_url }}" alt="image profile">
+                                </div>
+
+                                <h3 class="profile-username text-center">{{ doctor.first_name }} {{ doctor.last_name }}</h3>
+
+                                <p class="text-muted text-center">{{ doctor.email }}</p>
+
+                                <ul class="list-group list-group-unbordered mb-3">
+                                    <li class="list-group-item">
+                                        <b>کدملی</b> <a class="float-right">{{ doctor.national_code }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>شماره پروانه نظام روانشناسی</b> <a
+                                            class="float-right">{{ doctor.psychology_license_number }}</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>جنسیت</b> <a class="float-right">{{ doctor.gender }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+
+                        <!-- About Me Box -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title" style="float: right">اطلاعات شخصی</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <strong><i class="fas fa-university mr-1"></i> دانشگاه فارغ التحصیلی</strong>
+
+                                <p class="text-muted">
+                                    {{ doctor.university_graduate }}
+                                </p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-book mr-1"></i> رشته تحصیلی در دوره لیسانس</strong>
+
+                                <p class="text-muted">
+                                    {{ doctor.field_of_study_bachelor }}
+                                </p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-book mr-1"></i> رشته تحصیلی در دوره ارشد</strong>
+
+                                <p class="text-muted">
+                                    {{ doctor.field_of_study_residence }}
+                                </p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-map-marker-alt mr-1"></i> آدرس خانه</strong>
+
+                                <p class="text-muted">{{ doctor.home_address }}</p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-map-marker-alt mr-1"></i> آدرس کلنیک</strong>
+
+                                <p class="text-muted">{{ doctor.clinic_address }}</p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-map-marker-alt mr-1"></i> شهر محل اقامت</strong>
+
+                                <p class="text-muted">{{ doctor.city_of_residence }}</p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-pencil-alt mr-1"></i> رویکرد مورد نظر در درمان</strong>
+
+                                <p class="text-muted">{{ doctor.approach_used_treatment }}</p>
+
+                                <hr>
+
+                                <strong><i class="far fa-clock mr-1"></i> سابقه درمانی</strong>
+
+                                <p class="text-muted">{{ doctor.treatment_history }}</p>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+
+                    </div>
+
+
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item"><a class="nav-link active" href="#identification_document"
+                                                            data-toggle="tab">مدارک
+                                        شناسایی</a>
+                                    </li>
+                                    {% if is_owner_info %}
+                                        <li class="nav-item"><a class="nav-link" href="#update_information"
+                                                                data-toggle="tab">ویرایش اطلاعات</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content">
+
+                                    <div class="tab-pane active"
+                                         id="identification_document">
+
+                                        {% for document in identification_document_list %}
+                                            <div class="col-md-3 col-sm-6 col-12">
+                                                <div class="info-box bg-gradient-info">
+                                                    <span class="info-box-icon"><i
+                                                            class="far fa-file-alt mr-1"></i></span>
+
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text">
+                                                            <a href="{{ document.file.url }}"
+                                                               style="color: white">{{ document.title }}</a>
+                                                        </span>
+                                                        <span class="info-box-number">{{ document.get_file_size_as_str }}</span>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+
+                                    {% if is_owner_info %}
+                                        <div class="tab-pane" id="update_information">
+                                            <form class="form-horizontal"
+                                                  action="{% url 'doctors:update_information_doctor' %}" method="POST"
+                                                  enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="first_name" class="form-control"
+                                                                   placeholder="نام" value="{{ doctor.first_name }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="last_name" class="form-control"
+                                                                   placeholder="نام خانوادگی"
+                                                                   value="{{ doctor.last_name }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="email" name="email" class="form-control"
+                                                                   placeholder="ایمیل" value="{{ doctor.email }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-envelope"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <select class="form-control" name="gender">
+                                                                <option value="1">مرد</option>
+                                                                <option value="2">زن</option>
+                                                            </select>
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-user"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="home_address" class="form-control"
+                                                                   placeholder="آدرس خانه"
+                                                                   value="{{ doctor.home_address }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-home"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="clinic_address"
+                                                                   class="form-control"
+                                                                   placeholder="آدرس کلنیک"
+                                                                   value="{{ doctor.clinic_address }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-clinic-medical"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="home_number" class="form-control"
+                                                                   placeholder="شماره تلفن منزل"
+                                                                   value="{{ doctor.home_number }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-phone"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="input-group mb-3">
+                                                            <input type="number" name="national_code"
+                                                                   class="form-control"
+                                                                   placeholder="کد ملی"
+                                                                   value="{{ doctor.national_code }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="number" name="psychology_license_number"
+                                                                   class="form-control"
+                                                                   placeholder="شماره پروانه نظام روانشناسی"
+                                                                   value="{{ doctor.psychology_license_number }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="university_graduate"
+                                                                   class="form-control"
+                                                                   value="{{ doctor.university_graduate }}"
+                                                                   placeholder="دانشگاه فارغ التحصیلی">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-university"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="field_of_study_bachelor"
+                                                                   class="form-control"
+                                                                   value="{{ doctor.field_of_study_bachelor }}"
+                                                                   placeholder="رشته تحصیلی در دوره لیسانس">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-book"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="field_of_study_residence"
+                                                                   class="form-control"
+                                                                   value="{{ doctor.field_of_study_residence }}"
+                                                                   placeholder="رشته تحصیلی در دوره ارشد">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-book"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" name="city_of_residence"
+                                                                   class="form-control"
+                                                                   value="{{ doctor.city_of_residence }}"
+                                                                   placeholder="شهر محل اقامت">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-city"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="number" name="treatment_history"
+                                                                   class="form-control"
+                                                                   value="{{ doctor.treatment_history }}"
+                                                                   placeholder="سابقه درمانی">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-history"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="input-group mb-3">
+                                                            <select class="form-control" name="approach_used_treatment">
+                                                                <option value="{{ doctor.approach_used_treatment.id }}">
+                                                                    {{ doctor.approach_used_treatment.title }}
+                                                                </option>
+                                                                {% for approach in approach_used_treatment %}
+                                                                    <option value="{{ approach.id }}">{{ approach.title }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="file" name="image_profile" class="form-control"
+                                                                   placeholder="عکس پروفایل"
+                                                                   value="{{ doctor.image_profile }}">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-text">
+                                                                    <span class="fas fa-user"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-lg-4"></div>
+                                                                <div class="col-lg-4 ">
+                                                                    <img class="mt-3"
+                                                                         src="{{ doctor.get_image_profile_url }}"
+                                                                         alt="image profile"
+                                                                         style="width: 150px;height: 200px">
+                                                                </div>
+                                                                <div class="col-lg-4"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="col-sm-offset-2 col-sm-10">
+                                                        <button type="submit" class="btn btn-primary">ویرایش</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+{% endblock %}

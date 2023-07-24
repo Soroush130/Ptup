@@ -1,0 +1,172 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+
+{% block title %}
+    لیست درمانگر ها
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>لیست درمانگرها</h1>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            <!-- Default box -->
+            <div class="card card-solid">
+                <div class="card-body pb-0">
+                    <div class="row d-flex align-items-stretch">
+                        {% for doctor in page_obj %}
+                            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+                                <div class="card bg-light">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        درمانگر شماره {{ forloop.counter }}
+                                    </div>
+                                    <div class="card-body pt-0">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <h2 class="lead"><b>{{ doctor.get_full_name }}</b></h2>
+                                                <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                    <li class="small"><span class="fa-li"><i
+                                                            class="fas fa-lg fa-building"></i></span>
+                                                        آدرس کلنیک : {{ doctor.clinic_address }}
+                                                    </li>
+                                                    <li class="small"><span class="fa-li"><i
+                                                            class="fas fa-lg fa-phone"></i></span>
+                                                        شماره تلفن : {{ doctor.user.phone }}
+                                                    </li>
+                                                    <li class="small"><span class="fa-li"><i
+                                                            class="fas fa-lg fa-mail-bulk"></i></span>
+                                                        ایمیل : {{ doctor.email }}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-5 text-center">
+                                                <img src="{{ doctor.get_image_profile_url }}" alt=""
+                                                     class="img-circle img-fluid">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="text-left">
+                                            <a href="/doctors/detail_doctor/{{ doctor.id }}/"
+                                               class="btn btn-sm btn-primary">
+                                                <i class="fas fa-user"></i> پروفایل
+                                            </a>
+                                            <a href="#" class="btn btn-sm bg-teal">
+                                                <i class="fas fa-comments"></i>
+                                            </a>
+                                            {% if doctor.is_verify is False %}
+                                                <div class="btn btn-sm bg-teal" id="btn_is_verify{{ doctor.id }}"
+                                                     data-id="{{ doctor.id }}" onclick="verifyDoctor(this)">
+                                                    <i class="fas fa-check-circle" id="btn_i"></i>
+                                                </div>
+                                            {% else %}
+                                                <div class="btn btn-sm bg-red" id="btn_is_verify{{ doctor.id }}"
+                                                     data-id="{{ doctor.id }}" onclick="verifyDoctor(this)">
+                                                    <i class="fas fa-minus-circle" id="btn_i"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <nav aria-label="Contacts Page Navigation">
+                        <ul class="pagination justify-content-center m-0">
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if num == page_obj.number %}
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="?page={{ num }}">{{ num }}</a></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                        </ul>
+                    </nav>
+                </div>
+                <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+
+
+    <div class="col-3" id="show_message" style="position: absolute; right: 10px; top: 10px; z-index:90000;">
+
+    </div>
+
+{% endblock %}
+
+{% block footer_ref %}
+
+
+    <script>
+
+        var box_show_message = document.getElementById("show_message");
+
+        function verifyDoctor(e) {
+            var doctor_id = e.getAttribute("data-id");
+            $.ajax({
+                data: {'doctor_id': doctor_id},
+                url: "{% url 'doctors:is_verify_doctor' %}",
+                // on success
+                success: function (response) {
+                    if (response.is_taken == true) {
+                        if (response.is_verify == true) {
+                            document.querySelector('#btn_i').className = 'fas fa-minus-circle';
+                            document.getElementById('btn_is_verify' + doctor_id).className = 'btn btn-sm bg-red';
+                            box_show_message.innerHTML = `
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"
+                                        style="position: absolute;left: 0;right: auto;">X
+                                </button>
+                                TEXT
+                            </div>`.replace('TEXT', "کاربر با آیدی " + doctor_id + ' مجوز گرفت')
+                        } else {
+                            document.querySelector('#btn_i').className = 'fas fa-check-circle';
+                            document.getElementById('btn_is_verify' + doctor_id).className = 'btn btn-sm bg-teal';
+                            box_show_message.innerHTML = `
+                            <div class="alert alert-error alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"
+                                        style="position: absolute;left: 0;right: auto;">X
+                                </button>
+                                TEXT
+                            </div>`.replace('TEXT', "مجوز کاربر با آیدی " + doctor_id + " لغو شد")
+                        }
+                    } else {
+                        console.log("can not verify doctor")
+                    }
+
+                },
+                // on error
+                error: function (response) {
+                    // alert the error if any error occured
+                    console.log(response.responseJSON.errors)
+                }
+            });
+        }
+
+
+    </script>
+
+
+{% endblock %}
