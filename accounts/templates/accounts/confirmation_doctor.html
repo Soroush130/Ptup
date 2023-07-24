@@ -89,8 +89,6 @@
                 <div class="card-footer">
                     <nav aria-label="Contacts Page Navigation">
                         <ul class="pagination justify-content-center m-0">
-
-
                             {% for num in page_obj.paginator.page_range %}
                                 {% if num == page_obj.number %}
                                     <li class="page-item active"><a class="page-link"
@@ -111,6 +109,11 @@
         <!-- /.content -->
     </div>
 
+
+    <div class="col-3" id="show_message" style="position: absolute; right: 10px; top: 10px; z-index:90000;">
+
+    </div>
+
 {% endblock %}
 
 {% block footer_ref %}
@@ -118,6 +121,7 @@
 
     <script>
 
+        var box_show_message = document.getElementById("show_message");
 
         function verifyDoctor(e) {
             var doctor_id = e.getAttribute("data-id");
@@ -130,9 +134,23 @@
                         if (response.is_verify == true) {
                             document.querySelector('#btn_i').className = 'fas fa-minus-circle';
                             document.getElementById('btn_is_verify' + doctor_id).className = 'btn btn-sm bg-red';
+                            box_show_message.innerHTML = `
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"
+                                        style="position: absolute;left: 0;right: auto;">X
+                                </button>
+                                TEXT
+                            </div>`.replace('TEXT', "کاربر با آیدی " + doctor_id + ' مجوز گرفت')
                         } else {
                             document.querySelector('#btn_i').className = 'fas fa-check-circle';
                             document.getElementById('btn_is_verify' + doctor_id).className = 'btn btn-sm bg-teal';
+                            box_show_message.innerHTML = `
+                            <div class="alert alert-error alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"
+                                        style="position: absolute;left: 0;right: auto;">X
+                                </button>
+                                TEXT
+                            </div>`.replace('TEXT', "مجوز کاربر با آیدی " + doctor_id + " لغو شد")
                         }
                     } else {
                         console.log("can not verify doctor")

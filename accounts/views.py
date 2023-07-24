@@ -3,12 +3,14 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from doctors.models import Doctor
 from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm
-from .decorators import login_not_required
+from .decorators import login_not_required, is_staff_or_superuser
 from .models import User, RoleChoices
 from .utilites import phone_number_encryption
 from django.contrib import messages
 from django.views import View
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 @login_not_required
@@ -98,11 +100,13 @@ def log_out(request):
     return redirect('accounts:login')
 
 
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class ConfirmationDoctorByStaff(View):
     """
         Confirmation of the doctor by the site administrator or staff
     """
 
+    @method_decorator(is_staff_or_superuser)
     def get(self, request):
         doctors = Doctor.objects.all()
         paginator = Paginator(doctors, 9)

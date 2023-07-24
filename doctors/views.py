@@ -5,6 +5,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 
 from customers.models import Customer
+from ptup_utilities.utility import send_message_in_protable
 from .decorators import is_complete_information_doctor
 from .models import Doctor, IdentificationDocument, ApproachUsedTreatment
 from .forms import DoctorForm, IdentificationDocumentForm, NickNameForm
@@ -41,6 +42,9 @@ class IsVerifyDoctorByStaff(View):
         if doctor.is_verify == True:
             doctor.is_verify = False
             doctor.save()
+
+            send_message_in_protable(receiver=doctor, content="مجوز شما توسط ادمین لغو شد")
+
             response = {
                 'is_taken': True,
                 'doctor_id': doctor.id,
@@ -50,6 +54,10 @@ class IsVerifyDoctorByStaff(View):
         else:
             doctor.is_verify = True
             doctor.save()
+
+            send_message_in_protable(receiver=doctor,
+                                     content="مجوز شما توسط ادمین تایید شد" + "\n" + "به سامانه خوش آمدید")
+
             response = {
                 'is_taken': True,
                 'doctor_id': doctor.id,
