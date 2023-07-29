@@ -102,7 +102,6 @@
                                         <th>سن</th>
                                         <th>جنسیت</th>
                                         <th>اجازه شروع درمان</th>
-                                        <th>عملیات</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody_table">
@@ -143,14 +142,6 @@
                                                 {% else %}
                                                     <i class="fas fa-minus-circle" style="color: red"></i>
                                                 {% endif %}
-                                            </td>
-                                            <td class="d-flex">
-                                                <div class="mx-2">
-                                                    <i class="fas fa-plus paction"></i>
-                                                </div>
-                                                <div class="mx-2">
-                                                    <i class="fas fa-minus maction"></i>
-                                                </div>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -210,7 +201,6 @@
                 success: function (response) {
                     if (response.is_taken == true) {
                         if (response.type_filter == 'can_not_started') {
-                            console.log(response.customers)
                             Add_Row_In_Table(tbody_table, response.customers)
                         } else {
 
@@ -252,16 +242,6 @@
                     new_row.appendChild(td);
                 }
             }
-
-            new_row.innerHTML = new_row.innerHTML + `<td class="d-flex">
-                                                <div class="mx-2">
-                                                    <i class="fas fa-plus paction"></i>
-                                                </div>
-                                                <div class="mx-2">
-                                                    <i class="fas fa-minus maction"></i>
-                                                </div>
-                                            </td>`;
-
             return new_row
         }
 

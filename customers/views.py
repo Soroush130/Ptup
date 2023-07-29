@@ -4,7 +4,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.http import JsonResponse
-from customers.forms import CustomerForm, CustomerIllnessForm
+from customers.forms import CustomerForm, CustomerIllnessForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
@@ -96,3 +96,19 @@ class OperationChoiceIllnessCustomer(View):
         else:
             messages.error(request, "شما مجاز به انتساب بیماری به این بیمار نیستید")
             return redirect('doctors:list_customers_requested')
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class PermissionStartTreatmentCustomer(View):
+    def post(self, request, *args, **kwargs):
+        form = PermissionStartTreatmentCustomerForm(request.POST)
+        if form.is_valid():
+            id, permission_start_treatment = form.cleaned_data['id'], form.cleaned_data['permission_start_treatment']
+            customer = Customer.objects.get(id=id)
+            customer.permission_start_treatment = True if permission_start_treatment == 'yes' else False
+            customer.save()
+            messages.success(request, 'تغییرات اعمال شد')
+            return redirect(request.META.get("HTTP_REFERER"))
+        else:
+            print(form.errors)
+            return redirect(request.META.get("HTTP_REFERER"))
