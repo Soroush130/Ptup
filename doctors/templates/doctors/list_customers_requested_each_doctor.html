@@ -210,6 +210,7 @@
                 success: function (response) {
                     if (response.is_taken == true) {
                         if (response.type_filter == 'can_not_started') {
+                            console.log(response.customers)
                             Add_Row_In_Table(tbody_table, response.customers)
                         } else {
 
@@ -229,17 +230,16 @@
         function Add_Row_In_Table(body, data) {
             body.innerText = '';
 
-
-            var length = Object.keys(data).length;
+            var keys = Object.keys(data);
+            var length = keys.length;
             for (let i = 0; i < length; i++) {
-                console.log(data[i + 1]);
-                var row = createRow(i + 1, data[i + 1]);
+                var key = keys[i];
+                var row = createRow(i + 1, data[key]);
                 body.appendChild(row);
             }
         }
 
         function createRow(index, info_row) {
-            console.log(index, typeof (index))
             var new_row = document.createElement('tr');
 
             var forloop_counter = document.createElement('td');

@@ -1,6 +1,5 @@
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from doctors.models import Doctor
 from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm
 from .decorators import login_not_required, is_staff_or_superuser
@@ -25,19 +24,17 @@ def login_page(request):
             doctor = authenticate(request, phone=phone, password=password)
             customer = authenticate(request, phone=phone_number_encryption(phone), password=password)
             user = doctor if doctor is not None else customer
+
             if user:
                 login(request, user)
                 if not remember_me:
                     request.session.set_expiry(0)
+
                 messages.success(request, "با موافقیت وارد شدید")
-
-                # TODO :
                 return redirect('/')
-
-
-
             else:
                 return redirect(url)
+
         else:
             print(login_form.errors)
     else:
