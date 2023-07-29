@@ -30,7 +30,12 @@ def login_page(request):
                 if not remember_me:
                     request.session.set_expiry(0)
                 messages.success(request, "با موافقیت وارد شدید")
+
+                # TODO :
                 return redirect('/')
+
+
+
             else:
                 return redirect(url)
         else:

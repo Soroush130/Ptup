@@ -1,0 +1,121 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+
+{% block title %}
+    تعیین بیماری
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1016.95px;">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>تعیین بیماری</h1>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <!-- Widget: user widget style 2 -->
+                        <div class="card card-widget widget-user-2">
+                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                            <div class="widget-user-header bg-warning">
+                                <h3 class="widget-user-username">نام مستعار</h3>
+                                <h5 class="widget-user-desc">{{ customer.nick_name }}</h5>
+                            </div>
+                            <div class="card-footer p-0">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a href="" class="nav-link">
+                                            شماره تلفن <span
+                                                class="float-right badge bg-primary">{{ customer.phone }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="" class="nav-link">
+                                            سن <span class="float-right badge bg-info">{{ customer.age }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="" class="nav-link">
+                                            جنسیت <span
+                                                class="float-right badge bg-info">{{ customer.get_gender }}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="" class="nav-link">
+                                            نوع بیماری <span
+                                                class="float-right badge bg-info"></span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="" class="nav-link">
+                                            اجازه شروع درمان دارد؟ <span
+                                                class="float-right badge bg-danger">{{ customer.permission_start_treatment }}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-1"></div>
+
+
+                    <div class="col-lg-7">
+                        <div class="card">
+                            <div class="card-header bg-yellow">
+                                <h3 class="card-title " style="float: right">لیست بیماری ها</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>عنوان بیماری</th>
+                                        <th>توضیحات</th>
+                                        <th>انتخاب شده/نشده</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for illness in illnesses %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ illness.title }}</td>
+                                            <td>
+                                                {{ illness.description }}
+                                            </td>
+                                            <td>
+                                                <a href="/customers/operation_choice_illness_customer/{{ customer.id }}/{{ illness.id }}/"
+                                                   class="btn btn-block bg-gradient-yellow"
+                                                   style="margin: 15px 0">
+                                                    انتساب
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+
+{% block footer_ref %}
+    <script>
+    </script>
+{% endblock %}

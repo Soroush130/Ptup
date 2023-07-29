@@ -11,3 +11,8 @@ class CustomerForm(forms.ModelForm):
             'gender',
             'treating_doctor',
         )
+
+
+class CustomerIllnessForm(forms.Form):
+    illness_id = forms.IntegerField(widget=forms.HiddenInput)
+    illness = forms.BooleanField()

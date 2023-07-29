@@ -109,7 +109,9 @@
                                     {% for customer in customers %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
-                                            <td>{{ customer.phone }}</td>
+                                            <td>
+                                                <a href="{% url 'customers:determining_customer_illness' customer.id %}">{{ customer.phone }}</a>
+                                            </td>
                                             <td>
                                                 <form action="" method="POST">
                                                     {% csrf_token %}
@@ -245,7 +247,7 @@
             new_row.appendChild(forloop_counter);
 
             for (let key in info_row) {
-                if(key !== 'id'){
+                if (key !== 'id') {
                     var td = createTd(key, info_row[key], info_row['id']);
                     new_row.appendChild(td);
                 }
@@ -293,6 +295,8 @@
                 } else {
                     new_td.innerHTML = `<i class="fas fa-minus-circle" style="color: red"></i>`
                 }
+            } else if (key === 'phone') {
+                new_td.innerHTML = `<a href="/customers/determining_customer_illness/CUSTOMERID">PHONE</a>`.replace('CUSTOMERID', customer_id).replace('PHONE', content)
             } else {
                 new_td.innerText = content;
             }

@@ -18,10 +18,14 @@ class Customer(models.Model):
     permission_start_treatment = models.BooleanField(default=False, verbose_name='اجازه شروع دوره درمان')
 
     def __str__(self):
-        return f"{self.user} : {self.nick_name}"
+        return f"{self.user} : {self.nick_name} with id {self.id}"
 
     @property
     def phone(self):
         phone = self.user.phone
         phone = phone_number_decryption(phone)
         return phone
+
+    @property
+    def get_gender(self):
+        return 'مرد' if self.gender == 1 else 'زن'
