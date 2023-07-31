@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth import login, authenticate, logout
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
@@ -147,11 +148,13 @@ class ConfirmOtpCodeView(View):
                 is_valid=False
             )
             if is_otp_code:
-                user = User.objects.get(phone=is_otp_code.phone)
-                user.is_active = True
-                user.save()
-                is_otp_code.is_valid = True
-                is_otp_code.save()
+                with transaction.atomic():
+                    user = User.objects.get(phone=is_otp_code.phone)
+                    user.is_active = True
+                    user.save()
+                    is_otp_code.is_valid = True
+                    is_otp_code.save()
+
                 messages.success(request, "کد اعتبارسنجی صحیح بود")
                 return redirect('accounts:login')
             else:
