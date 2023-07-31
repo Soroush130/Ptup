@@ -84,3 +84,9 @@ class RegisterDoctorForm(forms.Form):
         if is_exists_phone:
             raise forms.ValidationError("چنین شماره تلفنی قبلا ثبت شده است")
         return phone
+
+
+class OtpCodeForm(forms.Form):
+    otp_code = forms.CharField()
+
+

@@ -1,10 +1,14 @@
+from datetime import timedelta
+
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.utils import timezone
+
 from doctors.models import Doctor
-from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm
+from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm, OtpCodeForm
 from .decorators import login_not_required, is_staff_or_superuser
-from .models import User, RoleChoices
+from .models import User, RoleChoices, OtpCode
+from .senders import SmsSender
 from .utilites import phone_number_encryption
 from django.contrib import messages
 from django.views import View
@@ -24,15 +28,20 @@ def login_page(request):
 
             doctor = authenticate(request, phone=phone, password=password)
             customer = authenticate(request, phone=phone_number_encryption(phone), password=password)
+
             user = doctor if doctor is not None else customer
+
             if user:
                 login(request, user)
                 if not remember_me:
                     request.session.set_expiry(0)
+
                 messages.success(request, "با موافقیت وارد شدید")
                 return redirect('/')
             else:
+                messages.info(request, "کاربری پیدا نشد")
                 return redirect(url)
+
         else:
             print(login_form.errors)
     else:
@@ -60,8 +69,21 @@ def register_page_customer(request):
                 new_user = User.objects.create_user(phone=phone, role=RoleChoices.CUSTOMER, password=password)
                 new_user.is_accept_rules = True
                 new_user.save()
-                messages.success(request, "کاربر با موافقیت ساخته شد")
-                return redirect('accounts:login')
+
+                otp_code: str = '12345'
+                OtpCode.objects.create(
+                    phone=phone,
+                    otp_code=otp_code
+                )
+
+                try:
+                    SmsSender.send(otp_code, phone)
+                    messages.success(request, "پیامک اعتبار سنجی ارسال شد")
+                    return redirect('accounts:confirm_otp')
+                except:
+                    print("نتوانستیم پیامک ارسال کنیم")
+                    # remove line below . only test
+                    return redirect('accounts:confirm_otp')
         else:
             print(register_form.errors)
     else:
@@ -83,15 +105,58 @@ def register_page_doctor(request):
             if is_accept_rules:
                 new_user = User.objects.create_user(phone=phone, role=RoleChoices.DOCTER, password=password)
                 new_user.is_accept_rules = True
+                new_user.is_active = False
                 new_user.save()
-                messages.success(request, "کاربر با موافقیت ساخته شد")
-                return redirect('accounts:login')
+
+                otp_code: str = '12345'
+                OtpCode.objects.create(
+                    phone=phone,
+                    otp_code=otp_code
+                )
+
+                try:
+                    SmsSender.send(otp_code, phone)
+                    messages.success(request, "پیامک اعتبار سنجی ارسال شد")
+                    return redirect('accounts:confirm_otp')
+                except:
+                    print("نتوانستیم پیامک ارسال کنیم")
+                    # remove line below . only test
+                    return redirect('accounts:confirm_otp')
     else:
         register_form = RegisterCustomerForm()
     context = {
         "register_form": register_form,
     }
     return render(request, "accounts/register_doctor.html", context)
+
+
+class ConfirmOtpCodeView(View):
+    def get(self, request, *args, **kwargs):
+        context = {}
+        return render(request, 'accounts/otp_code.html', context)
+
+    def post(self, request, *args, **kwargs):
+        otp_form = OtpCodeForm(request.POST)
+        if otp_form.is_valid():
+            otp_code = otp_form.cleaned_data['otp_code']
+            current_time = timezone.now()
+            is_otp_code = OtpCode.objects.get(
+                otp_code=otp_code,
+                created__lt=current_time,
+                created__gt=current_time - timedelta(seconds=120),
+                is_valid=False
+            )
+            if is_otp_code:
+                user = User.objects.get(phone=is_otp_code.phone)
+                user.is_active = True
+                user.save()
+                is_otp_code.is_valid = True
+                is_otp_code.save()
+                messages.success(request, "کد اعتبارسنجی صحیح بود")
+                return redirect('accounts:login')
+            else:
+                messages.info(request, "کد منقضی شده است")
+                return redirect(request.META.get("HTTP_REFERER"))
 
 
 def log_out(request):
@@ -117,5 +182,3 @@ class ConfirmationDoctorByStaff(View):
             "doctors": doctors,
         }
         return render(request, 'accounts/confirmation_doctor.html', context)
-
-

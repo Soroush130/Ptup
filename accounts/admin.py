@@ -1,5 +1,5 @@
 from django.contrib.auth.admin import UserAdmin
-from .models import User, SiteRules
+from .models import User, SiteRules, OtpCode
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib import admin
 
@@ -31,3 +31,5 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(SiteRules)
+
+admin.site.register(OtpCode)

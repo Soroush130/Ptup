@@ -129,7 +129,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="/" class="brand-link">
         <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo"
              class="brand-image img-circle elevation-3"
              style="opacity: .8">
@@ -140,22 +140,37 @@
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-                <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2"
-                     alt="User Image">
-            </div>
-            <div class="info">
-                {% if user_role == 1 %}
+
+            {% if user_role == 1 %}
+                <div class="image">
+                    <img src="{{ user.doctor.get_image_profile_url }}" class="img-circle elevation-2"
+                         alt="User Image">
+                </div>
+                <div class="info">
                     {% if user.doctor %}
                         <a href="{% url 'doctors:detail_doctor' user.doctor.id %}"
                            class="d-block">{{ user.doctor.get_full_name }}</a>
                     {% else %}
-                        <a href="" class="d-block">کاربر جدید</a>
+                        <a href="{% url 'doctors:completion_information_doctor' %}" class="d-block">کاربر جدید</a>
                     {% endif %}
-                {% elif user_role == 2 %}
-                    <a href="" class="d-block">{{ user.customer.nick_name }}</a>
-                {% endif %}
-            </div>
+                </div>
+
+
+            {% elif user_role == 2 %}
+                <div class="image">
+                    <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2"
+                         alt="User Image">
+                </div>
+
+                <div class="info">
+                    {% if user.customer.nick_name %}
+                        <a href="" class="d-block">{{ user.customer.nick_name }}</a>
+                    {% else %}
+                        <a href="{% url 'customers:completion_information_customer' %}" class="d-block">کاربر جدید</a>
+                    {% endif %}
+                </div>
+
+            {% endif %}
         </div>
 
         <!-- Sidebar Menu -->
@@ -190,6 +205,14 @@
                             <i class="nav-icon fas fa-edit"></i>
                             <p>
                                 تکمیل مدارک شناسایی
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'doctors:list_customers_requested' %}" class="nav-link">
+                            <i class="nav-icon fas fa-list"></i>
+                            <p>
+                                لیست بیماران
                             </p>
                         </a>
                     </li>

@@ -13,6 +13,7 @@ accounts/migrations/0*
 customers/migrations/0*
 doctors/migrations/0*
 ptup_messages/migrations/0*
+illness/migrations/0*
 
 # Media
 static/media_root/*

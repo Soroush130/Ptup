@@ -102,14 +102,15 @@
                                         <th>سن</th>
                                         <th>جنسیت</th>
                                         <th>اجازه شروع درمان</th>
-                                        <th>عملیات</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody_table">
                                     {% for customer in customers %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
-                                            <td>{{ customer.phone }}</td>
+                                            <td>
+                                                <a href="{% url 'customers:determining_customer_illness' customer.id %}">{{ customer.phone }}</a>
+                                            </td>
                                             <td>
                                                 <form action="" method="POST">
                                                     {% csrf_token %}
@@ -141,14 +142,6 @@
                                                 {% else %}
                                                     <i class="fas fa-minus-circle" style="color: red"></i>
                                                 {% endif %}
-                                            </td>
-                                            <td class="d-flex">
-                                                <div class="mx-2">
-                                                    <i class="fas fa-plus paction"></i>
-                                                </div>
-                                                <div class="mx-2">
-                                                    <i class="fas fa-minus maction"></i>
-                                                </div>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -227,17 +220,16 @@
         function Add_Row_In_Table(body, data) {
             body.innerText = '';
 
-
-            var length = Object.keys(data).length;
+            var keys = Object.keys(data);
+            var length = keys.length;
             for (let i = 0; i < length; i++) {
-                console.log(data[i + 1]);
-                var row = createRow(i + 1, data[i + 1]);
+                var key = keys[i];
+                var row = createRow(i + 1, data[key]);
                 body.appendChild(row);
             }
         }
 
         function createRow(index, info_row) {
-            console.log(index, typeof (index))
             var new_row = document.createElement('tr');
 
             var forloop_counter = document.createElement('td');
@@ -245,21 +237,11 @@
             new_row.appendChild(forloop_counter);
 
             for (let key in info_row) {
-                if(key !== 'id'){
+                if (key !== 'id') {
                     var td = createTd(key, info_row[key], info_row['id']);
                     new_row.appendChild(td);
                 }
             }
-
-            new_row.innerHTML = new_row.innerHTML + `<td class="d-flex">
-                                                <div class="mx-2">
-                                                    <i class="fas fa-plus paction"></i>
-                                                </div>
-                                                <div class="mx-2">
-                                                    <i class="fas fa-minus maction"></i>
-                                                </div>
-                                            </td>`;
-
             return new_row
         }
 
@@ -293,6 +275,8 @@
                 } else {
                     new_td.innerHTML = `<i class="fas fa-minus-circle" style="color: red"></i>`
                 }
+            } else if (key === 'phone') {
+                new_td.innerHTML = `<a href="/customers/determining_customer_illness/CUSTOMERID">PHONE</a>`.replace('CUSTOMERID', customer_id).replace('PHONE', content)
             } else {
                 new_td.innerText = content;
             }

@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from doctors.decorators import is_complete_information_doctor
+from doctors.decorators import is_complete_information
 from doctors.utility import check_information_doctor
 from ptup_utilities.utility import get_context_according_user_role
 
 
 @login_required(login_url='accounts:login')
-@is_complete_information_doctor
+@is_complete_information
 def home(request):
     user = request.user
     role = user.role
