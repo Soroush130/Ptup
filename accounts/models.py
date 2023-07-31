@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 from django.db import models
+from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
@@ -65,3 +66,13 @@ class SiteRules(models.Model):
 
     def __str__(self):
         return self.rule
+
+
+class OtpCode(models.Model):
+    phone = models.CharField(max_length=15)
+    otp_code = models.CharField(max_length=5)
+    is_valid = models.BooleanField(default=False)
+    created = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.otp_code

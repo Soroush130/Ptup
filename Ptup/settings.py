@@ -157,3 +157,5 @@ AUTH_USER_MODEL = 'accounts.User'
 # Setting Session App
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 86400
+
+# Setting Kavenegar
