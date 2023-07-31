@@ -42,7 +42,7 @@ class FilterCustomer(View):
     def get(self, request):
         type_filter = request.GET['type_filter']
         if type_filter == "can_started":
-            queryset = Customer.objects.filter(permission_start_treatment=True)
+            queryset = Customer.objects.filter(permission_start_treatment=True, treating_doctor=request.user.doctor)
             serializer = normalize_data_filter_customer(queryset)
             response = {
                 'is_taken': True,
@@ -51,7 +51,7 @@ class FilterCustomer(View):
             }
             return JsonResponse(response)
         else:
-            queryset = Customer.objects.filter(permission_start_treatment=False)
+            queryset = Customer.objects.filter(permission_start_treatment=False, treating_doctor=request.user.doctor)
             serializer = normalize_data_filter_customer(queryset)
             response = {
                 'is_taken': True,
