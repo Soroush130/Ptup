@@ -1,7 +1,10 @@
 from django.db import models
+from django.utils import timezone
+
 from accounts.models import User
 from accounts.utilites import phone_number_decryption
 from doctors.models import Doctor
+from illness.models import Illness, HealingPeriod
 
 
 class GenderChoices(models.IntegerChoices):
@@ -29,3 +32,20 @@ class Customer(models.Model):
     @property
     def get_gender(self):
         return 'مرد' if self.gender == 1 else 'زن'
+
+
+class CustomerDiseaseInformation(models.Model):
+    """
+        در این مدل اطلاعات بیماری مشتری ثبت خواهد شد
+    """
+
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE, verbose_name="بیمار ")
+    illness = models.ForeignKey(Illness, on_delete=models.SET_NULL, null=True, verbose_name='بیماری ')
+    healing_period = models.ForeignKey(HealingPeriod, on_delete=models.SET_NULL, null=True, verbose_name='دروه درومان ')
+    is_active = models.BooleanField(default=False, verbose_name='فعال/غیر فعال ',
+                                    help_text='آیا این بیمار در حال سپری کردن دروه است')
+    start_time_period = models.DateTimeField(verbose_name='زمان', help_text='زمان شروع دوره درمان ')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.customer} , {self.illness} , {self.healing_period}"

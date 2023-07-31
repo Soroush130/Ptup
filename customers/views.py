@@ -1,14 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.http import JsonResponse
 from customers.forms import CustomerForm, CustomerIllnessForm, PermissionStartTreatmentCustomerForm
-from customers.models import Customer
+from customers.models import Customer, CustomerDiseaseInformation
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
-from illness.models import Illness
+from illness.models import Illness, HealingPeriod
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -70,10 +71,12 @@ class DeterminingCustomerIllness(View):
         customer = Customer.objects.get(id=customer_id)
         treating_doctor = customer.treating_doctor
         if doctor == treating_doctor:
-            illnesses = Illness.objects.all()
+            illnesses = Illness.objects.all().order_by('id')
+            illness_in_customer = CustomerDiseaseInformation.objects.get(customer=customer)
             context = {
                 "customer": customer,
                 "illnesses": illnesses,
+                "illness_in_customer": illness_in_customer,
             }
             return render(request, self.template_name, context)
         else:
@@ -90,9 +93,25 @@ class OperationChoiceIllnessCustomer(View):
         treating_doctor = customer.treating_doctor
 
         if doctor == treating_doctor:
-            # TODO: بعد از نوشتن مدل اطلاعات بیماری هر مشتری این قسمت تکمیل شود
-            print(customer, '\n', illness)
-            return redirect(request.META.get("HTTP_REFERER"))
+            healing_period = HealingPeriod.objects.get(illness=illness)
+
+            customer_diseasen_information = CustomerDiseaseInformation.objects.filter(customer=customer)
+            if not customer_diseasen_information.exists():
+                CustomerDiseaseInformation.objects.create(
+                    customer=customer,
+                    illness=illness,
+                    healing_period=healing_period,
+                    start_time_period=timezone.now()
+                )
+                messages.success(request, "نوع بیماری مراجع مشخص شد")
+                return redirect(request.META.get("HTTP_REFERER"))
+            else:
+                customer_diseasen_information = customer_diseasen_information.first()
+                customer_diseasen_information.illness = illness
+                customer_diseasen_information.healing_period = healing_period
+                customer_diseasen_information.save()
+                messages.info(request, "نوع بیماری مراجع تغییر یافت")
+                return redirect(request.META.get("HTTP_REFERER"))
         else:
             messages.error(request, "شما مجاز به انتساب بیماری به این بیمار نیستید")
             return redirect('doctors:list_customers_requested')

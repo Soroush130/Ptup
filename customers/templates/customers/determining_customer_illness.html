@@ -51,7 +51,7 @@
                                     <li class="nav-item">
                                         <a href="" class="nav-link">
                                             نوع بیماری <span
-                                                class="float-right badge bg-info"></span>
+                                                class="float-right badge bg-info">{{ illness_in_customer.illness }}</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -101,19 +101,22 @@
 
                     <div class="col-lg-7">
                         <div class="card">
-                            <div class="card-header bg-yellow">
+                            <div class="card-header bg-yellow d-flex flex-column">
                                 <h3 class="card-title " style="float: right">لیست بیماری ها</h3>
+                                <h5 class="card-title " style="float: right">
+                                    ** نکته مهم : اختلالی را به مراجع بدهید که فکر می کنید اختلال اصلی آن است
+                                </h5>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table class="table table-bordered">
                                     <thead>
-                                    <tr>
-                                        <th style="width: 10px">#</th>
-                                        <th>عنوان بیماری</th>
-                                        <th>توضیحات</th>
-                                        <th>انتخاب شده/نشده</th>
-                                    </tr>
+                                        <tr>
+                                            <th style="width: 10px">#</th>
+                                            <th>عنوان بیماری</th>
+                                            <th>توضیحات</th>
+                                            <th>انتخاب شده/نشده</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
 
