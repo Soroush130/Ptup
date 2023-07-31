@@ -25,10 +25,10 @@ def login_page(request):
         if login_form.is_valid():
             phone, password, remember_me = login_form.cleaned_data['phone'], login_form.cleaned_data['password'], \
                                            login_form.cleaned_data.get('remember_me', False)
-            print(">>>>>>>>> Phone : ", phone)
 
             doctor = authenticate(request, phone=phone, password=password)
             customer = authenticate(request, phone=phone_number_encryption(phone), password=password)
+
             user = doctor if doctor is not None else customer
 
             if user:
@@ -39,6 +39,7 @@ def login_page(request):
                 messages.success(request, "با موافقیت وارد شدید")
                 return redirect('/')
             else:
+                messages.info(request, "کاربری پیدا نشد")
                 return redirect(url)
 
         else:
@@ -68,8 +69,21 @@ def register_page_customer(request):
                 new_user = User.objects.create_user(phone=phone, role=RoleChoices.CUSTOMER, password=password)
                 new_user.is_accept_rules = True
                 new_user.save()
-                messages.success(request, "کاربر با موافقیت ساخته شد")
-                return redirect('accounts:login')
+
+                otp_code: str = '12345'
+                OtpCode.objects.create(
+                    phone=phone,
+                    otp_code=otp_code
+                )
+
+                try:
+                    SmsSender.send(otp_code, phone)
+                    messages.success(request, "پیامک اعتبار سنجی ارسال شد")
+                    return redirect('accounts:confirm_otp')
+                except:
+                    print("نتوانستیم پیامک ارسال کنیم")
+                    # remove line below . only test
+                    return redirect('accounts:confirm_otp')
         else:
             print(register_form.errors)
     else:
@@ -106,7 +120,7 @@ def register_page_doctor(request):
                     return redirect('accounts:confirm_otp')
                 except:
                     print("نتوانستیم پیامک ارسال کنیم")
-                    # reomove line below . only test
+                    # remove line below . only test
                     return redirect('accounts:confirm_otp')
     else:
         register_form = RegisterCustomerForm()
