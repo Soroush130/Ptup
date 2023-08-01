@@ -100,8 +100,7 @@ class OperationChoiceIllnessCustomer(View):
                 CustomerDiseaseInformation.objects.create(
                     customer=customer,
                     illness=illness,
-                    healing_period=healing_period,
-                    start_time_period=timezone.now()
+                    healing_period=healing_period
                 )
                 messages.success(request, "نوع بیماری مراجع مشخص شد")
                 return redirect(request.META.get("HTTP_REFERER"))

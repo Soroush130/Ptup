@@ -44,7 +44,8 @@ class CustomerDiseaseInformation(models.Model):
     healing_period = models.ForeignKey(HealingPeriod, on_delete=models.SET_NULL, null=True, verbose_name='دروه درومان ')
     is_active = models.BooleanField(default=False, verbose_name='فعال/غیر فعال ',
                                     help_text='آیا این بیمار در حال سپری کردن دروه است')
-    start_time_period = models.DateTimeField(verbose_name='زمان', help_text='زمان شروع دوره درمان ')
+    start_time_period = models.DateTimeField(verbose_name='زمان', help_text='زمان شروع دوره درمان ', null=True,
+                                             blank=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
