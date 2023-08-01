@@ -72,13 +72,20 @@ class DeterminingCustomerIllness(View):
         treating_doctor = customer.treating_doctor
         if doctor == treating_doctor:
             illnesses = Illness.objects.all().order_by('id')
-            illness_in_customer = CustomerDiseaseInformation.objects.get(customer=customer)
-            context = {
-                "customer": customer,
-                "illnesses": illnesses,
-                "illness_in_customer": illness_in_customer,
-            }
-            return render(request, self.template_name, context)
+            try:
+                illness_in_customer = CustomerDiseaseInformation.objects.get(customer=customer)
+                context = {
+                    "customer": customer,
+                    "illnesses": illnesses,
+                    "illness_in_customer": illness_in_customer,
+                }
+                return render(request, self.template_name, context)
+            except:
+                context = {
+                    "customer": customer,
+                    "illnesses": illnesses,
+                }
+                return render(request, self.template_name, context)
         else:
             messages.error(request, "شما مجاز به مشاهده اطلاعات این بیمار نیستید")
             return redirect('doctors:list_customers_requested')
@@ -93,21 +100,20 @@ class OperationChoiceIllnessCustomer(View):
         treating_doctor = customer.treating_doctor
 
         if doctor == treating_doctor:
-            healing_period = HealingPeriod.objects.get(illness=illness)
 
             customer_diseasen_information = CustomerDiseaseInformation.objects.filter(customer=customer)
             if not customer_diseasen_information.exists():
                 CustomerDiseaseInformation.objects.create(
                     customer=customer,
                     illness=illness,
-                    healing_period=healing_period
+                    healing_period=illness.healingperiod
                 )
                 messages.success(request, "نوع بیماری مراجع مشخص شد")
                 return redirect(request.META.get("HTTP_REFERER"))
             else:
                 customer_diseasen_information = customer_diseasen_information.first()
                 customer_diseasen_information.illness = illness
-                customer_diseasen_information.healing_period = healing_period
+                customer_diseasen_information.healing_period = illness.healingperiod
                 customer_diseasen_information.save()
                 messages.info(request, "نوع بیماری مراجع تغییر یافت")
                 return redirect(request.META.get("HTTP_REFERER"))
