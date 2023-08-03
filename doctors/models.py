@@ -52,6 +52,10 @@ class Doctor(models.Model):
             return image_profile_url
         return ''
 
+    @property
+    def get_gender(self):
+        return 'مرد' if self.gender == 1 else 'زن'
+
 
 class IdentificationDocument(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='دکتر ')
