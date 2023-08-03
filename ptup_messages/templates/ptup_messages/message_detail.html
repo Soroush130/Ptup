@@ -1,0 +1,119 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+    پیام
+{% endblock %}
+
+{% block content %}
+
+    <div class="content-wrapper" style="min-height: 973.77px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>پیام شماره #{{ message.id }}</h1>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="{% url 'ptup_messages:messages' %}" class="btn btn-primary btn-block mb-3">
+                            برگشت به صندوق پیام ها
+                        </a>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" style="float: right">Folders</h3>
+
+                                <div class="card-tools" style="float: left">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                            class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                            <ul class="nav nav-pills flex-column">
+                                <li class="nav-item active">
+                                    <a href="{% url 'ptup_messages:messages' %}" class="nav-link">
+                                        <i class="fas fa-inbox"></i> دریافت شده
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/messages/messages/?type=sent" class="nav-link">
+                                        <i class="far fa-envelope"></i> ارسال شده
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/messages/messages/?type=read" class="nav-link">
+                                        <i class="far fa-check-circle"></i> خوانده شده
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/messages/messages/?type=not_read" class="nav-link">
+                                        <i class="far fa-circle"></i>خوانده نشده
+                                    </a>
+                                </li>
+                            </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-9">
+                        <div class="card card-primary card-outline">
+                            <div class="card-body p-0">
+                                <div class="mailbox-read-info">
+                                    <h5>{{ message.get_subject }}</h5>
+                                    <h6>از: {{ message.sender }}
+                                        <span class="mailbox-read-time float-right">
+                                            {{ message.created_at }}
+                                        </span></h6>
+                                </div>
+                                <!-- /.mailbox-read-info -->
+                                <div class="mailbox-controls with-border text-center">
+                                    <div class="btn-group">
+                                        <a href="{% url 'ptup_messages:messages-delete' message.id %}"
+                                           class="btn btn-default btn-sm" data-toggle="tooltip"
+                                           data-container="body" title="Delete">
+                                            <i class="far fa-trash-alt"></i></a>
+                                    </div>
+                                    <!-- /.btn-group -->
+                                    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip"
+                                            title="Print" onclick="printPage()">
+                                        <i class="fas fa-print"></i></button>
+                                </div>
+                                <!-- /.mailbox-controls -->
+                                <div class="mailbox-read-message">
+                                    <p>
+                                        {{ message.content }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+
+{% endblock %}
+
+
+{% block footer_ref %}
+    <script>
+        function printPage() {
+            window.print();
+        }
+    </script>
+{% endblock %}

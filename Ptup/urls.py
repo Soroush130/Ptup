@@ -20,6 +20,7 @@ urlpatterns = [
     path('doctors/', include("doctors.urls")),
     path('messages/', include("ptup_messages.urls")),
     path('illness/', include("illness.urls")),
+    path('content/', include("healing_content.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

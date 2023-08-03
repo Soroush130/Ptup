@@ -1,3 +1,7 @@
+import random
+import string
+
+
 def phone_number_encryption(phone_number: str) -> str:
     my_dict = {
         0: "a",
@@ -32,3 +36,7 @@ def phone_number_decryption(phone_number: str) -> str:
     phone_char_old = [char for char in phone_number]
     phone_char_new = [str(my_dict[char]) for char in phone_char_old]
     return ''.join(phone_char_new)
+
+
+def generate_otp_code(length: int) -> str:
+    return ''.join(random.choice(string.digits) for _ in range(length))

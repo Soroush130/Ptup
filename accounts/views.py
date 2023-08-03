@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth import login, authenticate, logout
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
@@ -9,7 +10,7 @@ from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm, OtpC
 from .decorators import login_not_required, is_staff_or_superuser
 from .models import User, RoleChoices, OtpCode
 from .senders import SmsSender
-from .utilites import phone_number_encryption
+from .utilites import phone_number_encryption, generate_otp_code
 from django.contrib import messages
 from django.views import View
 from django.core.paginator import Paginator
@@ -70,20 +71,23 @@ def register_page_customer(request):
                 new_user.is_accept_rules = True
                 new_user.save()
 
-                otp_code: str = '12345'
+                otp_code: str = generate_otp_code(5)
                 OtpCode.objects.create(
                     phone=phone,
                     otp_code=otp_code
                 )
 
                 try:
-                    SmsSender.send(otp_code, phone)
-                    messages.success(request, "پیامک اعتبار سنجی ارسال شد")
-                    return redirect('accounts:confirm_otp')
+                    status_code = SmsSender.send_sms(otp_code, phone)
+                    if status_code == 200:
+                        messages.success(request, "پیامک اعتبارسنجی ارسال شد")
+                        return redirect('accounts:confirm_otp')
+                    else:
+                        messages.error(request, "پیامک اعتبارسنجی ارسال نشد")
+                        return redirect('accounts:register_customer')
                 except:
                     print("نتوانستیم پیامک ارسال کنیم")
-                    # remove line below . only test
-                    return redirect('accounts:confirm_otp')
+                    return
         else:
             print(register_form.errors)
     else:
@@ -108,20 +112,23 @@ def register_page_doctor(request):
                 new_user.is_active = False
                 new_user.save()
 
-                otp_code: str = '12345'
+                otp_code: str = generate_otp_code(5)
                 OtpCode.objects.create(
                     phone=phone,
                     otp_code=otp_code
                 )
 
                 try:
-                    SmsSender.send(otp_code, phone)
-                    messages.success(request, "پیامک اعتبار سنجی ارسال شد")
-                    return redirect('accounts:confirm_otp')
+                    status_code = SmsSender.send_sms(otp_code, phone)
+                    if status_code == 200:
+                        messages.success(request, "پیامک اعتبارسنجی ارسال شد")
+                        return redirect('accounts:confirm_otp')
+                    else:
+                        messages.error(request, "پیامک اعتبارسنجی ارسال نشد")
+                        return redirect('accounts:register_doctor')
                 except:
-                    print("نتوانستیم پیامک ارسال کنیم")
-                    # remove line below . only test
-                    return redirect('accounts:confirm_otp')
+                    print("نتوانستیم پیامک اعتبارسنجی ارسال کنیم")
+                    return
     else:
         register_form = RegisterCustomerForm()
     context = {
@@ -147,11 +154,13 @@ class ConfirmOtpCodeView(View):
                 is_valid=False
             )
             if is_otp_code:
-                user = User.objects.get(phone=is_otp_code.phone)
-                user.is_active = True
-                user.save()
-                is_otp_code.is_valid = True
-                is_otp_code.save()
+                with transaction.atomic():
+                    user = User.objects.get(phone=is_otp_code.phone)
+                    user.is_active = True
+                    user.save()
+                    is_otp_code.is_valid = True
+                    is_otp_code.save()
+
                 messages.success(request, "کد اعتبارسنجی صحیح بود")
                 return redirect('accounts:login')
             else:
