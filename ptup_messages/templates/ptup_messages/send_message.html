@@ -1,0 +1,195 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+
+{% block title %}
+    ارسال پیام
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 973.77px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>نوشتن پیام</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" style="float: right">Folders</h3>
+
+                                <div class="card-tools" style="float: left">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                            class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="nav nav-pills flex-column">
+                                    <li class="nav-item">
+                                        <a href="{% url 'ptup_messages:send_messages' %}" class="nav-link">
+                                            <i class="far fa-paper-plane"></i> ارسال پیام
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a href="{% url 'ptup_messages:messages' %}" class="nav-link">
+                                            <i class="fas fa-inbox"></i> دریافت شده
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/messages/messages/?type=sent" class="nav-link">
+                                            <i class="far fa-envelope"></i> ارسال شده
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/messages/messages/?type=read" class="nav-link">
+                                            <i class="far fa-check-circle"></i> خوانده شده
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/messages/messages/?type=not_read" class="nav-link">
+                                            <i class="far fa-circle"></i>خوانده نشده
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-9">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                                <h3 class="card-title" style="float: right">پیام جدید</h3>
+                            </div>
+
+                            <form action="" method="POST">
+                                {% csrf_token %}
+
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="">گیرنده :</label>
+                                        <input type="text" class="form-control" name="receiver" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">عنوان پیام :</label>
+                                        <input type="text" class="form-control" name="subject" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">متن پیام :</label>
+                                        <textarea class="form-control" name="content" id="" cols="123"
+                                                  rows="10"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+                                    <div class="float-left">
+                                        <button type="submit" class="btn btn-primary"><i class="far fa-envelope"></i>
+                                            ارسال
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block footer_ref %}
+    <script>
+        $(function () {
+            //Add text editor
+            $('#compose-textarea').summernote()
+        })
+    </script>
+    <div class="note-popover popover in note-link-popover bottom" style="display: none;">
+        <div class="arrow"></div>
+        <div class="popover-content note-children-container"><span><a target="_blank"></a>&nbsp;</span>
+            <div class="note-btn-group btn-group note-link">
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Edit" data-original-title="Edit"><i class="note-icon-link"></i></button>
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Unlink" data-original-title="Unlink"><i class="note-icon-chain-broken"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="note-popover popover in note-image-popover bottom" style="display: none;">
+        <div class="arrow"></div>
+        <div class="popover-content note-children-container">
+            <div class="note-btn-group btn-group note-resize">
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Resize full" data-original-title="Resize full"><span
+                        class="note-fontsize-10">100%</span></button>
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Resize half" data-original-title="Resize half"><span
+                        class="note-fontsize-10">50%</span></button>
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Resize quarter" data-original-title="Resize quarter"><span class="note-fontsize-10">25%</span>
+                </button>
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Original size" data-original-title="Original size"><i
+                        class="note-icon-rollback"></i></button>
+            </div>
+            <div class="note-btn-group btn-group note-float">
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Float Left" data-original-title="Float Left"><i class="note-icon-float-left"></i>
+                </button>
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Float Right" data-original-title="Float Right"><i class="note-icon-float-right"></i>
+                </button>
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Remove float" data-original-title="Remove float"><i class="note-icon-rollback"></i>
+                </button>
+            </div>
+            <div class="note-btn-group btn-group note-remove">
+                <button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1" title=""
+                        aria-label="Remove Image" data-original-title="Remove Image"><i class="note-icon-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="note-popover popover in note-table-popover bottom" style="display: none;">
+        <div class="arrow"></div>
+        <div class="popover-content note-children-container">
+            <div class="note-btn-group btn-group note-add">
+                <button type="button" class="note-btn btn btn-light btn-sm btn-md" role="button" tabindex="-1" title=""
+                        aria-label="Add row below" data-original-title="Add row below"><i
+                        class="note-icon-row-below"></i></button>
+                <button type="button" class="note-btn btn btn-light btn-sm btn-md" role="button" tabindex="-1" title=""
+                        aria-label="Add row above" data-original-title="Add row above"><i
+                        class="note-icon-row-above"></i></button>
+                <button type="button" class="note-btn btn btn-light btn-sm btn-md" role="button" tabindex="-1" title=""
+                        aria-label="Add column left" data-original-title="Add column left"><i
+                        class="note-icon-col-before"></i></button>
+                <button type="button" class="note-btn btn btn-light btn-sm btn-md" role="button" tabindex="-1" title=""
+                        aria-label="Add column right" data-original-title="Add column right"><i
+                        class="note-icon-col-after"></i></button>
+            </div>
+            <div class="note-btn-group btn-group note-delete">
+                <button type="button" class="note-btn btn btn-light btn-sm btn-md" role="button" tabindex="-1" title=""
+                        aria-label="Delete row" data-original-title="Delete row"><i class="note-icon-row-remove"></i>
+                </button>
+                <button type="button" class="note-btn btn btn-light btn-sm btn-md" role="button" tabindex="-1" title=""
+                        aria-label="Delete column" data-original-title="Delete column"><i
+                        class="note-icon-col-remove"></i></button>
+                <button type="button" class="note-btn btn btn-light btn-sm btn-md" role="button" tabindex="-1" title=""
+                        aria-label="Delete table" data-original-title="Delete table"><i class="note-icon-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

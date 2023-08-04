@@ -150,10 +150,6 @@ def register_page_doctor(request):
 @method_decorator(is_otp_code_verify, name='dispatch')
 class ConfirmOtpCodeView(View):
     def get(self, request, *args, **kwargs):
-        print("شما کد فعال دارید")
-        print(">>>>>>>>> phone : ", get_session(request, 'phone'))
-        print(">>>>>>>>> role : ", get_session(request, 'role'))
-        print(">>>>>>>>> previous_url : ", get_session(request, 'previous_url'))
         context = {}
         return render(request, 'accounts/otp_code.html', context)
 

@@ -77,8 +77,6 @@ def check_last_otp_code_user(view_func):
                         if created < current_time < created + datetime.timedelta(seconds=120):
                             result.append(code.otp_code)
 
-                    print(result)
-
                     if result != []:
                         permission_request_otp_code = False
                     else:
@@ -92,8 +90,6 @@ def check_last_otp_code_user(view_func):
                         created = code.created
                         if created < current_time < created + datetime.timedelta(seconds=120):
                             result.append(code.otp_code)
-
-                    print(result)
 
                     if result != []:
                         permission_request_otp_code = False
