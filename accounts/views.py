@@ -62,18 +62,24 @@ def register_page_customer(request):
             is_accept_rules = register_form.cleaned_data['is_accept_rules']
             phone = register_form.cleaned_data['phone']
 
-            phone = phone_number_encryption(phone)
+            phone_encryption = phone_number_encryption(phone)
 
             password = register_form.cleaned_data["password"]
 
             if is_accept_rules:
-                new_user = User.objects.create_user(phone=phone, role=RoleChoices.CUSTOMER, password=password)
+                new_user = User.objects.create_user(
+                    phone=phone_encryption,
+                    role=RoleChoices.CUSTOMER,
+                    password=password
+                )
+
                 new_user.is_accept_rules = True
+                new_user.is_active = False
                 new_user.save()
 
                 otp_code: str = generate_otp_code(5)
                 OtpCode.objects.create(
-                    phone=phone,
+                    phone=phone_encryption,
                     otp_code=otp_code
                 )
 
@@ -166,6 +172,15 @@ class ConfirmOtpCodeView(View):
             else:
                 messages.info(request, "کد منقضی شده است")
                 return redirect(request.META.get("HTTP_REFERER"))
+        else:
+            msg = otp_form['otp_code'].errors
+            messages.error(request, msg)
+            return redirect(request.META.get("HTTP_REFERER"))
+
+class ReSendOtpCodeView(View):
+    def get(self, request):
+        session = request.session
+        return redirect(request.META.get("HTTP_REFERER"))
 
 
 def log_out(request):

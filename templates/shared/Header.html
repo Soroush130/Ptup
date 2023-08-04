@@ -199,31 +199,35 @@
                                 </p>
                             </a>
                         </li>
+                    {% else %}
+
+                        <li class="nav-item">
+                            <a href="{% url 'doctors:get_identification_document_doctor' %}" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    تکمیل مدارک شناسایی
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'doctors:list_customers_requested' %}" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>
+                                    لیست بیماران
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'ptup_messages:messages' %}" class="nav-link">
+                                <i class="nav-icon fas fa-envelope-open"></i>
+                                <p>
+                                    پیام ها
+                                </p>
+                            </a>
+                        </li>
+
                     {% endif %}
-                    <li class="nav-item">
-                        <a href="{% url 'doctors:get_identification_document_doctor' %}" class="nav-link">
-                            <i class="nav-icon fas fa-edit"></i>
-                            <p>
-                                تکمیل مدارک شناسایی
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'doctors:list_customers_requested' %}" class="nav-link">
-                            <i class="nav-icon fas fa-list"></i>
-                            <p>
-                                لیست بیماران
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'ptup_messages:messages' %}" class="nav-link">
-                            <i class="nav-icon fas fa-envelope-open"></i>
-                            <p>
-                                پیام ها
-                            </p>
-                        </a>
-                    </li>
+
                 </ul>
             {% else %}
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"

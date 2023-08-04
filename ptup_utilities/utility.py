@@ -34,3 +34,4 @@ def send_message_in_protable(receiver: QuerySet, content: str, sender: QuerySet 
     content = f"{receiver} {content}"
     Message.objects.create(receiver=receiver.user, content=content)
     return True
+
