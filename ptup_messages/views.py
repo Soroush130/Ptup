@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from ptup_messages.models import Message
+from ptup_messages.utility import read_message
 
 
 class MessagesView(View):
@@ -29,6 +30,9 @@ class MessagesView(View):
 class DetailMessageView(View):
     def get(self, request, message_id, *args, **kwargs):
         message = Message.objects.get(id=message_id)
+
+        read_message(message)
+
         context = {
             "message": message,
         }
