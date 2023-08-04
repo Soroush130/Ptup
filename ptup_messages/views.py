@@ -13,8 +13,14 @@ class MessagesView(View):
         if param == "inbox":
             list_messages = Message.objects.filter(receiver=request.user)
             self.context['list_messages'] = list_messages
-        else:
+        elif param == "sent":
             list_messages = Message.objects.filter(sender=request.user)
+            self.context['list_messages'] = list_messages
+        elif param == "read":
+            list_messages = Message.objects.filter(receiver=request.user, is_read=True)
+            self.context['list_messages'] = list_messages
+        else:
+            list_messages = Message.objects.filter(receiver=request.user, is_read=False)
             self.context['list_messages'] = list_messages
 
         return render(request, 'ptup_messages/messages.html', self.context)
@@ -27,6 +33,7 @@ class DetailMessageView(View):
             "message": message,
         }
         return render(request, 'ptup_messages/message_detail.html', context)
+
 
 class DeleteMessageView(View):
     def get(self, request, message_id, *args, **kwargs):

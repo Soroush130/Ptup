@@ -13,8 +13,12 @@ def get_context_doctor(user: QuerySet) -> dict:
     list_customers = Customer.objects.filter(treating_doctor=user.doctor)
     count_customers = list_customers.count()
 
+    list_messages_not_read = Message.objects.filter(receiver=user, is_read=False)
+    count_messages_not_read = list_messages_not_read.count()
+
     context = {
         "count_customers": count_customers,
+        "count_messages_not_read": count_messages_not_read,
     }
     return context
 
