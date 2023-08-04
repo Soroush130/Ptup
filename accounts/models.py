@@ -36,6 +36,8 @@ class User(AbstractBaseUser):
     phone = models.CharField(verbose_name="شماره تلفن", max_length=21, unique=True)
     role = models.SmallIntegerField(verbose_name="نقش", default=None, null=True, choices=RoleChoices.choices)
     is_accept_rules = models.BooleanField(verbose_name="پذیرش قوانین سایت", default=False)
+    is_otp_code_verify = models.BooleanField(verbose_name="اعتبارسنجی", default=False,
+                                             help_text="آیا تا به حال کاربر کدی را تایید کرده است یا خیر")
     is_active = models.BooleanField(verbose_name="فعال", default=True)
     is_staff = models.BooleanField(verbose_name="کارمند", default=False)
     is_superuser = models.BooleanField(verbose_name="ادمین", default=False)

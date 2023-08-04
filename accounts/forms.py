@@ -89,4 +89,17 @@ class RegisterDoctorForm(forms.Form):
 class OtpCodeForm(forms.Form):
     otp_code = forms.CharField()
 
+    def clean_otp_code(self):
+        otp_code = self.cleaned_data['otp_code']
 
+        if not otp_code.isdigit():
+            raise forms.ValidationError("عدد وارد کنید")
+
+        if len(otp_code) > 5:
+            raise forms.ValidationError("تعداد اعداد وارد شده بیشتر از حد مجاز است")
+        elif len(otp_code) < 5:
+            raise forms.ValidationError("تعداد اعداد وارد شده کمتر از حد مجاز است")
+        else:
+            pass
+
+        return otp_code

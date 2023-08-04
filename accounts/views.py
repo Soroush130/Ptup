@@ -6,11 +6,12 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from doctors.models import Doctor
+from ptup_utilities.utility import set_session, get_session
 from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm, OtpCodeForm
-from .decorators import login_not_required, is_staff_or_superuser
+from .decorators import login_not_required, is_staff_or_superuser, is_otp_code_verify, check_last_otp_code_user
 from .models import User, RoleChoices, OtpCode
 from .senders import SmsSender
-from .utilites import phone_number_encryption, generate_otp_code
+from .utilites import phone_number_encryption, generate_otp_code, create_otp_code, sms
 from django.contrib import messages
 from django.views import View
 from django.core.paginator import Paginator
@@ -62,32 +63,37 @@ def register_page_customer(request):
             is_accept_rules = register_form.cleaned_data['is_accept_rules']
             phone = register_form.cleaned_data['phone']
 
-            phone = phone_number_encryption(phone)
+            phone_encryption = phone_number_encryption(phone)
 
             password = register_form.cleaned_data["password"]
 
             if is_accept_rules:
-                new_user = User.objects.create_user(phone=phone, role=RoleChoices.CUSTOMER, password=password)
+                new_user = User.objects.create_user(
+                    phone=phone_encryption,
+                    role=RoleChoices.CUSTOMER,
+                    password=password
+                )
+
                 new_user.is_accept_rules = True
+                new_user.is_active = False
                 new_user.save()
 
                 otp_code: str = generate_otp_code(5)
                 OtpCode.objects.create(
-                    phone=phone,
+                    phone=phone_encryption,
                     otp_code=otp_code
                 )
 
-                try:
-                    status_code = SmsSender.send_sms(otp_code, phone)
-                    if status_code == 200:
-                        messages.success(request, "پیامک اعتبارسنجی ارسال شد")
-                        return redirect('accounts:confirm_otp')
-                    else:
-                        messages.error(request, "پیامک اعتبارسنجی ارسال نشد")
-                        return redirect('accounts:register_customer')
-                except:
-                    print("نتوانستیم پیامک ارسال کنیم")
-                    return
+                # set session
+                set_session(request, "phone", phone)
+                set_session(request, "role", RoleChoices.CUSTOMER)
+                set_session(request, "previous_url", request.META.get('HTTP_REFERER'))
+
+                result = sms(request=request, phone=phone, otp_code=otp_code)
+                if result:
+                    return redirect('accounts:confirm_otp')
+                else:
+                    return redirect('accounts:register_doctor')
         else:
             print(register_form.errors)
     else:
@@ -107,7 +113,11 @@ def register_page_doctor(request):
             phone = register_form.cleaned_data['phone']
             password = register_form.cleaned_data["password"]
             if is_accept_rules:
-                new_user = User.objects.create_user(phone=phone, role=RoleChoices.DOCTER, password=password)
+                new_user = User.objects.create_user(
+                    phone=phone,
+                    role=RoleChoices.DOCTER,
+                    password=password
+                )
                 new_user.is_accept_rules = True
                 new_user.is_active = False
                 new_user.save()
@@ -118,17 +128,16 @@ def register_page_doctor(request):
                     otp_code=otp_code
                 )
 
-                try:
-                    status_code = SmsSender.send_sms(otp_code, phone)
-                    if status_code == 200:
-                        messages.success(request, "پیامک اعتبارسنجی ارسال شد")
-                        return redirect('accounts:confirm_otp')
-                    else:
-                        messages.error(request, "پیامک اعتبارسنجی ارسال نشد")
-                        return redirect('accounts:register_doctor')
-                except:
-                    print("نتوانستیم پیامک اعتبارسنجی ارسال کنیم")
-                    return
+                # set session
+                set_session(request, "phone", phone)
+                set_session(request, "role", RoleChoices.DOCTER)
+                set_session(request, "previous_url", request.META.get('HTTP_REFERER'))
+
+                result = sms(request=request, phone=phone, otp_code=otp_code)
+                if result:
+                    return redirect('accounts:confirm_otp')
+                else:
+                    return redirect('accounts:register_doctor')
     else:
         register_form = RegisterCustomerForm()
     context = {
@@ -137,8 +146,14 @@ def register_page_doctor(request):
     return render(request, "accounts/register_doctor.html", context)
 
 
+@method_decorator(login_not_required, name='dispatch')
+@method_decorator(is_otp_code_verify, name='dispatch')
 class ConfirmOtpCodeView(View):
     def get(self, request, *args, **kwargs):
+        print("شما کد فعال دارید")
+        print(">>>>>>>>> phone : ", get_session(request, 'phone'))
+        print(">>>>>>>>> role : ", get_session(request, 'role'))
+        print(">>>>>>>>> previous_url : ", get_session(request, 'previous_url'))
         context = {}
         return render(request, 'accounts/otp_code.html', context)
 
@@ -155,17 +170,58 @@ class ConfirmOtpCodeView(View):
             )
             if is_otp_code:
                 with transaction.atomic():
-                    user = User.objects.get(phone=is_otp_code.phone)
-                    user.is_active = True
-                    user.save()
                     is_otp_code.is_valid = True
                     is_otp_code.save()
 
-                messages.success(request, "کد اعتبارسنجی صحیح بود")
-                return redirect('accounts:login')
+                    user = User.objects.get(phone=is_otp_code.phone)
+                    user.is_active = True
+                    user.is_otp_code_verify = True
+                    user.save()
+
+                    messages.success(request, "کد اعتبارسنجی صحیح بود")
+                    return redirect('accounts:login')
             else:
                 messages.info(request, "کد منقضی شده است")
                 return redirect(request.META.get("HTTP_REFERER"))
+        else:
+            msg = otp_form['otp_code'].errors
+            messages.error(request, msg)
+            return redirect(request.META.get("HTTP_REFERER"))
+
+
+@method_decorator(login_not_required, name='dispatch')
+@method_decorator(is_otp_code_verify, name='dispatch')
+@method_decorator(check_last_otp_code_user, name='dispatch')
+class ReSendOtpCodeView(View):
+    def get(self, request):
+        phone = get_session(request, 'phone')
+
+        user = User.objects.get(phone__exact=phone)
+        user_role = user.role
+        DOCTOR = 1
+
+        if user_role == DOCTOR:
+
+            otp_code: str = generate_otp_code(5)
+            create_otp_code(phone=phone, otp_code=otp_code)
+
+            result = sms(request=request, phone=phone, otp_code=otp_code)
+            if result:
+                return redirect('accounts:confirm_otp')
+            else:
+                return redirect('accounts:register_doctor')
+        else:
+
+            phone_encryption = phone_number_encryption(phone)
+
+            otp_code: str = generate_otp_code(5)
+            create_otp_code(phone=phone_encryption, otp_code=otp_code)
+
+            result = sms(request=request, phone=phone, otp_code=otp_code)
+            if result:
+                return redirect('accounts:confirm_otp')
+            else:
+                return redirect('accounts:register_doctor')
 
 
 def log_out(request):

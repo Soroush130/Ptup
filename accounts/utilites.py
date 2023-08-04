@@ -1,5 +1,10 @@
-import random
+from django.contrib import messages
+from django.db.models import QuerySet
+from accounts.models import OtpCode
+from accounts.senders import SmsSender
+from django.shortcuts import redirect
 import string
+import random
 
 
 def phone_number_encryption(phone_number: str) -> str:
@@ -40,3 +45,24 @@ def phone_number_decryption(phone_number: str) -> str:
 
 def generate_otp_code(length: int) -> str:
     return ''.join(random.choice(string.digits) for _ in range(length))
+
+
+def create_otp_code(phone: str, otp_code: str) -> QuerySet:
+    return OtpCode.objects.create(
+        phone=phone,
+        otp_code=otp_code
+    )
+
+
+def sms(request, otp_code, phone):
+    try:
+        status_code = SmsSender.send_sms(otp_code, phone)
+        if status_code == 200:
+            messages.success(request, "پیامک اعتبارسنجی ارسال شد")
+            return True
+        else:
+            messages.error(request, "پیامک اعتبارسنجی ارسال نشد")
+            return False
+    except:
+        print("نتوانستیم پیامک اعتبارسنجی ارسال کنیم")
+        return
