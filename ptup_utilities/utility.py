@@ -1,10 +1,27 @@
 from django.db.models import QuerySet
 
+from customers.models import Customer
 from ptup_messages.models import Message
 
 
-def get_context_according_user_role(user: QuerySet) -> dict:
+def get_context_customer(user: QuerySet) -> dict:
     context = {}
+    return context
+
+
+def get_context_doctor(user: QuerySet) -> dict:
+    list_customers = Customer.objects.filter(treating_doctor=user.doctor)
+    count_customers = list_customers.count()
+
+    context = {
+        "count_customers": count_customers,
+    }
+    return context
+
+
+def get_context_according_user_role(user: QuerySet, user_role: int) -> dict:
+    DOCTOR = 1
+    context = get_context_doctor(user) if user_role == DOCTOR else get_context_customer(user)
 
     return context
 

@@ -13,7 +13,7 @@ def home(request):
     DOCTOR = 1
     _template_name = 'home_doctor.html' if role == DOCTOR else 'home_customer.html'
 
-    context = get_context_according_user_role(user)
+    context = get_context_according_user_role(user, role)
 
     return render(request, _template_name, context)
 
