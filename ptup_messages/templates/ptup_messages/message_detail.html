@@ -40,7 +40,12 @@
                                 </div>
                             </div>
                             <div class="card-body p-0">
-                            <ul class="nav nav-pills flex-column">
+                                <ul class="nav nav-pills flex-column">
+                                <li class="nav-item">
+                                    <a href="{% url 'ptup_messages:send_messages' %}" class="nav-link">
+                                        <i class="far fa-paper-plane"></i> ارسال پیام
+                                    </a>
+                                </li>
                                 <li class="nav-item active">
                                     <a href="{% url 'ptup_messages:messages' %}" class="nav-link">
                                         <i class="fas fa-inbox"></i> دریافت شده
