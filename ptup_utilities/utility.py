@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.db.models import QuerySet
 
 from customers.models import Customer
@@ -35,3 +37,23 @@ def send_message_in_protable(receiver: QuerySet, content: str, sender: QuerySet 
     Message.objects.create(receiver=receiver.user, content=content)
     return True
 
+
+# ====================== Session Django ======================
+def set_session(request, key: str, value: Any) -> None:
+    request.session[key] = value
+    request.session.save()
+
+
+def get_session(request, key: str) -> str:
+    if request.session.has_key(key):
+        value = request.session[key]
+        return value
+    else:
+        pass
+
+
+def delete_session(request, key: str) -> None:
+    if request.session.has_key(key):
+        del request.session[key]
+    else:
+        pass
