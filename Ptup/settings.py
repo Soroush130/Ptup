@@ -29,6 +29,7 @@ DJANGO_DEFAULT_APPS = [
 THIRD_PARTY_APPS = [
     'django_render_partial',
     'django.contrib.humanize',
+    'django_quill',
 ]
 
 LOCAL_APPS = [

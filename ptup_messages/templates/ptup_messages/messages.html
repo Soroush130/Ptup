@@ -90,7 +90,7 @@
                                                 <a href="{% url 'ptup_messages:messages-detail' message.id %}">{{ message.sender }}</a>
                                             </td>
                                             <td class="mailbox-subject">
-                                                {{ message.content|truncatewords:6 }}
+                                                {{ message.subject|truncatewords:6 }}
                                             </td>
                                             <td class="mailbox-attachment"></td>
                                             <td class="mailbox-date">{{ message.created_at|naturaltime }}</td>
