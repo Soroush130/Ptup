@@ -6,6 +6,7 @@
     پیام
 {% endblock %}
 
+
 {% block content %}
 
     <div class="content-wrapper" style="min-height: 973.77px;">
@@ -41,32 +42,32 @@
                             </div>
                             <div class="card-body p-0">
                                 <ul class="nav nav-pills flex-column">
-                                <li class="nav-item">
-                                    <a href="{% url 'ptup_messages:send_messages' %}" class="nav-link">
-                                        <i class="far fa-paper-plane"></i> ارسال پیام
-                                    </a>
-                                </li>
-                                <li class="nav-item active">
-                                    <a href="{% url 'ptup_messages:messages' %}" class="nav-link">
-                                        <i class="fas fa-inbox"></i> دریافت شده
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/messages/messages/?type=sent" class="nav-link">
-                                        <i class="far fa-envelope"></i> ارسال شده
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/messages/messages/?type=read" class="nav-link">
-                                        <i class="far fa-check-circle"></i> خوانده شده
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/messages/messages/?type=not_read" class="nav-link">
-                                        <i class="far fa-circle"></i>خوانده نشده
-                                    </a>
-                                </li>
-                            </ul>
+                                    <li class="nav-item">
+                                        <a href="{% url 'ptup_messages:send_messages' %}" class="nav-link">
+                                            <i class="far fa-paper-plane"></i> ارسال پیام
+                                        </a>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <a href="{% url 'ptup_messages:messages' %}" class="nav-link">
+                                            <i class="fas fa-inbox"></i> دریافت شده
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/messages/messages/?type=sent" class="nav-link">
+                                            <i class="far fa-envelope"></i> ارسال شده
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/messages/messages/?type=read" class="nav-link">
+                                            <i class="far fa-check-circle"></i> خوانده شده
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/messages/messages/?type=not_read" class="nav-link">
+                                            <i class="far fa-circle"></i>خوانده نشده
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -97,7 +98,7 @@
                                 <!-- /.mailbox-controls -->
                                 <div class="mailbox-read-message">
                                     <p>
-                                        {{ message.content }}
+                                        {{ message.content.html|safe }}
                                     </p>
                                 </div>
                             </div>

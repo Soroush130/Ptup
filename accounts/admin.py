@@ -1,5 +1,5 @@
 from django.contrib.auth.admin import UserAdmin
-from .models import User, SiteRules, OtpCode
+from .models import User, SiteRules, OtpCode, ForgottenCode
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib import admin
 
@@ -37,3 +37,6 @@ class OtpCodeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(OtpCode, OtpCodeAdmin)
+
+admin.site.register(ForgottenCode)
+

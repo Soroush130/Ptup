@@ -59,8 +59,9 @@ class DeleteMessageView(View):
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class SendMessageView(View):
     def get(self, request):
+        message_form = MessageForm()
         context = {
-
+            "message_form": message_form,
         }
         return render(request, 'ptup_messages/send_message.html', context)
 

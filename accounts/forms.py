@@ -103,3 +103,34 @@ class OtpCodeForm(forms.Form):
             pass
 
         return otp_code
+
+
+class ForgotPasswordForm(forms.Form):
+    phone = forms.CharField()
+
+    def clean_phone(self):
+        phone = self.cleaned_data['phone']
+
+        if not phone.isdigit():
+            raise forms.ValidationError("عدد وارد کنید")
+
+        is_exists_phone = User.objects.filter(
+            Q(phone__exact=phone) | Q(phone__exact=phone_number_encryption(phone))
+        ).exists()
+        if not is_exists_phone:
+            raise forms.ValidationError("چنین شماره تلفنی ثبت نشده است")
+        return phone
+
+
+class ChangePasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput())
+    re_password = forms.CharField(widget=forms.PasswordInput())
+
+    def clean_re_password(self):
+        password = self.cleaned_data.get('password')
+        re_password = self.cleaned_data.get('re_password')
+
+        if password != re_password:
+            raise forms.ValidationError('کلمه های عبور مغایرت دارند')
+
+        return password

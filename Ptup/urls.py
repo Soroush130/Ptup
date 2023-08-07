@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
 from . import views
+from ptup_utilities.views import RulesSite
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('', views.home, name="home"),
     path('page_404/', views.page_404, name="page_404"),
+    path('site_rules/', RulesSite.as_view(), name="site_rules"),
 
     # apps
     path('accounts/', include("accounts.urls")),

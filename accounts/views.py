@@ -7,9 +7,10 @@ from django.utils import timezone
 
 from doctors.models import Doctor
 from ptup_utilities.utility import set_session, get_session
-from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm, OtpCodeForm
+from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm, OtpCodeForm, ForgotPasswordForm, \
+    ChangePasswordForm
 from .decorators import login_not_required, is_staff_or_superuser, is_otp_code_verify, check_last_otp_code_user
-from .models import User, RoleChoices, OtpCode
+from .models import User, RoleChoices, OtpCode, ForgottenCode
 from .senders import SmsSender
 from .utilites import phone_number_encryption, generate_otp_code, create_otp_code, sms
 from django.contrib import messages
@@ -226,6 +227,7 @@ def log_out(request):
     return redirect('accounts:login')
 
 
+# ===============================================================================================
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class ConfirmationDoctorByStaff(View):
     """
@@ -243,3 +245,91 @@ class ConfirmationDoctorByStaff(View):
             "doctors": doctors,
         }
         return render(request, 'accounts/confirmation_doctor.html', context)
+
+
+# ===============================================================================================
+
+# ==============================    Forgot Password    =======================================
+class ForgotPasswordView(View):
+    def get(self, request):
+        context = {}
+        return render(request, 'accounts/forgot_password/forgot_password.html', context)
+
+    def post(self, request):
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            phone = form.cleaned_data['phone']
+            # user_doctor = User.objects.filter(phone__exact=phone)
+            # user_customer = User.objects.filter(phone__exact=phone_number_encryption(phone))
+
+            forgot_code: str = generate_otp_code(5)
+            ForgottenCode.objects.create(
+                phone=phone, forgot_code=forgot_code
+            )
+
+            set_session(request, 'forgotten_code_phone', phone)
+
+            result = sms(request=request, phone=phone, otp_code=forgot_code)
+            if result:
+                return redirect('accounts:confirm_forgot_password')
+            else:
+                return redirect('accounts:forgot_password')
+        else:
+            print(form.errors)
+            return redirect('accounts:forgot_password')
+
+
+class ConfirmForgotPasswordView(View):
+    def get(self, request):
+        context = {}
+        return render(request, 'accounts/forgot_password/confirm_forgot_password.html', context)
+
+    def post(self, request):
+        form = OtpCodeForm(request.POST)
+        if form.is_valid():
+            forgot_code = form.cleaned_data['otp_code']
+            current_time = timezone.now()
+            is_forgot_password = ForgottenCode.objects.get(
+                forgot_code__exact=forgot_code,
+                created__lt=current_time,
+                created__gt=current_time - timedelta(seconds=120),
+                is_valid=False
+            )
+            if is_forgot_password:
+                with transaction.atomic():
+                    is_forgot_password.is_valid = True
+                    is_forgot_password.save()
+
+                    messages.success(request, "کد اعتبارسنجی صحیح بود")
+                    return redirect('accounts:change_password')
+            else:
+                messages.info(request, "کد منقضی شده است")
+                return redirect(request.META.get("HTTP_REFERER"))
+        else:
+            print(form.errors)
+            return redirect(request.META.get("HTTP_REFERER"))
+
+
+class ChangePasswordView(View):
+    def get(self, request):
+        context = {}
+        return render(request, 'accounts/forgot_password/change_password.html', context)
+
+    def post(self, request):
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                new_password = form.cleaned_data['password']
+                phone = get_session(request, 'forgotten_code_phone')
+                user_doctor = User.objects.filter(phone__exact=phone)
+                user_customer = User.objects.filter(phone__exact=phone_number_encryption(phone))
+
+                user = user_doctor.first() if user_doctor.exists() else user_customer.first()
+
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, "رمز عبور با موفقیت تغییر یافت")
+                return redirect('accounts:login')
+        else:
+            print(form.errors)
+            return redirect(request.META.get("HTTP_REFERER"))

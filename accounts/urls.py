@@ -10,6 +10,10 @@ urlpatterns = [
     path('confirm_otp/', views.ConfirmOtpCodeView.as_view(), name='confirm_otp'),
     path('re_send_otp/', views.ReSendOtpCodeView.as_view(), name='re_send_otp'),
     path('logout/', views.log_out, name='logout'),
-
+    #
     path('confirm_doctor/', views.ConfirmationDoctorByStaff.as_view(), name='confirm_doctor'),
+    # Forgot Password
+    path('forgot_password/', views.ForgotPasswordView.as_view(), name='forgot_password'),
+    path('confirm_forgot_password/', views.ConfirmForgotPasswordView.as_view(), name='confirm_forgot_password'),
+    path('change_password/', views.ChangePasswordView.as_view(), name='change_password'),
 ]
