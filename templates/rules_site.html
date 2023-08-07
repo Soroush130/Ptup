@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>کد اعتبارسنجی</title>
+    <title>قوانین سامانه</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -22,51 +22,26 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <b>Ptup</b>
+        <b>Ptup قوانین سامانه</b>
     </div>
     <!-- /.login-logo -->
     <div class="card">
         <div class="card-body login-card-body">
-            <p class="login-box-msg">اعتبارسنجی</p>
+            <div class="list-group">
+                {% for rule in list_rules %}
+                    <a href="" class="list-group-item list-group-item-action" style="text-align: end; font-size: 20px">
+                        {{ rule.rule }}</a>
+                {% endfor %}
 
-            <form action="" method="POST">
-                {% csrf_token %}
-                <div class="input-group mb-3">
-                    <input type="text" name="otp_code" class="form-control" placeholder="کد اعتبارسنجی">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-keyboard"></span>
-                        </div>
-                    </div>
-                </div>
-                {% if otp_form.otp_code.errors %}
-                    <span style="color: red">{{ otp_form.otp_code.errors }}</span>
-                {% endif %}
-                <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">ورود</button>
-                    </div>
-                </div>
-            </form>
+            </div>
 
-            <br>
-
-            <p class="mb-0">
-                <a href="{% url 'accounts:re_send_otp' %}" class="text-center" style="float: right">
-                    ارسال مجدد کد اعتبارسنجی
-                </a>
+            <p class="mb-1 mt-3">
+                <button class="btn btn-outline-primary" style="float: right" onclick="goBack()">بازگشت</button>
                 <br>
             </p>
         </div>
-        <!-- /.login-card-body -->
     </div>
 </div>
-<!-- /.login-box -->
-
 {% if messages %}
     {% for message in messages %}
         <div class="col-3" style="position: absolute; right: 10px; top: 10px; z-index:90000;">
@@ -84,6 +59,13 @@
 <script src="{% static "plugins/jquery/jquery.min.js" %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static "plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+<script>
+    function goBack() {
+        // Go back to the previous page
+        window.history.back();
+    }
+</script>
 
 </body>
 </html>
