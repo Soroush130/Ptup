@@ -78,3 +78,13 @@ class OtpCode(models.Model):
 
     def __str__(self):
         return self.otp_code
+
+
+class ForgottenCode(models.Model):
+    phone = models.CharField(max_length=15)
+    forgot_code = models.CharField(max_length=5)
+    is_valid = models.BooleanField(default=False)
+    created = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.forgot_code
