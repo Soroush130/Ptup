@@ -43,7 +43,8 @@ class IsVerifyDoctorByStaff(View):
             doctor.is_verify = False
             doctor.save()
 
-            send_message_in_protable(receiver=doctor, content="مجوز شما توسط ادمین لغو شد")
+            content = "مجوز شما توسط ادمین لغو شد"
+            send_message_in_protable(receiver=doctor.user, content=content, sender=request.user)
 
             response = {
                 'is_taken': True,
@@ -55,8 +56,8 @@ class IsVerifyDoctorByStaff(View):
             doctor.is_verify = True
             doctor.save()
 
-            send_message_in_protable(receiver=doctor,
-                                     content="مجوز شما توسط ادمین تایید شد" + "\n" + "به سامانه خوش آمدید")
+            content = "مجوز شما توسط ادمین تایید شد"
+            send_message_in_protable(receiver=doctor.user, content=content, sender=request.user)
 
             response = {
                 'is_taken': True,

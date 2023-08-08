@@ -18,4 +18,10 @@ urlpatterns = [
 
     path('permission_start_treatment/', views.PermissionStartTreatmentCustomer.as_view(),
          name='permission_start_treatment'),
+
+    path('healing_period_customer/', views.HealingPeriodCustomer.as_view(), name='healing_period_customer'),
+
+    path('foundation_course_customer/', views.FoundationCourseCustomer.as_view(), name='foundation_course_customer'),
+
+    path('follow_up_customer/', views.FollowUpCustomer.as_view(), name='follow_up_customer'),
 ]

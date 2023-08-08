@@ -2,6 +2,8 @@ from django.db import models
 from accounts.models import User
 from django.utils import timezone
 from django_quill.fields import QuillField
+from django.db.models.aggregates import Count
+from random import randint
 
 
 class Message(models.Model):
@@ -21,3 +23,27 @@ class Message(models.Model):
     @property
     def get_subject(self):
         return self.subject if self.subject is not None else 'عنوان ندارد'
+
+
+class MotivationalMessageManger(models.Manager):
+    def random(self):
+        count = self.aggregate(count=Count('id'))['count']
+        random_index = randint(0, count - 1)
+        return self.all()[random_index]
+
+
+class MotivationalMessage(models.Model):
+    content = models.TextField()
+
+    objects = MotivationalMessageManger()
+
+    def __str__(self):
+        return f"motivational message # {self.id}"
+
+
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender_notification', null=True,
+                               verbose_name='فرستنده ', blank=True)
+    receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver_notification', null=True,
+                                 verbose_name='گیرنده ')
+    content = models.TextField()

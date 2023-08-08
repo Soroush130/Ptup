@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .models import Media, Practice
+from .models import HealingContent
 
-admin.site.register(Media)
-admin.site.register(Practice)
+admin.site.register(HealingContent)
