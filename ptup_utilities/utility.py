@@ -3,11 +3,14 @@ from typing import Any
 from django.db.models import QuerySet
 
 from customers.models import Customer
-from ptup_messages.models import Message
+from ptup_messages.models import Message, MotivationalMessage
 
 
 def get_context_customer(user: QuerySet) -> dict:
-    context = {}
+    motivational_message = MotivationalMessage.objects.random()
+    context = {
+        "motivational_message": motivational_message,
+    }
     return context
 
 
