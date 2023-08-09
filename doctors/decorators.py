@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from functools import wraps
 from .utility import check_information_doctor
@@ -35,13 +36,15 @@ def is_complete_information(view_func):
             else:
                 messages.error(request, "ابتدا اطلاعات خود را تکمیل کنید")
                 return redirect('doctors:completion_information_doctor')
-        else:
+        elif user_role == CUSTOMER:
             status = check_information_customer(request.user)
             if status:
                 return view_func(request, *args, **kwargs)
             else:
                 messages.error(request, "ابتدا اطلاعات خود را تکمیل کنید")
                 return redirect('customers:completion_information_customer')
+        else:
+            return HttpResponse("شما ادیمن سایت هستید")
 
         # return view_func(request, *args, **kwargs)
 
