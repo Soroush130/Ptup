@@ -68,13 +68,11 @@
                                                 <i class="fas fa-comments"></i>
                                             </a>
                                             {% if doctor.is_verify is False %}
-                                                <div class="btn btn-sm bg-teal" id="btn_is_verify{{ doctor.id }}"
-                                                     data-id="{{ doctor.id }}" onclick="verifyDoctor(this)">
+                                                <div class="btn btn-sm bg-teal">
                                                     <i class="fas fa-check-circle" id="btn_i"></i>
                                                 </div>
                                             {% else %}
-                                                <div class="btn btn-sm bg-red" id="btn_is_verify{{ doctor.id }}"
-                                                     data-id="{{ doctor.id }}" onclick="verifyDoctor(this)">
+                                                <div class="btn btn-sm bg-red">
                                                     <i class="fas fa-minus-circle" id="btn_i"></i>
                                                 </div>
                                             {% endif %}
@@ -117,58 +115,5 @@
 {% endblock %}
 
 {% block footer_ref %}
-
-
-    <script>
-
-        var box_show_message = document.getElementById("show_message");
-
-        function verifyDoctor(e) {
-            var doctor_id = e.getAttribute("data-id");
-            $.ajax({
-                data: {'doctor_id': doctor_id},
-                url: "{% url 'doctors:is_verify_doctor' %}",
-                // on success
-                success: function (response) {
-                    if (response.is_taken == true) {
-                        if (response.is_verify == true) {
-                            box_show_message.innerHTML = '';
-                            document.querySelector('#btn_i').className = 'fas fa-minus-circle';
-                            document.getElementById('btn_is_verify' + doctor_id).className = 'btn btn-sm bg-red';
-                            box_show_message.innerHTML = `
-                            <div class="alert alert-success alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"
-                                        style="position: absolute;left: 0;right: auto;">X
-                                </button>
-                                TEXT
-                            </div>`.replace('TEXT', "مجوز داده شد")
-                        } else {
-                            box_show_message.innerHTML = '';
-                            document.querySelector('#btn_i').className = 'fas fa-check-circle';
-                            document.getElementById('btn_is_verify' + doctor_id).className = 'btn btn-sm bg-teal';
-                            box_show_message.innerHTML = `
-                            <div class="alert alert-error alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"
-                                        style="position: absolute;left: 0;right: auto;">X
-                                </button>
-                                TEXT
-                            </div>`.replace('TEXT', "مجوز لغو شد")
-                        }
-                    } else {
-                        console.log("can not verify doctor")
-                    }
-
-                },
-                // on error
-                error: function (response) {
-                    // alert the error if any error occured
-                    console.log(response.responseJSON.errors)
-                }
-            });
-        }
-
-
-    </script>
-
 
 {% endblock %}

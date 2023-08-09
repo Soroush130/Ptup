@@ -5,6 +5,8 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.http import JsonResponse
+
+from customers.decorators import pass_foundation_course
 from customers.forms import CustomerForm, CustomerIllnessForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation
 from customers.utility import normalize_data_filter_customer
@@ -136,3 +138,30 @@ class PermissionStartTreatmentCustomer(View):
         else:
             print(form.errors)
             return redirect(request.META.get("HTTP_REFERER"))
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+@method_decorator(pass_foundation_course, name='dispatch')
+class HealingPeriodCustomer(View):
+    def get(self, request):
+        customer = request.user.customer
+
+        disease_information = CustomerDiseaseInformation.objects.get(customer=customer)
+
+        context = {
+            "disease_information": disease_information,
+        }
+
+        return render(request, 'customers/healing_period_customer.html', context)
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class FoundationCourseCustomer(View):
+    def get(self, request):
+        return render(request, 'customers/foundation_course_customer.html')
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class FollowUpCustomer(View):
+    def get(self, request):
+        return render(request, 'customers/follow_up_customer.html')
