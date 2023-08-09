@@ -9,7 +9,6 @@ class HealingContentBase(models.Model):
         ('MEDIA', 'ویدیو'),
         ('PRACTICE', 'تمرین')
     )
-    illness = models.ForeignKey(Illness, on_delete=models.CASCADE, verbose_name='بیماری ')
     healing_period = models.ForeignKey(HealingPeriod, on_delete=models.CASCADE, verbose_name='دوره درمانی ')
     type = models.CharField(max_length=8, choices=TYPE_HEALING_CONTENT)
 
@@ -29,7 +28,7 @@ class Media(HealingContentBase):
         if day > total_days_in_healing_period:
             raise ValidationError("day more than total days in healing period")
 
-        existing_day = Media.objects.filter(day=day, healing_period=self.healing_period, illness=self.illness)
+        existing_day = Media.objects.filter(day=day, healing_period=self.healing_period)
         if existing_day.exists():
             raise ValidationError("برای این روز از دوره محتوا وجود دارد")
 
@@ -50,7 +49,7 @@ class Practice(HealingContentBase):
         if day > total_days_in_healing_period:
             raise ValidationError("day more than total days in healing period")
 
-        existing_day = Media.objects.filter(day=day, healing_period=self.healing_period, illness=self.illness)
+        existing_day = Media.objects.filter(day=day, healing_period=self.healing_period)
         if existing_day.exists():
             raise ValidationError("برای این روز از دوره محتوا وجود دارد")
 
