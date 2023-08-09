@@ -132,6 +132,7 @@
                 success: function (response) {
                     if (response.is_taken == true) {
                         if (response.is_verify == true) {
+                            box_show_message.innerHTML = '';
                             document.querySelector('#btn_i').className = 'fas fa-minus-circle';
                             document.getElementById('btn_is_verify' + doctor_id).className = 'btn btn-sm bg-red';
                             box_show_message.innerHTML = `
@@ -140,8 +141,9 @@
                                         style="position: absolute;left: 0;right: auto;">X
                                 </button>
                                 TEXT
-                            </div>`.replace('TEXT', "کاربر با آیدی " + doctor_id + ' مجوز گرفت')
+                            </div>`.replace('TEXT', "مجوز داده شد")
                         } else {
+                            box_show_message.innerHTML = '';
                             document.querySelector('#btn_i').className = 'fas fa-check-circle';
                             document.getElementById('btn_is_verify' + doctor_id).className = 'btn btn-sm bg-teal';
                             box_show_message.innerHTML = `
@@ -150,7 +152,7 @@
                                         style="position: absolute;left: 0;right: auto;">X
                                 </button>
                                 TEXT
-                            </div>`.replace('TEXT', "مجوز کاربر با آیدی " + doctor_id + " لغو شد")
+                            </div>`.replace('TEXT', "مجوز لغو شد")
                         }
                     } else {
                         console.log("can not verify doctor")

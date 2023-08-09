@@ -39,3 +39,11 @@ class MotivationalMessage(models.Model):
 
     def __str__(self):
         return f"motivational message # {self.id}"
+
+
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender_notification', null=True,
+                               verbose_name='فرستنده ', blank=True)
+    receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver_notification', null=True,
+                                 verbose_name='گیرنده ')
+    content = models.TextField()

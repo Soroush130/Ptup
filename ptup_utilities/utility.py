@@ -3,7 +3,7 @@ from typing import Any
 from django.db.models import QuerySet
 
 from customers.models import Customer
-from ptup_messages.models import Message, MotivationalMessage
+from ptup_messages.models import Message, MotivationalMessage, Notification
 
 
 def get_context_customer(user: QuerySet) -> dict:
@@ -35,9 +35,8 @@ def get_context_according_user_role(user: QuerySet, user_role: int) -> dict:
     return context
 
 
-def send_message_in_protable(receiver: QuerySet, content: str, sender: QuerySet = None):
-    content = f"{receiver} {content}"
-    Message.objects.create(receiver=receiver.user, content=content)
+def send_message_in_protable(receiver: QuerySet, content: str, sender: QuerySet) -> bool:
+    Notification.objects.create(receiver=receiver, content=content, sender=sender)
     return True
 
 
