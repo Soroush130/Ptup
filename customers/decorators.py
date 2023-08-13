@@ -10,7 +10,10 @@ def pass_foundation_course(view_func):
     def wrapped_view(request, *args, **kwargs):
         customer = request.user.customer
 
-        disease_information = CustomerDiseaseInformation.objects.get(customer=customer)
+        disease_information = CustomerDiseaseInformation.objects.filter(
+            customer=customer,
+            is_finished=False
+        ).first()
 
         if disease_information.is_foundation_course:
             return view_func(request, *args, **kwargs)

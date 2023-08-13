@@ -40,6 +40,7 @@ LOCAL_APPS = [
     'ptup_utilities.apps.PtupUtilitiesConfig',
     'illness.apps.IllnessConfig',
     'healing_content.apps.HealingContentConfig',
+    'foundation_course.apps.FoundationCourseConfig',
 ]
 
 INSTALLED_APPS = DJANGO_DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS

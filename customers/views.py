@@ -1,17 +1,27 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.utils import timezone
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.http import JsonResponse
 
 from customers.decorators import pass_foundation_course
-from customers.forms import CustomerForm, CustomerIllnessForm, PermissionStartTreatmentCustomerForm
+from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
-from illness.models import Illness, HealingPeriod
+from foundation_course.models import Questionnaire
+from illness.models import Illness
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class CustomerInformationDetail(View):
+    def get(self, request, customer_id):
+        customer = Customer.objects.get(id=customer_id)
+        context = {
+            "customer": customer,
+        }
+        return render(request, 'customers/customer_detail.html', context)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -75,7 +85,9 @@ class DeterminingCustomerIllness(View):
         if doctor == treating_doctor:
             illnesses = Illness.objects.all().order_by('id')
             try:
-                illness_in_customer = CustomerDiseaseInformation.objects.get(customer=customer)
+                illness_in_customer = CustomerDiseaseInformation.objects.filter(customer=customer,
+                                                                                is_finished=False).first()
+
                 context = {
                     "customer": customer,
                     "illnesses": illnesses,
@@ -103,7 +115,10 @@ class OperationChoiceIllnessCustomer(View):
 
         if doctor == treating_doctor:
 
-            customer_diseasen_information = CustomerDiseaseInformation.objects.filter(customer=customer)
+            customer_diseasen_information = CustomerDiseaseInformation.objects.filter(
+                customer=customer, is_finished=False
+            )
+
             if not customer_diseasen_information.exists():
                 CustomerDiseaseInformation.objects.create(
                     customer=customer,
@@ -113,11 +128,12 @@ class OperationChoiceIllnessCustomer(View):
                 messages.success(request, "نوع بیماری مراجع مشخص شد")
                 return redirect(request.META.get("HTTP_REFERER"))
             else:
-                customer_diseasen_information = customer_diseasen_information.first()
-                customer_diseasen_information.illness = illness
-                customer_diseasen_information.healing_period = illness.healingperiod
-                customer_diseasen_information.save()
-                messages.info(request, "نوع بیماری مراجع تغییر یافت")
+                # customer_diseasen_information = customer_diseasen_information.first()
+                # customer_diseasen_information.illness = illness
+                # customer_diseasen_information.healing_period = illness.healingperiod
+                # customer_diseasen_information.save()
+
+                messages.error(request, "نوع بیماری را نمی توانید تغییر دهید")
                 return redirect(request.META.get("HTTP_REFERER"))
         else:
             messages.error(request, "شما مجاز به انتساب بیماری به این بیمار نیستید")
@@ -140,13 +156,18 @@ class PermissionStartTreatmentCustomer(View):
             return redirect(request.META.get("HTTP_REFERER"))
 
 
+# ===============================================================================================
+
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 @method_decorator(pass_foundation_course, name='dispatch')
 class HealingPeriodCustomer(View):
     def get(self, request):
         customer = request.user.customer
 
-        disease_information = CustomerDiseaseInformation.objects.get(customer=customer)
+        disease_information = CustomerDiseaseInformation.objects.filter(
+            customer=customer,
+            is_finished=False
+        ).first()
 
         context = {
             "disease_information": disease_information,
@@ -158,10 +179,17 @@ class HealingPeriodCustomer(View):
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class FoundationCourseCustomer(View):
     def get(self, request):
-        return render(request, 'customers/foundation_course_customer.html')
+        questionnaire_list = Questionnaire.objects.all()
+
+        context = {
+            "questionnaire_list": questionnaire_list,
+        }
+        return render(request, 'customers/foundation_course_customer.html', context)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class FollowUpCustomer(View):
     def get(self, request):
         return render(request, 'customers/follow_up_customer.html')
+
+# ===============================================================================================
