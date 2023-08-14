@@ -75,7 +75,9 @@ class DeterminingCustomerIllness(View):
         if doctor == treating_doctor:
             illnesses = Illness.objects.all().order_by('id')
             try:
-                illness_in_customer = CustomerDiseaseInformation.objects.get(customer=customer)
+                illness_in_customer = CustomerDiseaseInformation.objects.filter(customer=customer,
+                                                                                is_finished=False).first()
+
                 context = {
                     "customer": customer,
                     "illnesses": illnesses,
@@ -103,7 +105,10 @@ class OperationChoiceIllnessCustomer(View):
 
         if doctor == treating_doctor:
 
-            customer_diseasen_information = CustomerDiseaseInformation.objects.filter(customer=customer)
+            customer_diseasen_information = CustomerDiseaseInformation.objects.filter(
+                customer=customer, is_finished=False
+            )
+
             if not customer_diseasen_information.exists():
                 CustomerDiseaseInformation.objects.create(
                     customer=customer,
@@ -113,11 +118,12 @@ class OperationChoiceIllnessCustomer(View):
                 messages.success(request, "نوع بیماری مراجع مشخص شد")
                 return redirect(request.META.get("HTTP_REFERER"))
             else:
-                customer_diseasen_information = customer_diseasen_information.first()
-                customer_diseasen_information.illness = illness
-                customer_diseasen_information.healing_period = illness.healingperiod
-                customer_diseasen_information.save()
-                messages.info(request, "نوع بیماری مراجع تغییر یافت")
+                # customer_diseasen_information = customer_diseasen_information.first()
+                # customer_diseasen_information.illness = illness
+                # customer_diseasen_information.healing_period = illness.healingperiod
+                # customer_diseasen_information.save()
+
+                messages.error(request, "نوع بیماری را نمی توانید تغییر دهید")
                 return redirect(request.META.get("HTTP_REFERER"))
         else:
             messages.error(request, "شما مجاز به انتساب بیماری به این بیمار نیستید")
@@ -146,7 +152,11 @@ class HealingPeriodCustomer(View):
     def get(self, request):
         customer = request.user.customer
 
-        disease_information = CustomerDiseaseInformation.objects.get(customer=customer)
+        disease_information = CustomerDiseaseInformation.objects.filter(
+            customer=customer,
+            is_finished=False
+        ).first()
+
 
         context = {
             "disease_information": disease_information,

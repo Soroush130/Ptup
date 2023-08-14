@@ -39,7 +39,7 @@ class CustomerDiseaseInformation(models.Model):
         در این مدل اطلاعات بیماری مشتری ثبت خواهد شد
     """
 
-    customer = models.OneToOneField(
+    customer = models.ForeignKey(
         Customer,
         on_delete=models.CASCADE,
         verbose_name="بیمار "
@@ -71,14 +71,24 @@ class CustomerDiseaseInformation(models.Model):
         verbose_name='دوره مقدماتی',
         help_text='آیا دوره مقدماتی را سپری کرده است یا خیر'
     )
-    is_active = models.BooleanField(default=False, verbose_name='فعال/غیر فعال ',
-                                    help_text='آیا این بیمار در حال سپری کردن دروه است')
+    is_healing_period = models.BooleanField(
+        default=False,
+        verbose_name='بله/خیر ',
+        help_text='آیا دوره درمان را گذرانده است'
+    )
     is_follow_up = models.BooleanField(
         default=False,
         verbose_name='دوره فالوآپ',
         help_text='آیا دوره فالوآپ را سپری کرده است یا خیر'
     )
-    created_at = models.DateTimeField(default=timezone.now)
+    is_finished = models.BooleanField(
+        default=False,
+        verbose_name='اتمام',
+        help_text='آیا این پرونده بسته شده است یا خیر'
+    )
+    created_at = models.DateTimeField(
+        default=timezone.now
+    )
 
     def __str__(self):
         return f"{self.customer} , {self.illness} , {self.healing_period}"
