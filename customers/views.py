@@ -1,17 +1,17 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.utils import timezone
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.http import JsonResponse
 
 from customers.decorators import pass_foundation_course
-from customers.forms import CustomerForm, CustomerIllnessForm, PermissionStartTreatmentCustomerForm
+from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
-from illness.models import Illness, HealingPeriod
+from foundation_course.models import Questionnaire
+from illness.models import Illness
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -158,7 +158,12 @@ class HealingPeriodCustomer(View):
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class FoundationCourseCustomer(View):
     def get(self, request):
-        return render(request, 'customers/foundation_course_customer.html')
+        questionnaire_list = Questionnaire.objects.all()
+
+        context = {
+            "questionnaire_list": questionnaire_list,
+        }
+        return render(request, 'customers/foundation_course_customer.html', context)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

@@ -33,7 +33,7 @@ class Question(models.Model):
         on_delete=models.CASCADE,
         verbose_name='پرسشنامه'
     )
-    text = QuillField(
+    text = models.TextField(
         verbose_name='متن سوال'
     )
 
@@ -54,7 +54,7 @@ class QuestionOption(models.Model):
     coefficient = models.IntegerField(
         verbose_name='ضریب گزینه'
     )
-    text = QuillField(
+    text = models.TextField(
         verbose_name='متن گزینه'
     )
 
