@@ -3,10 +3,12 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.db import transaction
 
 from foundation_course.decorators import questionnaire_completion
 from foundation_course.models import Questionnaire, Question, QuestionnaireAnswer, QuestionnaireAnswerDetail
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
+from foundation_course.utility import calculate_score_each_questionnaire
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -36,26 +38,30 @@ class CompleteQuestionnaireByCustomer(View):
             questionnaire_id = request.POST['questionnaire_id']
             questions_count = request.POST['questions_count']
 
-            selected_answers = get_list_answer_questionnaire(request.POST.items())
+            with transaction.atomic():
 
-            if int(questions_count) == len(selected_answers.keys()):
+                selected_answers = get_list_answer_questionnaire(request.POST.items())
 
-                questionnaire_answer = QuestionnaireAnswer.objects.create(
-                    questionnaire_id=questionnaire_id,
-                    customer=customer
-                )
+                if int(questions_count) == len(selected_answers.keys()):
 
-                objects_to_create = []
-                for key, value in selected_answers.items():
-                    objects_to_create.append(QuestionnaireAnswerDetail(
-                        questionnaire_answer=questionnaire_answer,
-                        question_id=key,
-                        question_option_id=value
-                    ))
+                    questionnaire_answer = QuestionnaireAnswer.objects.create(
+                        questionnaire_id=questionnaire_id,
+                        customer=customer
+                    )
 
-                QuestionnaireAnswerDetail.objects.bulk_create(objects_to_create)
+                    objects_to_create = []
+                    for key, value in selected_answers.items():
+                        objects_to_create.append(QuestionnaireAnswerDetail(
+                            questionnaire_answer=questionnaire_answer,
+                            question_id=key,
+                            question_option_id=value
+                        ))
 
-                return redirect('customers:foundation_course_customer')
-            else:
-                messages.error(request, "لطفا پرسشنامه را تکمیل کنید")
-                return redirect(request.META.get("HTTP_REFERER"))
+                    answers_list = QuestionnaireAnswerDetail.objects.bulk_create(objects_to_create)
+
+                    calculate_score_each_questionnaire(questionnaire_answer, answers_list)
+
+                    return redirect('customers:foundation_course_customer')
+                else:
+                    messages.error(request, "لطفا پرسشنامه را تکمیل کنید")
+                    return redirect(request.META.get("HTTP_REFERER"))

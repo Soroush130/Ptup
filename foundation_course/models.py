@@ -87,6 +87,11 @@ class QuestionnaireAnswer(models.Model):
         verbose_name='زمان پاسخگویی'
     )
 
+    score = models.FloatField(
+        verbose_name='امتیاز',
+        default=0.00
+    )
+
     class Meta:
         db_table = 'questionnaire_answer'
 
