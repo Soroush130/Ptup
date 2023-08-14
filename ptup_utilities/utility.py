@@ -2,7 +2,7 @@ from typing import Any
 
 from django.db.models import QuerySet
 
-from customers.models import Customer
+from customers.models import Customer, CustomerDiseaseInformation
 from ptup_messages.models import Message, MotivationalMessage, Notification
 
 
@@ -21,9 +21,36 @@ def get_context_doctor(user: QuerySet) -> dict:
     list_messages_not_read = Message.objects.filter(receiver=user, is_read=False)
     count_messages_not_read = list_messages_not_read.count()
 
+    list_customers_in_foundation_course = CustomerDiseaseInformation.objects.filter(
+        customer__treating_doctor=user.doctor,
+        is_finished=False,
+        is_foundation_course=False,
+        is_healing_period=False,
+        is_follow_up=False
+    )
+
+    list_customers_in_healing_period = CustomerDiseaseInformation.objects.filter(
+        customer__treating_doctor=user.doctor,
+        is_finished=False,
+        is_foundation_course=True,
+        is_healing_period=False,
+        is_follow_up=False
+    )
+    list_customers_in_follow_up = CustomerDiseaseInformation.objects.filter(
+        customer__treating_doctor=user.doctor,
+        is_finished=False,
+        is_foundation_course=True,
+        is_healing_period=True,
+        is_follow_up=False
+    )
+
     context = {
         "count_customers": count_customers,
         "count_messages_not_read": count_messages_not_read,
+
+        "list_customers_in_foundation_course": list_customers_in_foundation_course,
+        "list_customers_in_healing_period": list_customers_in_healing_period,
+        "list_customers_in_follow_up": list_customers_in_follow_up,
     }
     return context
 

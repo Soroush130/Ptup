@@ -9,6 +9,8 @@ urlpatterns = [
 
     path('filter_customer/', views.FilterCustomer.as_view(), name="filter_customer"),
 
+    path('customer/<int:customer_id>/detail/', views.CustomerInformationDetail.as_view(), name="customer_detail"),
+
     path('determining_customer_illness/<int:customer_id>/', views.DeterminingCustomerIllness.as_view(),
          name="determining_customer_illness"),
 

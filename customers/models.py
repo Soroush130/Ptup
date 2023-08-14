@@ -41,6 +41,7 @@ class CustomerDiseaseInformation(models.Model):
 
     customer = models.ForeignKey(
         Customer,
+        related_name='customer_disease_information',
         on_delete=models.CASCADE,
         verbose_name="بیمار "
     )

@@ -15,6 +15,16 @@ from illness.models import Illness
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class CustomerInformationDetail(View):
+    def get(self, request, customer_id):
+        customer = Customer.objects.get(id=customer_id)
+        context = {
+            "customer": customer,
+        }
+        return render(request, 'customers/customer_detail.html', context)
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class CompletionInformationCostumer(View):
     template_name = 'customers/completion_information_customer.html'
 
@@ -146,6 +156,8 @@ class PermissionStartTreatmentCustomer(View):
             return redirect(request.META.get("HTTP_REFERER"))
 
 
+# ===============================================================================================
+
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 @method_decorator(pass_foundation_course, name='dispatch')
 class HealingPeriodCustomer(View):
@@ -156,7 +168,6 @@ class HealingPeriodCustomer(View):
             customer=customer,
             is_finished=False
         ).first()
-
 
         context = {
             "disease_information": disease_information,
@@ -180,3 +191,5 @@ class FoundationCourseCustomer(View):
 class FollowUpCustomer(View):
     def get(self, request):
         return render(request, 'customers/follow_up_customer.html')
+
+# ===============================================================================================
