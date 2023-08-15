@@ -19,7 +19,7 @@ class QuestionnaireDetail(View):
 
         number_of_option = "".join([str(i) for i in range(1, questionnaire.number_of_options + 1)])
 
-        questions = Question.objects.filter(questionnaire=questionnaire)
+        questions = Question.objects.filter(questionnaire=questionnaire).order_by('row')
 
         context = {
             "questionnaire": questionnaire,

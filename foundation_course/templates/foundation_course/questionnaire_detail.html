@@ -62,7 +62,7 @@
                                         <tbody>
                                         {% for question in questions %}
                                             <tr>
-                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ question.row }}</td>
                                                 <td>{{ question.text }}</td>
                                                 {% for option in question.question_option.all %}
                                                     <td>
@@ -78,7 +78,7 @@
                                     </table>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">submit</button>
+                                    <button type="submit" class="btn btn-primary">ثبت</button>
                                 </div>
                             </form>
                         </div>

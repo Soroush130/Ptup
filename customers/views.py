@@ -10,7 +10,7 @@ from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
-from foundation_course.models import Questionnaire
+from foundation_course.models import Questionnaire, QuestionnaireAnswer
 from illness.models import Illness
 
 
@@ -18,8 +18,11 @@ from illness.models import Illness
 class CustomerInformationDetail(View):
     def get(self, request, customer_id):
         customer = Customer.objects.get(id=customer_id)
+
+        questionnaire_answer_list = QuestionnaireAnswer.objects.filter(customer=customer)
         context = {
             "customer": customer,
+            "questionnaire_answer_list": questionnaire_answer_list,
         }
         return render(request, 'customers/customer_detail.html', context)
 
@@ -180,7 +183,7 @@ class HealingPeriodCustomer(View):
 class FoundationCourseCustomer(View):
     def get(self, request):
         questionnaire_list = Questionnaire.objects.all()
-
+        print(questionnaire_list)
         context = {
             "questionnaire_list": questionnaire_list,
         }
