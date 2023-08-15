@@ -33,6 +33,9 @@ class Question(models.Model):
         on_delete=models.CASCADE,
         verbose_name='پرسشنامه'
     )
+    row = models.PositiveIntegerField(
+        verbose_name='شماره سوال',
+    )
     text = models.TextField(
         verbose_name='متن سوال'
     )
@@ -56,6 +59,9 @@ class QuestionOption(models.Model):
     )
     text = models.TextField(
         verbose_name='متن گزینه'
+    )
+    row = models.PositiveIntegerField(
+        verbose_name='شماره گزینه'
     )
 
     class Meta:
