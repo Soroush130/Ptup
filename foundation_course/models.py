@@ -3,6 +3,20 @@ from django.db import models
 from django_quill.fields import QuillField
 
 from customers.models import Customer
+from foundation_course.interpretation.interpretation import (
+    interpretation_bai,
+    interpretation_bdi,
+    interpretation_ders,
+    interpretation_qli
+)
+
+
+class QuestionnaireTypeChoices(models.IntegerChoices):
+    BAI = 1, 'bai'
+    BDI = 2, 'bdi'
+    DERS = 3, 'ders'
+    QLI = 4, 'qli'
+    NEO = 5, 'neo'
 
 
 class Questionnaire(models.Model):
@@ -15,6 +29,20 @@ class Questionnaire(models.Model):
     )
     number_of_options = models.PositiveIntegerField(
         verbose_name='تعداد گزینه',
+        null=True,
+        blank=True
+    )
+    type = models.PositiveSmallIntegerField(
+        verbose_name='نوع پرسشنامه',
+        null=True,
+        blank=True,
+        choices=QuestionnaireTypeChoices.choices
+    )
+    dependency = models.ForeignKey(
+        'self',
+        related_name='dependencies',
+        on_delete=models.CASCADE,
+        verbose_name='وابستگی',
         null=True,
         blank=True
     )
@@ -32,6 +60,9 @@ class Question(models.Model):
         related_name='questions',
         on_delete=models.CASCADE,
         verbose_name='پرسشنامه'
+    )
+    row = models.PositiveIntegerField(
+        verbose_name='شماره سوال',
     )
     text = models.TextField(
         verbose_name='متن سوال'
@@ -56,6 +87,9 @@ class QuestionOption(models.Model):
     )
     text = models.TextField(
         verbose_name='متن گزینه'
+    )
+    row = models.PositiveIntegerField(
+        verbose_name='شماره گزینه'
     )
 
     class Meta:
@@ -97,6 +131,29 @@ class QuestionnaireAnswer(models.Model):
 
     def __str__(self):
         return f'{self.pk} of question {self.questionnaire.pk}'
+
+    @property
+    def questionnaire_interpretation(self):
+        questionnaire_type = self.questionnaire.get_type_display()
+
+        if questionnaire_type == 'bai':
+            interpretation = interpretation_bai(self.score)
+            return interpretation
+
+        elif questionnaire_type == 'bdi':
+            interpretation = interpretation_bdi(self.score)
+            return interpretation
+
+        elif questionnaire_type == 'ders':
+            interpretation = interpretation_ders(self.score, self.id)
+            return interpretation
+
+        elif questionnaire_type == "qli" and self.questionnaire.dependency is not None:
+            interpretation = interpretation_qli(self.score, self.id, self.questionnaire)
+            return interpretation
+
+        else:
+            pass
 
 
 class QuestionnaireAnswerDetail(models.Model):

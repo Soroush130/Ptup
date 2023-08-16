@@ -93,3 +93,36 @@ class CustomerDiseaseInformation(models.Model):
 
     def __str__(self):
         return f"{self.customer} , {self.illness} , {self.healing_period}"
+
+
+class CustomerActivityHistory(models.Model):
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name='customer_activity_history',
+        verbose_name='بیمار'
+    )
+    subject = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        verbose_name='عنوان'
+    )
+    content = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name='توضیحات'
+    )
+    created = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        db_table = 'customer_activity_history'
+
+    def __str__(self):
+        return f"history id : {self.pk}"
+
+    @property
+    def get_created_time(self):
+        return self.created.time().strftime('%H:%M:%S')
