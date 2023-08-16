@@ -63,6 +63,7 @@ def interpretation_ders(score: float, id: int) -> dict:
         },
     }
 
+
 def index_clarity(answer_list):
     score = 0
     keys = [1, 4, 5, 7, 9]
@@ -119,5 +120,5 @@ def index_goals(answer_list):
 
 # ================================================================================
 
-def interpretation_qli(score: float) -> str:
+def interpretation_qli(score: float, id: int) -> float:
     pass

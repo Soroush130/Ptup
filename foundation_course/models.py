@@ -38,6 +38,14 @@ class Questionnaire(models.Model):
         blank=True,
         choices=QuestionnaireTypeChoices.choices
     )
+    dependency = models.ForeignKey(
+        'self',
+        related_name='dependencies',
+        on_delete=models.CASCADE,
+        verbose_name='وابستگی',
+        null=True,
+        blank=True
+    )
 
     class Meta:
         db_table = 'questionnaire'
@@ -141,7 +149,7 @@ class QuestionnaireAnswer(models.Model):
             return interpretation
 
         elif questionnaire_type == "qli":
-            interpretation = interpretation_qli(self.score)
+            interpretation = interpretation_qli(self.score, self.id)
             return interpretation
 
         else:
