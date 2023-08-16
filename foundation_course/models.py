@@ -148,8 +148,8 @@ class QuestionnaireAnswer(models.Model):
             interpretation = interpretation_ders(self.score, self.id)
             return interpretation
 
-        elif questionnaire_type == "qli":
-            interpretation = interpretation_qli(self.score, self.id)
+        elif questionnaire_type == "qli" and self.questionnaire.dependency is not None:
+            interpretation = interpretation_qli(self.score, self.id, self.questionnaire)
             return interpretation
 
         else:
