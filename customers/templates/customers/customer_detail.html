@@ -162,6 +162,62 @@
                                                         </div>
 
                                                     </div>
+                                                {% elif questionnaire_answer.questionnaire.type == 4 %}
+                                                    <div class="post col-lg-6">
+
+                                                        <h5>{{ forloop.counter }} -
+                                                            پرسشنامه {{ questionnaire_answer.questionnaire.title }}</h5>
+
+                                                        <div class="col-lg-6 my-3"
+                                                             style="border-top: 2px dashed #bbb;"></div>
+
+                                                        <h6>امتیاز کاربر از این پرسشنامه
+                                                            : {{ questionnaire_answer.score }}</h6>
+
+                                                        <h6>تاریخ : {{ questionnaire_answer.answer_time }}</h6>
+
+                                                        <div class="d-flex">
+                                                            <h6>نمره کل کیفیت زندگی :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.score_quality_of_life_index }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>نمره حیطه سلامت و کارکرد :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.score_health }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>نمره حیطه روانشناختی / معنوی :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.score_health }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>نمره حیطه اجتماعی و اقتصادی :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.score_health }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>نمره حیطه خانواده :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.score_health }}
+                                                            </p>
+                                                        </div>
+
+
+                                                    </div>
                                                 {% else %}
                                                     <div class="post col-lg-6">
 

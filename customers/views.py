@@ -19,7 +19,10 @@ class CustomerInformationDetail(View):
     def get(self, request, customer_id):
         customer = Customer.objects.get(id=customer_id)
 
-        questionnaire_answer_list = QuestionnaireAnswer.objects.filter(customer=customer)
+        questionnaire_answer_list = QuestionnaireAnswer.objects.filter(customer=customer).exclude(
+            questionnaire__type=4,
+            questionnaire__dependencies__isnull=False
+        )
         context = {
             "customer": customer,
             "questionnaire_answer_list": questionnaire_answer_list,
