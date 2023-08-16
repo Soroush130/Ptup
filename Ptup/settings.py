@@ -27,6 +27,7 @@ DJANGO_DEFAULT_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    'rest_framework',
     'django_render_partial',
     'django.contrib.humanize',
     'django_quill',
