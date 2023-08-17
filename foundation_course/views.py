@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.db import transaction
 
+from customers.tasks.customer_activity_history import create_activity_history
 from foundation_course.decorators import questionnaire_completion
 from foundation_course.models import Questionnaire, Question, QuestionnaireAnswer, QuestionnaireAnswerDetail
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
@@ -60,6 +61,10 @@ class CompleteQuestionnaireByCustomer(View):
                     answers_list = QuestionnaireAnswerDetail.objects.bulk_create(objects_to_create)
 
                     calculate_score_each_questionnaire(questionnaire_answer, answers_list)
+
+                    # Register activity history
+                    create_activity_history(customer.id, 'تکمیل پرسشنامه',
+                                            f'تکمیل پرسشنامه : {questionnaire_answer.questionnaire.__str__()}')
 
                     return redirect('customers:foundation_course_customer')
                 else:

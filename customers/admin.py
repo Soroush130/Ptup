@@ -8,7 +8,7 @@ admin.site.register(CustomerDiseaseInformation)
 
 class CustomerActivityHistoryAdmin(admin.ModelAdmin):
     list_display = [
-        'customers',
+        'customer',
         'subject',
         'content',
         'created'

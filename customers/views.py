@@ -7,7 +7,8 @@ from django.http import JsonResponse
 
 from customers.decorators import pass_foundation_course
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
-from customers.models import Customer, CustomerDiseaseInformation
+from customers.models import Customer, CustomerDiseaseInformation, CustomerActivityHistory
+from customers.tasks.customer_activity_history import get_activity_list
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
@@ -23,9 +24,13 @@ class CustomerInformationDetail(View):
             questionnaire__type=4,
             questionnaire__dependencies__isnull=False
         )
+
+        customer_activity_history_list = get_activity_list(customer)
+
         context = {
             "customer": customer,
             "questionnaire_answer_list": questionnaire_answer_list,
+            "customer_activity_history_list": customer_activity_history_list,
         }
         return render(request, 'customers/customer_detail.html', context)
 
@@ -186,7 +191,7 @@ class HealingPeriodCustomer(View):
 class FoundationCourseCustomer(View):
     def get(self, request):
         questionnaire_list = Questionnaire.objects.all()
-        print(questionnaire_list)
+
         context = {
             "questionnaire_list": questionnaire_list,
         }
