@@ -8,6 +8,7 @@ from django.db import transaction
 from customers.tasks.customer_activity_history import create_activity_history
 from foundation_course.decorators import questionnaire_completion
 from foundation_course.models import Questionnaire, Question, QuestionnaireAnswer, QuestionnaireAnswerDetail
+from foundation_course.tasks.foundation_course import check_foundation_course
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
 from foundation_course.utility import calculate_score_each_questionnaire
 
@@ -65,6 +66,9 @@ class CompleteQuestionnaireByCustomer(View):
                     # Register activity history
                     create_activity_history(customer.id, 'تکمیل پرسشنامه',
                                             f'تکمیل پرسشنامه : {questionnaire_answer.questionnaire.__str__()}')
+
+                    # Checking the end of the foundation course
+                    check_foundation_course(request, customer.id)
 
                     return redirect('customers:foundation_course_customer')
                 else:
