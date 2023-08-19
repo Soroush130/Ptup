@@ -15,4 +15,4 @@ class HealingPeriod(models.Model):
     duration_of_treatment = models.PositiveIntegerField(verbose_name="طول دروه درمان ", help_text="بر اساس تعداد هفته ")
 
     def __str__(self):
-        return f"ID #{self.id} , title : {self.title}"
+        return f"{self.title}"
