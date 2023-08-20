@@ -9,7 +9,7 @@ from django.db import transaction
 from customers.decorators import pass_foundation_course
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation, CustomerActivityHistory
-from customers.tasks.customer_activity_history import get_activity_list, get_content_customer
+from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history
 from customers.tasks.customers import increase_day_of_healing_period
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
@@ -222,6 +222,14 @@ class HealingPeriodCustomer(View):
 
                 # TODO: Increase the day number of the user's healing period
                 increase_day_of_healing_period(customer)
+
+                # TODO: Register activity history for customer
+                healing_day:HealingDay = HealingDay.objects.get(id=healing_day)
+                create_activity_history(
+                    customer_id=customer.id,
+                    subject=f"{healing_day.healing_period}",
+                    content=f"انجام تمرین های روز {healing_day.day}ام ، {healing_day.healing_period}"
+                )
 
                 messages.success(request, "جواب تمرین با موفقیت ثبت شد")
                 return redirect("customers:healing_period_customer")
