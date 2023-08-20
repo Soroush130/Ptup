@@ -8,10 +8,11 @@ from django.http import JsonResponse
 from customers.decorators import pass_foundation_course
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation, CustomerActivityHistory
-from customers.tasks.customer_activity_history import get_activity_list
+from customers.tasks.customer_activity_history import get_activity_list, get_content_customer
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
+from healing_content.models import HealingDay
 from illness.models import Illness
 
 
@@ -180,8 +181,19 @@ class HealingPeriodCustomer(View):
             is_finished=False
         ).first()
 
+        day = disease_information.day_of_healing_period
+        healing_period = disease_information.healing_period
+
+        healing_day = HealingDay.objects.get(day=day, healing_period=healing_period)
+        content_customer = get_content_customer(disease_information, healing_day)
+        print(content_customer)
+
         context = {
+            "healing_period_title": disease_information.healing_period.title,
+            "day_of_healing_period": day,
             "disease_information": disease_information,
+            "healing_content": content_customer['healing_content'],
+            "questionnaires_weekly": content_customer['questionnaires_weekly'],
         }
 
         return render(request, 'customers/healing_period_customer.html', context)

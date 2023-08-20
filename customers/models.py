@@ -57,7 +57,7 @@ class CustomerDiseaseInformation(models.Model):
         null=True,
         verbose_name='دروه درومان ')
     day_of_healing_period = models.PositiveIntegerField(
-        default=0,
+        default=1,
         verbose_name='روز',
         help_text='روز چندم از دوره درمانی '
     )

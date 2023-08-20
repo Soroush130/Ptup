@@ -8,12 +8,14 @@ from .models import (
     QuestionWeek,
     QuestionOptionWeek,
     QuestionnaireWeekAnswer,
-    QuestionnaireWeekAnswerDetail
+    QuestionnaireWeekAnswerDetail,
+    PracticeAnswer,
+    PracticeAnswerDetail
 )
 
 
 class HealingContentAdmin(admin.ModelAdmin):
-    list_display = ['healing_day', 'type']
+    list_display = ['id', 'healing_day', 'type']
 
 
 class QuestionOptionWeekInline(admin.TabularInline):
@@ -34,3 +36,13 @@ admin.site.register(QuestionOptionWeek)
 
 admin.site.register(QuestionnaireWeekAnswer)
 admin.site.register(QuestionnaireWeekAnswerDetail)
+
+class PracticeAnswerDetailInline(admin.TabularInline):
+    model = PracticeAnswerDetail
+
+
+class PracticeAnswerAdmin(admin.ModelAdmin):
+    inlines = [PracticeAnswerDetailInline]
+
+admin.site.register(PracticeAnswer, PracticeAnswerAdmin)
+admin.site.register(PracticeAnswerDetail)

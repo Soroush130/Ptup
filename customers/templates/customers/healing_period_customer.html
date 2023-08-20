@@ -7,5 +7,78 @@
 {% endblock %}
 
 {% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>محتوای درمان</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-file"></i>فایل های آموزشی از روز {{ day_of_healing_period }} ام
+                                        {{ healing_period_title}}
+                                        <small class="float-right">Date: 2/10/2014</small>
+                                    </h4>
+                                </div>
+                            </div>
+
+                            <div class="row d-flex justify-content-start flex-wrap mt-3">
+                                {% for content in healing_content %}
+                                    <div class="col-lg-4">
+                                        {% if content.type == 'MEDIA' %}
+                                            <div class="card">
+                                                <div class="card-header text-center">
+                                                    <h4>ویدیو</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <video src="{{ content.file.url }}" width="354px"
+                                                           height="200px" controls></video>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="card">
+                                                <div class="card-header text-center">
+                                                    <h4>فایل</h4>
+                                                </div>
+                                                <div class="card-body d-flex">
+                                                    <a class="text-center" href="{{ content.file.url }}"
+                                                       style="margin: 10px auto; color: black">
+                                                        <i class="fas fa-file" style="font-size: 187px"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <button class="btn btn-primary">فایل های آموزشی را مشاهده کردم</button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- /.invoice -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
 
 {% endblock %}
