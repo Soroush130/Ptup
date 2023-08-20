@@ -4,15 +4,18 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db import transaction
 
 from customers.decorators import pass_foundation_course
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation, CustomerActivityHistory
 from customers.tasks.customer_activity_history import get_activity_list, get_content_customer
+from customers.tasks.customers import increase_day_of_healing_period
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
-from healing_content.models import HealingDay
+from healing_content.forms import PracticeAnswerForm
+from healing_content.models import HealingDay, PracticeAnswerDetail, PracticeAnswer
 from illness.models import Illness
 
 
@@ -186,9 +189,9 @@ class HealingPeriodCustomer(View):
 
         healing_day = HealingDay.objects.get(day=day, healing_period=healing_period)
         content_customer = get_content_customer(disease_information, healing_day)
-        print(content_customer)
 
         context = {
+            "healing_day_id": healing_day.id,
             "healing_period_title": disease_information.healing_period.title,
             "day_of_healing_period": day,
             "disease_information": disease_information,
@@ -197,6 +200,34 @@ class HealingPeriodCustomer(View):
         }
 
         return render(request, 'customers/healing_period_customer.html', context)
+
+    def post(self, request, *args, **kwargs):
+        customer = request.user.customer
+        form = PracticeAnswerForm(request.POST, request.FILES)
+        if form.is_valid():
+            cd = form.cleaned_data
+            content = cd['content']
+            file = cd['file']
+            healing_day = cd['healing_day']
+            with transaction.atomic():
+                practice_answer = PracticeAnswer.objects.create(
+                    customer=customer,
+                    healing_day=healing_day
+                )
+                PracticeAnswerDetail.objects.create(
+                    practice_answer=practice_answer,
+                    content=content,
+                    file=file
+                )
+
+                # TODO: Increase the day number of the user's healing period
+                increase_day_of_healing_period(customer)
+
+                messages.success(request, "جواب تمرین با موفقیت ثبت شد")
+                return redirect("customers:healing_period_customer")
+        else:
+            messages.error(request, f"{form.errors['__all__'].as_text()}")
+            return redirect("customers:healing_period_customer")
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

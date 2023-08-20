@@ -215,6 +215,11 @@ class PracticeAnswer(models.Model):
     class Meta:
         db_table = 'practice_answer'
 
+    def clean(self):
+        healing_day = PracticeAnswer.objects.filter(healing_day=self.healing_day, customer=self.customer)
+        if healing_day.exists():
+            raise ValidationError("برای این روز پاسخ ثبت شده است")
+
 
 class PracticeAnswerDetail(models.Model):
     ANSWER_TYPE = (

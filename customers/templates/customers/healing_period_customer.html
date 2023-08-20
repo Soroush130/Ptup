@@ -30,8 +30,8 @@
                                 <div class="col-12">
                                     <h4>
                                         <i class="fas fa-file"></i>فایل های آموزشی از روز {{ day_of_healing_period }} ام
-                                        {{ healing_period_title}}
-                                        <small class="float-right">Date: 2/10/2014</small>
+                                        {{ healing_period_title }}
+{#                                        <small class="float-right">Date: 2/10/2014</small>#}
                                     </h4>
                                 </div>
                             </div>
@@ -45,8 +45,8 @@
                                                     <h4>ویدیو</h4>
                                                 </div>
                                                 <div class="card-body">
-                                                    <video src="{{ content.file.url }}" width="354px"
-                                                           height="200px" controls></video>
+                                                    <video src="{{ content.file.url }}" width="100%"
+                                                           height="100%" controls></video>
                                                 </div>
                                             </div>
                                         {% else %}
@@ -57,7 +57,7 @@
                                                 <div class="card-body d-flex">
                                                     <a class="text-center" href="{{ content.file.url }}"
                                                        style="margin: 10px auto; color: black">
-                                                        <i class="fas fa-file" style="font-size: 187px"></i>
+                                                        <i class="fas fa-file" style="font-size: 100%"></i>
                                                     </a>
                                                 </div>
                                             </div>
@@ -68,17 +68,85 @@
 
                             <div class="row">
                                 <div class="col-lg-4">
-                                    <button class="btn btn-primary">فایل های آموزشی را مشاهده کردم</button>
+                                    <button class="btn btn-primary" id="is_seen">فایل های آموزشی را مشاهده کردم</button>
                                 </div>
                             </div>
 
                         </div>
-                        <!-- /.invoice -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
+
+                    </div>
+                </div>
+
+                <div class="row" id="practice_answer" style="display: none">
+                    <div class="col-12">
+
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-edit"></i>
+                                        جواب تمرین
+                                    </h4>
+                                </div>
+                            </div>
+
+                            <div class="row d-flex justify-content-start flex-wrap mt-3">
+                                <div class="col-lg-5">
+                                    <div class="card mx-5">
+                                        <form role="form" action="" method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="healing_day" value="{{ healing_day_id }}">
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="label-content">توضیحات :</label>
+                                                    <textarea class="form-control" name="content" id="label-content"
+                                                              cols="10"
+                                                              rows="10"></textarea>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="label-file">فایل :</label>
+                                                    <input type="file" id="label-file" name="file">
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button type="submit" class="btn btn-primary">ثیت</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="card mx-5">
+                                        <div class="card-header bg-danger">
+                                            <h4>هشدار</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h6> برای ثبت جواب باید حتما یکی از دو فیلد ( توضیحات - فایل ) پر شود
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </section>
-        <!-- /.content -->
+
     </div>
 
+{% endblock %}
+
+{% block footer_ref %}
+    <script>
+        var btn_seen = document.getElementById("is_seen");
+        btn_seen.addEventListener('click', function (e) {
+            var box_practice_answer = document.getElementById("practice_answer");
+            console.log(box_practice_answer);
+            box_practice_answer.style.display = "block";
+        })
+    </script>
 {% endblock %}
