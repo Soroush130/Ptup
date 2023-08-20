@@ -6,11 +6,11 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db import transaction
 
-from customers.decorators import pass_foundation_course
+from customers.decorators import pass_foundation_course, check_practice_answer, has_started_healing_period
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation, CustomerActivityHistory
 from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history
-from customers.tasks.customers import increase_day_of_healing_period
+from customers.tasks.customers import increase_day_of_healing_period, set_time_healing_period
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
@@ -172,9 +172,30 @@ class PermissionStartTreatmentCustomer(View):
 
 
 # ===============================================================================================
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+@method_decorator(pass_foundation_course, name='dispatch')
+class HealingPeriod(View):
+    def get(self, request):
+        customer = request.user.customer
+
+        disease_information = CustomerDiseaseInformation.objects.filter(
+            customer=customer,
+            is_finished=False
+        ).first()
+
+        context = {
+            "disease_information": disease_information,
+        }
+        return render(request, 'healing_content/healing_period_page_home.html', context)
+
+    def post(self, request):
+        pass
+
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 @method_decorator(pass_foundation_course, name='dispatch')
+# @method_decorator(has_started_healing_period, name='dispatch')
+@method_decorator(check_practice_answer, name='dispatch')
 class HealingPeriodCustomer(View):
     def get(self, request):
         customer = request.user.customer
@@ -183,6 +204,9 @@ class HealingPeriodCustomer(View):
             customer=customer,
             is_finished=False
         ).first()
+
+        # TODO: Set time start healing period
+        set_time_healing_period(disease_information)
 
         day = disease_information.day_of_healing_period
         healing_period = disease_information.healing_period
@@ -224,7 +248,7 @@ class HealingPeriodCustomer(View):
                 increase_day_of_healing_period(customer)
 
                 # TODO: Register activity history for customer
-                healing_day:HealingDay = HealingDay.objects.get(id=healing_day)
+                healing_day: HealingDay = HealingDay.objects.get(id=healing_day)
                 create_activity_history(
                     customer_id=customer.id,
                     subject=f"{healing_day.healing_period}",
