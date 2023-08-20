@@ -21,6 +21,7 @@ def normalize_data_filter_customer(customers: QuerySet) -> dict:
         }
     return customers_dict
 
+
 def check_information_customer(user: QuerySet) -> bool:
     """
     این تابع بررسی میکند آیا این کاربری که درخواست داده اطلاعات خودش را تکمیل کرده است

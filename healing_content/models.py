@@ -34,7 +34,6 @@ class HealingContent(models.Model):
     class Meta:
         db_table = 'healing_content'
 
-
 class DayFeedback(models.Model):
     healing_day = models.ForeignKey(
         HealingDay,
