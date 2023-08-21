@@ -1,3 +1,8 @@
+from django.db import transaction
+
+from ptup_messages.models import Notification
+
+
 def get_list_answer_questionnaire(items):
     selected_answers = {}
     for key, value in items:
@@ -6,3 +11,24 @@ def get_list_answer_questionnaire(items):
             selected_answers[question_id] = value
 
     return selected_answers
+
+
+def check_suicide(question_suicide_row: int, questionnaire_answer_id: int, customer):
+    from foundation_course.models import QuestionnaireAnswerDetail
+
+    with transaction.atomic():
+        receiver = customer.treating_doctor.user
+
+        answer_question = QuestionnaireAnswerDetail.objects.get(
+            questionnaire_answer_id=questionnaire_answer_id,
+            question__row=question_suicide_row
+        )
+        if answer_question.question_option.coefficient == 3:
+            notif = Notification.objects.create(
+                sender=None,
+                receiver=receiver,
+                content="بیمار ریسک خودکشی دارد لطفا بررسی بفرماید"
+            )
+            return bool
+        else:
+            pass
