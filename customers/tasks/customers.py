@@ -3,6 +3,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from customers.models import CustomerDiseaseInformation
+from healing_content.models import PracticeAnswer, HealingDay
 
 
 def increase_day_of_healing_period(customer: QuerySet) -> bool:
@@ -34,3 +35,42 @@ def set_time_healing_period(customer_information: QuerySet) -> bool:
             return True
         else:
             return False
+
+
+def get_practice_answer_list(customer: QuerySet):
+    answers_list = []
+
+    customer_info = CustomerDiseaseInformation.objects.filter(
+        customer=customer,
+        is_finished=False
+    ).first()
+
+    duration_of_treatment = customer_info.healing_period.duration_of_treatment * 7
+
+    for day in range(1, duration_of_treatment):
+
+        healing_day = HealingDay.objects.filter(day=day, healing_period=customer_info.healing_period)
+
+        if healing_day.exists():
+            practice_answer = PracticeAnswer.objects.filter(customer=customer, healing_day=healing_day.first().id)
+            if practice_answer.exists():
+                practice_answer_id = practice_answer.first().id
+                answers_list.append({
+                    'practice_answer_id': practice_answer_id,
+                    'day': day,
+                    'status': True
+                })
+            else:
+                answers_list.append({
+                    'practice_answer_id': None,
+                    'day': day,
+                    'status': False
+                })
+        else:
+            answers_list.append({
+                'practice_answer_id': None,
+                'day': day,
+                'status': False
+            })
+
+    return answers_list

@@ -10,7 +10,7 @@ from customers.decorators import pass_foundation_course, check_practice_answer, 
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation, CustomerActivityHistory
 from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history
-from customers.tasks.customers import increase_day_of_healing_period, set_time_healing_period
+from customers.tasks.customers import increase_day_of_healing_period, set_time_healing_period, get_practice_answer_list
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
@@ -31,10 +31,13 @@ class CustomerInformationDetail(View):
 
         customer_activity_history_list = get_activity_list(customer)
 
+        answers_list = get_practice_answer_list(customer)
+
         context = {
             "customer": customer,
             "questionnaire_answer_list": questionnaire_answer_list,
             "customer_activity_history_list": customer_activity_history_list,
+            "answers_list": answers_list,
         }
         return render(request, 'customers/customer_detail.html', context)
 
