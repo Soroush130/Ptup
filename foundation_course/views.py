@@ -39,7 +39,7 @@ class CompleteQuestionnaireByCustomer(View):
             customer = request.user.customer
             questionnaire_id = request.POST['questionnaire_id']
             questions_count = request.POST['questions_count']
-
+            questionnaire = Questionnaire.objects.get(id=questionnaire_id)
             with transaction.atomic():
 
                 selected_answers = get_list_answer_questionnaire(request.POST.items())
@@ -47,7 +47,7 @@ class CompleteQuestionnaireByCustomer(View):
                 if int(questions_count) == len(selected_answers.keys()):
 
                     questionnaire_answer = QuestionnaireAnswer.objects.create(
-                        questionnaire_id=questionnaire_id,
+                        questionnaire=questionnaire,
                         customer=customer
                     )
 
@@ -68,7 +68,8 @@ class CompleteQuestionnaireByCustomer(View):
                                             f'تکمیل پرسشنامه : {questionnaire_answer.questionnaire.__str__()}')
 
                     # TODO: Let's check if the client is trying to commit suicide or not
-                    check_suicide(9, questionnaire_answer.id, customer)
+                    if questionnaire.type == 2:
+                        check_suicide(9, questionnaire_answer.id, customer)
 
                     # TODO: Checking the end of the foundation course
                     check_foundation_course(request, customer.id)

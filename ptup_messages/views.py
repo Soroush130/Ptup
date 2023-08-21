@@ -7,7 +7,7 @@ from django.views import View
 from accounts.models import User
 from ptup_messages.decorators import is_receiver_or_sender
 from ptup_messages.forms import MessageForm
-from ptup_messages.models import Message
+from ptup_messages.models import Message, Notification
 from ptup_messages.utility import read_message
 
 
@@ -87,3 +87,14 @@ class SendMessageView(View):
         else:
             print(message_form.errors)
             return redirect('ptup_messages:send_messages')
+
+
+# ======================================= Notification ===========================
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class NotificationView(View):
+    def get(self, request):
+        notifications = Notification.objects.filter(receiver=request.user)
+        context = {
+            "notifications": notifications,
+        }
+        return render(request, 'ptup_messages/notification.html', context)

@@ -24,11 +24,12 @@ def check_suicide(question_suicide_row: int, questionnaire_answer_id: int, custo
             question__row=question_suicide_row
         )
         if answer_question.question_option.coefficient == 3:
-            notif = Notification.objects.create(
+            message = f"بیمار با نام مستعار {customer.nick_name} ریسک خودکشی دارد"
+            Notification.objects.create(
                 sender=None,
                 receiver=receiver,
-                content="بیمار ریسک خودکشی دارد لطفا بررسی بفرماید"
+                content=message
             )
-            return bool
+            return True
         else:
             pass
