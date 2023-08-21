@@ -6,11 +6,12 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db import transaction
 
-from customers.decorators import pass_foundation_course, check_practice_answer, has_started_healing_period
+from customers.decorators import pass_foundation_course, check_practice_answer
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
-from customers.models import Customer, CustomerDiseaseInformation, CustomerActivityHistory
+from customers.models import Customer, CustomerDiseaseInformation
 from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history
-from customers.tasks.customers import increase_day_of_healing_period, set_time_healing_period, get_practice_answer_list
+from customers.tasks.customers import increase_day_of_healing_period, set_time_healing_period, get_practice_answer_list, \
+    check_last_day_healing_period
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
@@ -235,11 +236,11 @@ class HealingPeriodCustomer(View):
             cd = form.cleaned_data
             content = cd['content']
             file = cd['file']
-            healing_day = cd['healing_day']
+            healing_day_id = cd['healing_day']
             with transaction.atomic():
                 practice_answer = PracticeAnswer.objects.create(
                     customer=customer,
-                    healing_day=healing_day
+                    healing_day=healing_day_id
                 )
                 PracticeAnswerDetail.objects.create(
                     practice_answer=practice_answer,
@@ -250,8 +251,11 @@ class HealingPeriodCustomer(View):
                 # TODO: Increase the day number of the user's healing period
                 increase_day_of_healing_period(customer)
 
+                # TODO: Checking whether it is the last day of the Healing period or not
+                check_last_day_healing_period(healing_day_id, customer)
+
                 # TODO: Register activity history for customer
-                healing_day: HealingDay = HealingDay.objects.get(id=healing_day)
+                healing_day: HealingDay = HealingDay.objects.get(id=healing_day_id)
                 create_activity_history(
                     customer_id=customer.id,
                     subject=f"{healing_day.healing_period}",
