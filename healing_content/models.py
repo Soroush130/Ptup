@@ -34,41 +34,6 @@ class HealingContent(models.Model):
     class Meta:
         db_table = 'healing_content'
 
-class DayFeedback(models.Model):
-    healing_day = models.ForeignKey(
-        HealingDay,
-        on_delete=models.CASCADE,
-        related_name='dey_feedbacks',
-        verbose_name='روز',
-        help_text='برای کدام روز از کدام دوره درمان است'
-    )
-    doctor = models.ForeignKey(
-        Doctor,
-        on_delete=models.CASCADE,
-        verbose_name='دکتر',
-        related_name='doctor_day_feedbacks'
-    )
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        verbose_name='مراجع',
-        related_name='customer_day_feedbacks'
-    )
-    subject = models.CharField(
-        max_length=255,
-        verbose_name='عنوان'
-    )
-    content = models.TextField(
-        verbose_name='توضیحات'
-    )
-
-    class Meta:
-        db_table = 'day_feedback'
-
-    def __str__(self):
-        return self.subject
-
-
 # =========================================== Questionnaire Week ==========================
 class QuestionnaireWeek(models.Model):
     title = models.CharField(
@@ -248,3 +213,34 @@ class PracticeAnswerDetail(models.Model):
 
     def __str__(self):
         return f"{self.practice_answer}"
+# ==========================================================================
+
+
+class DayFeedback(models.Model):
+    practice_answer = models.ForeignKey(
+        PracticeAnswer,
+        on_delete=models.CASCADE,
+        related_name='dey_feedbacks',
+        verbose_name='تمرین',
+        help_text='برای کدام تمرین است'
+    )
+    doctor = models.ForeignKey(
+        Doctor,
+        on_delete=models.CASCADE,
+        verbose_name='دکتر',
+        related_name='doctor_day_feedbacks'
+    )
+    subject = models.CharField(
+        max_length=255,
+        verbose_name='عنوان'
+    )
+    content = models.TextField(
+        verbose_name='توضیحات'
+    )
+
+    class Meta:
+        db_table = 'day_feedback'
+
+    def __str__(self):
+        return self.subject
+

@@ -286,16 +286,19 @@
                                             {% for answer in answers_list %}
                                                 <div class="col-lg-2 my-2">
                                                     {% if answer.status %}
-                                                        <div class="color-palette-set">
-                                                            <div class="bg-success color-palette">
-                                                                <span class="mx-1">روز {{ answer.day }}ام</span>
-                                                            </div>
-                                                            <div class="bg-success disabled color-palette text-center">
+                                                        <a href="{% url 'healing_content:day_feedback_detail' answer.practice_answer_id %}"
+                                                           style="text-decoration: none; color: white">
+                                                            <div class="color-palette-set">
+                                                                <div class="bg-success color-palette">
+                                                                    <span class="mx-1">روز {{ answer.day }}ام</span>
+                                                                </div>
+                                                                <div class="bg-success disabled color-palette text-center">
                                                             <span>
                                                                     انجام شده
                                                             </span>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        </a>
                                                     {% else %}
                                                         <div class="color-palette-set">
                                                             <div class="bg-danger color-palette">

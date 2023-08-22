@@ -15,3 +15,9 @@ class PracticeAnswerForm(forms.Form):
             raise forms.ValidationError("فیلد توضیحات یا فایل وارد نشده است")
 
         return cleaned_data
+
+
+class DayFeedbackForm(forms.Form):
+    practice_answer_id = forms.IntegerField()
+    subject = forms.CharField()
+    content = forms.CharField(widget=forms.TextInput)

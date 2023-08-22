@@ -1,0 +1,77 @@
+{% extends "shared/_MainLayout.html" %}
+
+{% block title %}
+    جزییات تمرین
+{% endblock %}
+
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>{{ disease_information.healing_period }}</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row mt-3">
+
+                    <div class="col-lg-5">
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <h5>پاسخ مراجع به تمرین</h5>
+                            </div>
+                            <div class="card-body ">
+
+                                <div class="content">
+                                    + {{ answer.content }}
+                                </div>
+                                <br>
+                                <div class="file">
+                                    {% if answer.status_file %}
+                                        + <a href="{{ answer.file }}">فایل</a>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <h5>ثبت بازخورد</h5>
+                            </div>
+                            <form action="{% url 'healing_content:create_feedback' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="practice_answer_id" value="{{ practice_answer_id }}">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="subject">عنوان :</label>
+                                        <input type="text" class="form-control" id="subject" name="subject">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="content">توضیحات :</label>
+                                        <textarea name="content" class="form-control" id="content" cols="15"
+                                                  rows="10"></textarea>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">ثبت</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+{% endblock %}
