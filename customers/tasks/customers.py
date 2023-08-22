@@ -3,6 +3,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from customers.models import CustomerDiseaseInformation
+from customers.tasks.customer_activity_history import check_exercises_every_day
 from healing_content.models import PracticeAnswer, HealingDay
 
 
@@ -17,9 +18,17 @@ def increase_day_of_healing_period(customer: QuerySet) -> bool:
             customer=customer,
             is_finished=False
         ).first()
-        diseas_customer.day_of_healing_period += 1
-        diseas_customer.save()
-        return True
+
+        healing_period = diseas_customer.healing_period
+        day = diseas_customer.day_of_healing_period
+
+        status, day, healing_period = check_exercises_every_day(day, healing_period, customer)
+        if status:
+            diseas_customer.day_of_healing_period += 1
+            diseas_customer.save()
+            return True
+        else:
+            return False
 
 
 def set_time_healing_period(customer_information: QuerySet) -> bool:

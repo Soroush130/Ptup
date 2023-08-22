@@ -9,7 +9,8 @@ from django.db import transaction
 from customers.decorators import pass_foundation_course, check_practice_answer
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation
-from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history
+from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history, \
+    check_exercises_every_day
 from customers.tasks.customers import increase_day_of_healing_period, set_time_healing_period, get_practice_answer_list, \
     check_last_day_healing_period
 from customers.utility import normalize_data_filter_customer
@@ -215,8 +216,18 @@ class HealingPeriodCustomer(View):
         day = disease_information.day_of_healing_period
         healing_period = disease_information.healing_period
 
+        # TODO: Checking whether she passed the previous day's training or not
+        status, day, healing_period = check_exercises_every_day(day - 1, healing_period, customer)
+
+        if status:
+            day, healing_period = day, healing_period
+
         healing_day = HealingDay.objects.get(day=day, healing_period=healing_period)
-        content_customer = get_content_customer(disease_information, healing_day)
+        content_customer = get_content_customer(
+            day=day,
+            duration_of_treatment=disease_information.healing_period.duration_of_treatment,
+            healing_day=healing_day
+        )
 
         context = {
             "healing_day_id": healing_day.id,
