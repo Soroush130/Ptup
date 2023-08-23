@@ -49,3 +49,21 @@ class CreateFeedbackView(View):
         else:
             messages.error(request, f"{form.errors.as_text()}")
             return redirect(request.META.get("HTTP_REFERER"))
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class ShowFeedbackByCustomerView(View):
+    def get(self, request, practice_answer_id, *args, **kwargs):
+        customer = request.user.customer
+        doctor = customer.treating_doctor
+
+        day_feedback = DayFeedback.objects.get(
+            practice_answer_id=practice_answer_id,
+            doctor=doctor,
+            practice_answer__customer=customer
+        )
+
+        context = {
+            "day_feedback": day_feedback,
+        }
+        return render(request, 'healing_content/show_feed_back_by_customer.html', context)

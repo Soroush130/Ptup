@@ -188,8 +188,11 @@ class HealingPeriod(View):
             is_finished=False
         ).first()
 
+        answers_list = get_practice_answer_list(customer)
+
         context = {
             "disease_information": disease_information,
+            "answers_list": answers_list,
         }
         return render(request, 'healing_content/healing_period_page_home.html', context)
 

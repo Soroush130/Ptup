@@ -20,6 +20,7 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row mt-3">
+
                     <div class="col-lg-5">
                         <div class="card">
                             <div class="card-header bg-primary">
@@ -54,6 +55,69 @@
                                 </a>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-lg-7">
+
+                        <div class="card">
+
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#"
+                                           data-toggle="tab">
+                                            تست
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#practice_answer"
+                                           data-toggle="tab">تمرینات بیمار
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane" id="practice_answer">
+                                        <div class="row" style="height: 350px; overflow: auto">
+                                            {% for answer in answers_list %}
+                                                <div class="col-lg-2 my-2">
+                                                    {% if answer.status %}
+                                                        <a href="{% url 'healing_content:show_feedback' answer.practice_answer_id %}"
+                                                           style="text-decoration: none; color: white">
+                                                            <div class="color-palette-set">
+                                                                <div class="bg-success color-palette">
+                                                                    <span class="mx-1">روز {{ answer.day }}ام</span>
+                                                                </div>
+                                                                <div class="bg-success disabled color-palette text-center">
+                                                            <span>
+                                                                    انجام شده
+                                                            </span>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    {% else %}
+                                                        <div class="color-palette-set">
+                                                            <div class="bg-danger color-palette">
+                                                                <span class="mx-1">روز {{ answer.day }}ام</span>
+                                                            </div>
+                                                            <div class="bg-danger disabled color-palette text-center">
+                                                            <span>
+                                                                انجام نشده
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

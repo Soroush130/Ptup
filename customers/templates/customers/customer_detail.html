@@ -72,7 +72,8 @@
                                     <div class="active tab-pane"
                                          id="questionnaire">
 
-                                        <div class="d-flex justify-content-between flex-wrap">
+                                        <div class="d-flex justify-content-between flex-wrap"
+                                             style="height: 350px; overflow: auto">
 
                                             {% for questionnaire_answer in questionnaire_answer_list %}
                                                 {% if questionnaire_answer.questionnaire.type == 3 %}
@@ -243,7 +244,7 @@
                                     <!-- /.tab-pane -->
                                     <div class="tab-pane" id="timeline">
                                         <!-- The timeline -->
-                                        <div class="timeline timeline-inverse">
+                                        <div class="timeline timeline-inverse" style="height: 350px; overflow: auto">
 
                                             {% for date, activities in customer_activity_history_list.items %}
                                                 <div class="time-label">
@@ -282,7 +283,7 @@
                                     <!-- /.tab-pane -->
 
                                     <div class="tab-pane" id="practice_answer">
-                                        <div class="row">
+                                        <div class="row" style="height: 350px; overflow: auto">
                                             {% for answer in answers_list %}
                                                 <div class="col-lg-2 my-2">
                                                     {% if answer.status %}
