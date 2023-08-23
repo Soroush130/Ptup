@@ -95,8 +95,8 @@ def check_exercises_every_day(day, healing_period, customer):
 def get_questionnaire_weekly(day, duration_of_treatment):
     total_number_of_treatment_days = duration_of_treatment * 7
 
-    # list_of_weekend_days = [number for number in range(1, total_number_of_treatment_days) if number % 7 == 0]
-    list_of_weekend_days = [2]
+    list_of_weekend_days = [number for number in range(1, total_number_of_treatment_days) if number % 7 == 0]
+    # list_of_weekend_days = [2]
 
     if day in list_of_weekend_days:
         questionnaire_weekly_list = QuestionnaireWeek.objects.all()
