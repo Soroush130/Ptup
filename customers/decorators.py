@@ -33,18 +33,14 @@ def check_practice_answer(view_func):
         customer = request.user.customer
 
         date_now = timezone.now().date()
-        practice_answer = PracticeAnswer.objects.filter(
-            customer=customer,
-            time_answer__year=date_now.year,
-            time_answer__month=date_now.month,
-            time_answer__day=date_now.day
-        )
 
-        if not practice_answer.exists():
-            messages.error(request, "تمرین امروز را انجام بدهید")
-            return view_func(request, *args, **kwargs)
-        else:
-            healing_day = HealingDay.objects.get(id=practice_answer.first().healing_day)
+        last_practice_answer = PracticeAnswer.objects.filter(customer=customer).last()
+
+        if (last_practice_answer.time_answer.year == date_now.year) and (
+                last_practice_answer.time_answer.month == date_now.month) and (
+                last_practice_answer.time_answer.day == date_now.day):
+
+            healing_day = HealingDay.objects.get(id=last_practice_answer.healing_day)
 
             questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
                 healing_day.day,
@@ -65,6 +61,9 @@ def check_practice_answer(view_func):
             else:
                 messages.info(request, 'شما تمرینات امروز را انجام داده اید')
                 return redirect('customers:healing_period')
+        else:
+            messages.error(request, "لطفا تمرین امروز را انجام بدهید")
+            return view_func(request, *args, **kwargs)
 
     return wrapped_view
 
