@@ -1,10 +1,10 @@
 from django.db.models import QuerySet
 from django.db import transaction
 from django.utils import timezone
-
+from django.db.models import Count
 from customers.models import CustomerDiseaseInformation
 from customers.tasks.customer_activity_history import check_exercises_every_day
-from healing_content.models import PracticeAnswer, HealingDay
+from healing_content.models import PracticeAnswer, HealingDay, QuestionnaireWeekAnswer
 
 
 def increase_day_of_healing_period(customer: QuerySet) -> bool:
@@ -95,3 +95,37 @@ def check_last_day_healing_period(healing_day_id, customer):
             disease_info.save()
         else:
             pass
+
+
+def get_progress_charts(customer: QuerySet):
+    questionnaire_weekly_list = []
+    questionnaire_weekly_answer_list = QuestionnaireWeekAnswer.objects.filter(customer=customer)
+
+    for questionnaire in questionnaire_weekly_answer_list:
+        questionnaire_week = questionnaire.questionnaire_week
+        if questionnaire_week not in questionnaire_weekly_list:
+            questionnaire_weekly_list.append(questionnaire_week)
+        else:
+            pass
+
+    # print(questionnaire_weekly_list)
+    charts = []
+    for questionnaire_weekly in questionnaire_weekly_list:
+        questionnaire_answer = QuestionnaireWeekAnswer.objects.filter(customer=customer,
+                                                                      questionnaire_week=questionnaire_weekly)
+
+        labels = []
+        data = []
+        for index, item in enumerate(questionnaire_answer.order_by('answer_time')):
+            labels.append(f"هفته {index + 1}")
+            data.append(item.score)
+
+        charts.append({
+            "questionnaire_week_id": questionnaire_weekly.id,
+            "questionnaire_week_title": questionnaire_weekly.title,
+            "labels": labels,
+            "data": data
+        })
+
+
+    return charts

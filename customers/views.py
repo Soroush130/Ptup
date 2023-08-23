@@ -12,7 +12,7 @@ from customers.models import Customer, CustomerDiseaseInformation
 from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history, \
     check_exercises_every_day
 from customers.tasks.customers import increase_day_of_healing_period, set_time_healing_period, get_practice_answer_list, \
-    check_last_day_healing_period
+    check_last_day_healing_period, get_progress_charts
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
@@ -35,11 +35,16 @@ class CustomerInformationDetail(View):
 
         answers_list = get_practice_answer_list(customer)
 
+        progress_charts = get_progress_charts(customer)
+
         context = {
             "customer": customer,
             "questionnaire_answer_list": questionnaire_answer_list,
             "customer_activity_history_list": customer_activity_history_list,
             "answers_list": answers_list,
+
+            "count_charts": len(progress_charts),
+            "progress_charts": progress_charts,
         }
         return render(request, 'customers/customer_detail.html', context)
 

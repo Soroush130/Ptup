@@ -63,6 +63,9 @@
 
                                     <li class="nav-item"><a class="nav-link" href="#practice_answer"
                                                             data-toggle="tab">تمرینات بیمار</a></li>
+
+                                    <li class="nav-item"><a class="nav-link" href="#progress_chart"
+                                                            data-toggle="tab">نمودار روند پیشرفت</a></li>
                                 </ul>
                             </div>
 
@@ -317,6 +320,19 @@
 
                                         </div>
                                     </div>
+
+
+                                    <div class="tab-pane" id="progress_chart">
+                                        {% for chart in progress_charts %}
+                                            <div class="row my-2">
+                                                <div class="col-lg">
+                                                    <h5>{{ chart.questionnaire_week_title }}</h5>
+                                                    <canvas id="chart{{ chart.questionnaire_week_id }}"></canvas>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -325,4 +341,42 @@
             </div>
         </section>
     </div>
+    {{ progress_charts|json_script:"progress_charts" }}
+{% endblock %}
+
+{% block footer_ref %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script>
+        var progress_charts = JSON.parse(document.getElementById('progress_charts').textContent);
+        var count_chart = {{ count_charts }};
+
+        for (let i = 1; i < count_chart + 1; i++) {
+            var chart_id = "chart" + i;
+
+            let ctx = document.getElementById(chart_id).getContext("2d");
+
+            let chart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: progress_charts[i-1].labels,
+                    datasets: [
+                        {
+                            label: progress_charts[i-1].title,
+                            backgroundColor: "#79AEC8",
+                            borderColor: "#417690",
+                            data: progress_charts[i-1].data
+                        }
+                    ]
+                },
+                options: {
+                    title: {
+                        text: "Gross Volume in 2020",
+                        display: true
+                    }
+                }
+            });
+        }
+
+
+    </script>
 {% endblock %}
