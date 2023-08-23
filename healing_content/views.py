@@ -56,14 +56,22 @@ class ShowFeedbackByCustomerView(View):
     def get(self, request, practice_answer_id, *args, **kwargs):
         customer = request.user.customer
         doctor = customer.treating_doctor
+        try:
+            day_feedback = DayFeedback.objects.get(
+                practice_answer_id=practice_answer_id,
+                doctor=doctor,
+                practice_answer__customer=customer
+            )
 
-        day_feedback = DayFeedback.objects.get(
-            practice_answer_id=practice_answer_id,
-            doctor=doctor,
-            practice_answer__customer=customer
-        )
-
-        context = {
-            "day_feedback": day_feedback,
-        }
-        return render(request, 'healing_content/show_feed_back_by_customer.html', context)
+            context = {
+                "status": True,
+                "day_feedback": day_feedback,
+            }
+            return render(request, 'healing_content/show_feed_back_by_customer.html', context)
+        except DayFeedback.DoesNotExist:
+            context = {
+                "status": False,
+                "doctor": doctor,
+                "day_feedback": "هیچ بازخوردی ثبت نشده است",
+            }
+            return render(request, 'healing_content/show_feed_back_by_customer.html', context)
