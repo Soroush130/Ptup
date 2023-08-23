@@ -6,8 +6,13 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db import transaction
 
+from customers.tasks.customer_activity_history import create_activity_history
+from customers.tasks.customers import increase_day_of_healing_period
+from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
+from foundation_course.utility import calculate_score_each_questionnaire_weekly
 from healing_content.forms import DayFeedbackForm
-from healing_content.models import PracticeAnswer, PracticeAnswerDetail, DayFeedback
+from healing_content.models import PracticeAnswer, PracticeAnswerDetail, DayFeedback, QuestionnaireWeek, QuestionWeek, \
+    QuestionnaireWeekAnswer, QuestionnaireWeekAnswerDetail
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -75,3 +80,69 @@ class ShowFeedbackByCustomerView(View):
                 "day_feedback": "هیچ بازخوردی ثبت نشده است",
             }
             return render(request, 'healing_content/show_feed_back_by_customer.html', context)
+
+
+# =============================== Questionnaire Weekly ========================
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class QuestionnaireWeeklyView(View):
+    def get(self, request, questionnaire_id, healing_day_id, *args, **kwargs):
+        questionnaire_week = QuestionnaireWeek.objects.get(id=questionnaire_id)
+
+        number_of_option = "".join([str(i) for i in range(1, questionnaire_week.number_of_options + 1)])
+
+        questions = QuestionWeek.objects.filter(questionnaire_week=questionnaire_week).order_by('row')
+
+        context = {
+            "healing_day_id": healing_day_id,
+            "questionnaire": questionnaire_week,
+            "number_of_option": number_of_option,
+            "questions": questions,
+            "questions_count": questions.count(),
+        }
+        return render(request, 'healing_content/questionnaire_weekly_detail.html', context)
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class CompleteQuestionnaireWeeklyByCustomer(View):
+    def post(self, request):
+        if request.method == "POST":
+            customer = request.user.customer
+            healing_day_id = request.POST['healing_day_id']
+            questionnaire_id = request.POST['questionnaire_id']
+            questions_count = request.POST['questions_count']
+            questionnaire = QuestionnaireWeek.objects.get(id=questionnaire_id)
+            with transaction.atomic():
+
+                selected_answers = get_list_answer_questionnaire(request.POST.items())
+
+                if int(questions_count) == len(selected_answers.keys()):
+
+                    questionnaire_answer = QuestionnaireWeekAnswer.objects.create(
+                        questionnaire_week=questionnaire,
+                        customer=customer,
+                        healing_day_id=healing_day_id
+                    )
+
+                    objects_to_create = []
+                    for key, value in selected_answers.items():
+                        objects_to_create.append(QuestionnaireWeekAnswerDetail(
+                            questionnaire_week=questionnaire_answer,
+                            question_week_id=key,
+                            question_option_week_id=value
+                        ))
+
+                    answers_list = QuestionnaireWeekAnswerDetail.objects.bulk_create(objects_to_create)
+
+                    calculate_score_each_questionnaire_weekly(questionnaire_answer, answers_list)
+
+                    # TODO: Increase the day number of the user's healing period
+                    increase_day_of_healing_period(customer)
+
+                    # TODO: Register activity history
+                    create_activity_history(customer.id, 'تکمیل پرسشنامه هفتگی',
+                                            f'تکمیل پرسشنامه هفتگی : {questionnaire_answer.questionnaire_week.__str__()}')
+
+                    return redirect(f'/content/questionnaire_weekly/{questionnaire_id}/{healing_day_id}/')
+                else:
+                    messages.error(request, "لطفا پرسشنامه را تکمیل کنید")
+                    return redirect(request.META.get("HTTP_REFERER"))

@@ -34,6 +34,7 @@ class HealingContent(models.Model):
     class Meta:
         db_table = 'healing_content'
 
+
 # =========================================== Questionnaire Week ==========================
 class QuestionnaireWeek(models.Model):
     title = models.CharField(
@@ -133,7 +134,7 @@ class QuestionnaireWeekAnswer(models.Model):
 
 
 class QuestionnaireWeekAnswerDetail(models.Model):
-    questionnaire_week_answer = models.ForeignKey(
+    questionnaire_week = models.ForeignKey(
         QuestionnaireWeekAnswer,
         verbose_name='جواب پرسشنامه',
         related_name='questionnaire_week_answer_detail',
@@ -213,6 +214,8 @@ class PracticeAnswerDetail(models.Model):
 
     def __str__(self):
         return f"{self.practice_answer}"
+
+
 # ==========================================================================
 
 
@@ -243,4 +246,3 @@ class DayFeedback(models.Model):
 
     def __str__(self):
         return self.subject
-

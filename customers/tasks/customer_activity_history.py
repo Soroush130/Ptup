@@ -61,11 +61,18 @@ def check_exercises_every_day(day, healing_period, customer):
 
         healing_day = HealingDay.objects.get(day=day, healing_period=healing_period)
 
-        questionnaires_weekly = get_questionnaire_weekly(day, healing_period.duration_of_treatment)
+        questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(day,
+                                                                                      healing_period.duration_of_treatment)
 
         if questionnaires_weekly is not None:
-            status_questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(
-                questionnaire_week__in=questionnaires_weekly).exists()
+            questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(
+                questionnaire_week__in=questionnaires_weekly)
+
+            if (questionnaire_answer_weekly.exists()) and (questionnaire_answer_weekly.count() == questionnaires_weekly_count):
+                status_questionnaire_answer_weekly = True
+            else:
+                status_questionnaire_answer_weekly = False
+
         else:
             status_questionnaire_answer_weekly = None
 
@@ -88,14 +95,14 @@ def check_exercises_every_day(day, healing_period, customer):
 def get_questionnaire_weekly(day, duration_of_treatment):
     total_number_of_treatment_days = duration_of_treatment * 7
 
-    list_of_weekend_days = [number for number in range(1, total_number_of_treatment_days) if number % 7 == 0]
-    # list_of_weekend_days = [1]
+    # list_of_weekend_days = [number for number in range(1, total_number_of_treatment_days) if number % 7 == 0]
+    list_of_weekend_days = [2]
 
     if day in list_of_weekend_days:
         questionnaire_weekly_list = QuestionnaireWeek.objects.all()
-        return questionnaire_weekly_list
+        return questionnaire_weekly_list, questionnaire_weekly_list.count()
     else:
-        return None
+        return None, 0
 
 
 def get_healing_content(healing_day: QuerySet):
@@ -105,7 +112,7 @@ def get_healing_content(healing_day: QuerySet):
 
 def get_content_customer(day: int, duration_of_treatment: int, healing_day: QuerySet):
     healing_content = get_healing_content(healing_day)
-    questionnaires_weekly = get_questionnaire_weekly(day, duration_of_treatment)
+    questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(day, duration_of_treatment)
 
     return {
         'healing_content': healing_content,

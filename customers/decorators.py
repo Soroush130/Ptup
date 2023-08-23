@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 from functools import wraps
-
+from datetime import timedelta
 from django.utils import timezone
 
 from customers.models import CustomerDiseaseInformation
-from healing_content.models import PracticeAnswer
+from customers.tasks.customer_activity_history import get_questionnaire_weekly
+from healing_content.models import PracticeAnswer, HealingDay, QuestionnaireWeekAnswer
 
 
 def pass_foundation_course(view_func):
@@ -40,10 +41,30 @@ def check_practice_answer(view_func):
         )
 
         if not practice_answer.exists():
+            messages.error(request, "تمرین امروز را انجام بدهید")
             return view_func(request, *args, **kwargs)
         else:
-            messages.info(request, 'شما تمرینات امروز را انجام داده اید')
-            return redirect('customers:healing_period')
+            healing_day = HealingDay.objects.get(id=practice_answer.first().healing_day)
+
+            questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
+                healing_day.day,
+                healing_day.healing_period.duration_of_treatment
+            )
+
+            if questionnaires_weekly is not None:
+                questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(
+                    questionnaire_week__in=questionnaires_weekly)
+
+                if (questionnaire_answer_weekly.exists()) and (
+                        questionnaire_answer_weekly.count() == questionnaires_weekly_count):
+                    messages.info(request, 'شما تمرینات امروز را انجام داده اید')
+                    return redirect('customers:healing_period')
+                else:
+                    messages.error(request, "پرسشنامه های هقتگی را تکمیل کنید")
+                    return view_func(request, *args, **kwargs)
+            else:
+                messages.info(request, 'شما تمرینات امروز را انجام داده اید')
+                return redirect('customers:healing_period')
 
     return wrapped_view
 
