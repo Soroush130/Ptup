@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db import transaction
 
-from customers.decorators import pass_foundation_course, check_practice_answer
+from customers.decorators import pass_foundation_course, check_practice_answer, pass_healing_period
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation
 from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history, \
@@ -184,6 +184,7 @@ class PermissionStartTreatmentCustomer(View):
 # ===============================================================================================
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 @method_decorator(pass_foundation_course, name='dispatch')
+@method_decorator(pass_healing_period, name='dispatch')
 class HealingPeriod(View):
     def get(self, request):
         customer = request.user.customer
@@ -207,6 +208,7 @@ class HealingPeriod(View):
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 @method_decorator(pass_foundation_course, name='dispatch')
+@method_decorator(pass_healing_period, name='dispatch')
 # @method_decorator(has_started_healing_period, name='dispatch')
 @method_decorator(check_practice_answer, name='dispatch')
 class HealingPeriodCustomer(View):
@@ -266,12 +268,10 @@ class HealingPeriodCustomer(View):
                     content=content,
                     file=file
                 )
+                messages.success(request, "جواب تمرین با موفقیت ثبت شد")
 
                 # TODO: Increase the day number of the user's healing period
                 increase_day_of_healing_period(customer)
-
-                # TODO: Checking whether it is the last day of the Healing period or not
-                check_last_day_healing_period(healing_day_id, customer)
 
                 # TODO: Register activity history for customer
                 healing_day: HealingDay = HealingDay.objects.get(id=healing_day_id)
@@ -281,7 +281,9 @@ class HealingPeriodCustomer(View):
                     content=f"انجام تمرین های روز {healing_day.day}ام ، {healing_day.healing_period}"
                 )
 
-                messages.success(request, "جواب تمرین با موفقیت ثبت شد")
+                # TODO: Checking whether it is the last day of the Healing period or not
+                check_last_day_healing_period(request, healing_day_id, customer)
+
                 return redirect("customers:healing_period_customer")
         else:
             messages.error(request, f"{form.errors['__all__'].as_text()}")

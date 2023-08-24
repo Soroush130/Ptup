@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.db.models import QuerySet
 from django.db import transaction
 from django.utils import timezone
@@ -85,14 +86,18 @@ def get_practice_answer_list(customer: QuerySet):
     return answers_list
 
 
-def check_last_day_healing_period(healing_day_id, customer):
+def check_last_day_healing_period(request, healing_day_id, customer):
     with transaction.atomic():
         healing_day = HealingDay.objects.get(id=healing_day_id)
+
         healing_period_last_day = healing_day.healing_period.duration_of_treatment * 7
+        # healing_period_last_day = 1
+
         if healing_day.day == healing_period_last_day:
             disease_info = CustomerDiseaseInformation.objects.filter(customer=customer, is_finished=False).first()
             disease_info.is_healing_period = True
             disease_info.save()
+            messages.success(request, "شما دوره درمانی را با موفقیت سپری کردید")
         else:
             pass
 

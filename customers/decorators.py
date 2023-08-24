@@ -27,6 +27,24 @@ def pass_foundation_course(view_func):
     return wrapped_view
 
 
+def pass_healing_period(view_func):
+    @wraps(view_func)
+    def wrapped_view(request, *args, **kwargs):
+        customer = request.user.customer
+
+        disease_information = CustomerDiseaseInformation.objects.filter(
+            customer=customer,
+            is_finished=False
+        ).first()
+
+        if not disease_information.is_healing_period:
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('customers:follow_up_customer')
+
+    return wrapped_view
+
+
 def check_practice_answer(view_func):
     @wraps(view_func)
     def wrapped_view(request, *args, **kwargs):
@@ -67,7 +85,7 @@ def check_practice_answer(view_func):
                 messages.error(request, "لطفا تمرین امروز را انجام بدهید")
                 return view_func(request, *args, **kwargs)
         else:
-            messages.error(request, "لطفا تمرین امروز را انجام بدهید")
+            # messages.info(request, "به اولین روز از دوره درمان خوش آمدید")
             return view_func(request, *args, **kwargs)
 
     return wrapped_view

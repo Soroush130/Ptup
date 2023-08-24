@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.db import transaction
 
 from customers.tasks.customer_activity_history import create_activity_history
-from customers.tasks.customers import increase_day_of_healing_period
+from customers.tasks.customers import increase_day_of_healing_period, check_last_day_healing_period
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
 from foundation_course.utility import calculate_score_each_questionnaire_weekly
 from healing_content.forms import DayFeedbackForm
@@ -137,6 +137,9 @@ class CompleteQuestionnaireWeeklyByCustomer(View):
 
                     # TODO: Increase the day number of the user's healing period
                     increase_day_of_healing_period(customer)
+
+                    # TODO: Checking whether it is the last day of the Healing period or not
+                    check_last_day_healing_period(request, healing_day_id, customer)
 
                     # TODO: Register activity history
                     create_activity_history(customer.id, 'تکمیل پرسشنامه هفتگی',
