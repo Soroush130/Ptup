@@ -34,33 +34,38 @@ def check_practice_answer(view_func):
 
         date_now = timezone.now().date()
 
-        last_practice_answer = PracticeAnswer.objects.filter(customer=customer).last()
+        practice_answers = PracticeAnswer.objects.filter(customer=customer)
 
-        if (last_practice_answer.time_answer.year == date_now.year) and (
-                last_practice_answer.time_answer.month == date_now.month) and (
-                last_practice_answer.time_answer.day == date_now.day):
+        if practice_answers.exists():
+            last_practice_answer = PracticeAnswer.objects.filter(customer=customer).last()
+            if (last_practice_answer.time_answer.year == date_now.year) and (
+                    last_practice_answer.time_answer.month == date_now.month) and (
+                    last_practice_answer.time_answer.day == date_now.day):
 
-            healing_day = HealingDay.objects.get(id=last_practice_answer.healing_day)
+                healing_day = HealingDay.objects.get(id=last_practice_answer.healing_day)
 
-            questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
-                healing_day.day,
-                healing_day.healing_period.duration_of_treatment
-            )
+                questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
+                    healing_day.day,
+                    healing_day.healing_period.duration_of_treatment
+                )
 
-            if questionnaires_weekly is not None:
-                questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(
-                    questionnaire_week__in=questionnaires_weekly)
+                if questionnaires_weekly is not None:
+                    questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(
+                        questionnaire_week__in=questionnaires_weekly)
 
-                if (questionnaire_answer_weekly.exists()) and (
-                        questionnaire_answer_weekly.count() == questionnaires_weekly_count):
+                    if (questionnaire_answer_weekly.exists()) and (
+                            questionnaire_answer_weekly.count() == questionnaires_weekly_count):
+                        messages.info(request, 'شما تمرینات امروز را انجام داده اید')
+                        return redirect('customers:healing_period')
+                    else:
+                        messages.error(request, "پرسشنامه های هقتگی را تکمیل کنید")
+                        return view_func(request, *args, **kwargs)
+                else:
                     messages.info(request, 'شما تمرینات امروز را انجام داده اید')
                     return redirect('customers:healing_period')
-                else:
-                    messages.error(request, "پرسشنامه های هقتگی را تکمیل کنید")
-                    return view_func(request, *args, **kwargs)
             else:
-                messages.info(request, 'شما تمرینات امروز را انجام داده اید')
-                return redirect('customers:healing_period')
+                messages.error(request, "لطفا تمرین امروز را انجام بدهید")
+                return view_func(request, *args, **kwargs)
         else:
             messages.error(request, "لطفا تمرین امروز را انجام بدهید")
             return view_func(request, *args, **kwargs)
