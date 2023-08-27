@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Count
 from customers.models import CustomerDiseaseInformation
 from customers.tasks.customer_activity_history import check_exercises_every_day
-from healing_content.models import PracticeAnswer, HealingDay, QuestionnaireWeekAnswer
+from healing_content.models import HealingDay, QuestionnaireWeekAnswer, AnswerPractice
 
 
 def increase_day_of_healing_period(customer: QuerySet) -> bool:
@@ -62,7 +62,7 @@ def get_practice_answer_list(customer: QuerySet):
         healing_day = HealingDay.objects.filter(day=day, healing_period=customer_info.healing_period)
 
         if healing_day.exists():
-            practice_answer = PracticeAnswer.objects.filter(customer=customer, healing_day=healing_day.first().id)
+            practice_answer = AnswerPractice.objects.filter(customer=customer, healing_day=healing_day.first().id)
             if practice_answer.exists():
                 practice_answer_id = practice_answer.first().id
                 answers_list.append({

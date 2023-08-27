@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from customers.models import CustomerDiseaseInformation
 from customers.tasks.customer_activity_history import get_questionnaire_weekly
-from healing_content.models import PracticeAnswer, HealingDay, QuestionnaireWeekAnswer
+from healing_content.models import HealingDay, QuestionnaireWeekAnswer, AnswerPractice
 
 
 def pass_foundation_course(view_func):
@@ -52,15 +52,15 @@ def check_practice_answer(view_func):
 
         date_now = timezone.now().date()
 
-        practice_answers = PracticeAnswer.objects.filter(customer=customer)
+        practice_answers = AnswerPractice.objects.filter(customer=customer)
 
         if practice_answers.exists():
-            last_practice_answer = PracticeAnswer.objects.filter(customer=customer).last()
+            last_practice_answer = AnswerPractice.objects.filter(customer=customer).last()
             if (last_practice_answer.time_answer.year == date_now.year) and (
                     last_practice_answer.time_answer.month == date_now.month) and (
                     last_practice_answer.time_answer.day == date_now.day):
 
-                healing_day = HealingDay.objects.get(id=last_practice_answer.healing_day)
+                healing_day = HealingDay.objects.get(id=last_practice_answer.healing_day.id)
 
                 questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
                     healing_day.day,

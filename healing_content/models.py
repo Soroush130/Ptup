@@ -25,14 +25,76 @@ class HealingDay(models.Model):
 class HealingContent(models.Model):
     TYPE_HEALING_CONTENT = (
         ('MEDIA', 'ویدیو'),
-        ('PRACTICE', 'تمرین')
+        ('FILE', 'فایل'),
+        ('VOICE', 'صدا'),
     )
     healing_day = models.ForeignKey(HealingDay, on_delete=models.CASCADE, verbose_name='روز چندم ')
+    # title =
     type = models.CharField(max_length=8, choices=TYPE_HEALING_CONTENT)
     file = models.FileField(upload_to='healing_content/media_practice/', verbose_name='فایل ')
 
     class Meta:
         db_table = 'healing_content'
+
+
+# TODO: develop this model
+class Practice(models.Model):
+    healing_day = models.ForeignKey(HealingDay, on_delete=models.CASCADE, verbose_name='روز چندم ')
+    description = models.TextField(verbose_name='توضیحات')
+
+    class Meta:
+        db_table = 'practice'
+
+    def __str__(self):
+        return f"Practice with ID #{self.pk}"
+
+
+class QuestionPractice(models.Model):
+    practice = models.ForeignKey(
+        Practice,
+        on_delete=models.CASCADE,
+        related_name="questions",
+        verbose_name='تمرین '
+    )
+    row = models.PositiveIntegerField(
+        verbose_name='شماره سوال',
+    )
+    text = models.TextField(
+        verbose_name='متن سوال'
+    )
+
+    class Meta:
+        db_table = 'question_practice'
+
+
+class AnswerPractice(models.Model):
+    healing_day = models.ForeignKey(
+        HealingDay,
+        on_delete=models.CASCADE,
+        verbose_name='روز چندم '
+    )
+    question_practice = models.ForeignKey(
+        QuestionPractice,
+        on_delete=models.CASCADE,
+        related_name='answer_practice',
+        verbose_name='سوال'
+    )
+    answer = models.TextField(
+        verbose_name='جواب'
+    )
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name='customer_answer_practice',
+        verbose_name='مراجع'
+    )
+    time_answer = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='زمان پاسخ'
+    )
+
+    class Meta:
+        db_table = 'answer_practices'
 
 
 # =========================================== Questionnaire Week ==========================
@@ -161,67 +223,65 @@ class QuestionnaireWeekAnswerDetail(models.Model):
 
 
 # ========================================= Answer Practice =================================
-class PracticeAnswer(models.Model):
-    # id of HealingDay
-    healing_day = models.PositiveIntegerField(
-        verbose_name='روز درمانی'
-    )
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        related_name='customer_practice_answer',
-        verbose_name='مراجع'
-    )
-    time_answer = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='زمان پاسخ'
-    )
+# class PracticeAnswer(models.Model):
+#     # id of HealingDay
+#     healing_day = models.PositiveIntegerField(
+#         verbose_name='روز درمانی'
+#     )
+#     customer = models.ForeignKey(
+#         Customer,
+#         on_delete=models.CASCADE,
+#         related_name='customer_practice_answer',
+#         verbose_name='مراجع'
+#     )
+#     time_answer = models.DateTimeField(
+#         auto_now_add=True,
+#         verbose_name='زمان پاسخ'
+#     )
+#
+#     class Meta:
+#         db_table = 'practice_answer'
+#
+#     def clean(self):
+#         healing_day = PracticeAnswer.objects.filter(healing_day=self.healing_day, customer=self.customer)
+#         if healing_day.exists():
+#             raise ValidationError("برای این روز پاسخ ثبت شده است")
+#
+#
+# class PracticeAnswerDetail(models.Model):
+#     ANSWER_TYPE = (
+#         ('FILE', 'فایل'),
+#         ('TEXT', 'متن'),
+#     )
+#     practice_answer = models.ForeignKey(
+#         PracticeAnswer,
+#         on_delete=models.CASCADE,
+#         related_name='practice_answer_details',
+#         verbose_name='جواب تمرین'
+#     )
+#     content = models.TextField(
+#         null=True,
+#         blank=True,
+#         verbose_name='توضیحات'
+#     )
+#     file = models.FileField(
+#         upload_to='practice_answer/',
+#         null=True,
+#         blank=True,
+#         verbose_name='فایل'
+#     )
+#
+#     class Meta:
+#         db_table = 'practice_answer_detail'
+#
+#     def __str__(self):
+#         return f"{self.practice_answer}"
+#
 
-    class Meta:
-        db_table = 'practice_answer'
-
-    def clean(self):
-        healing_day = PracticeAnswer.objects.filter(healing_day=self.healing_day, customer=self.customer)
-        if healing_day.exists():
-            raise ValidationError("برای این روز پاسخ ثبت شده است")
-
-
-class PracticeAnswerDetail(models.Model):
-    ANSWER_TYPE = (
-        ('FILE', 'فایل'),
-        ('TEXT', 'متن'),
-    )
-    practice_answer = models.ForeignKey(
-        PracticeAnswer,
-        on_delete=models.CASCADE,
-        related_name='practice_answer_details',
-        verbose_name='جواب تمرین'
-    )
-    content = models.TextField(
-        null=True,
-        blank=True,
-        verbose_name='توضیحات'
-    )
-    file = models.FileField(
-        upload_to='practice_answer/',
-        null=True,
-        blank=True,
-        verbose_name='فایل'
-    )
-
-    class Meta:
-        db_table = 'practice_answer_detail'
-
-    def __str__(self):
-        return f"{self.practice_answer}"
-
-
-# ==========================================================================
-
-
+# ======================================  Day Feedback   ======================
 class DayFeedback(models.Model):
     practice_answer = models.ForeignKey(
-        PracticeAnswer,
+        AnswerPractice,
         on_delete=models.CASCADE,
         related_name='dey_feedbacks',
         verbose_name='تمرین',

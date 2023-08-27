@@ -244,14 +244,22 @@
                             </p>
                         </a>
                     </li>
-                        <li class="nav-item">
-                            <a href="{% url 'ptup_messages:notifications' %}" class="nav-link">
-                                <i class="nav-icon far fa-bell"></i>
-                                <p>
-                                    اعلان ها
-                                </p>
-                            </a>
-                        </li>
+                    <li class="nav-item">
+                        <a href="{% url 'ptup_messages:messages' %}" class="nav-link">
+                            <i class="nav-icon fas fa-envelope-open"></i>
+                            <p>
+                                پیام ها
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'ptup_messages:notifications' %}" class="nav-link">
+                            <i class="nav-icon far fa-bell"></i>
+                            <p>
+                                اعلان ها
+                            </p>
+                        </a>
+                    </li>
                 </ul>
             {% endif %}
         </nav>

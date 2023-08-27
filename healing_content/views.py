@@ -11,15 +11,18 @@ from customers.tasks.customers import increase_day_of_healing_period, check_last
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
 from foundation_course.utility import calculate_score_each_questionnaire_weekly
 from healing_content.forms import DayFeedbackForm
-from healing_content.models import PracticeAnswer, PracticeAnswerDetail, DayFeedback, QuestionnaireWeek, QuestionWeek, \
+from healing_content.models import DayFeedback, QuestionnaireWeek, QuestionWeek, \
     QuestionnaireWeekAnswer, QuestionnaireWeekAnswerDetail
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class DayFeedbackView(View):
     def get(self, request, practice_answer_id, *args, **kwargs):
-        practice_answer = PracticeAnswer.objects.get(id=practice_answer_id)
-        practice_answer_details = PracticeAnswerDetail.objects.get(practice_answer=practice_answer)
+        # TODO : Check
+        # practice_answer = PracticeAnswer.objects.get(id=practice_answer_id)
+        practice_answer = None
+        # practice_answer_details = PracticeAnswerDetail.objects.get(practice_answer=practice_answer)
+        practice_answer_details = None
         answer = {
             'content': practice_answer_details.content if practice_answer_details.content is not None else "پیامی ثبت نکرده است",
             'status_file': True if practice_answer_details.file else False,

@@ -5,8 +5,8 @@ from django.db.models import Count
 from django.db.models.functions import TruncDate
 
 from customers.models import CustomerActivityHistory
-from healing_content.models import HealingContent, QuestionnaireWeek, HealingDay, PracticeAnswer, \
-    QuestionnaireWeekAnswer
+from healing_content.models import HealingContent, QuestionnaireWeek, HealingDay, QuestionnaireWeekAnswer, Practice, \
+    QuestionPractice, AnswerPractice
 
 
 def create_activity_history(customer_id, subject, content) -> QuerySet:
@@ -68,7 +68,8 @@ def check_exercises_every_day(day, healing_period, customer):
             questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(
                 questionnaire_week__in=questionnaires_weekly)
 
-            if (questionnaire_answer_weekly.exists()) and (questionnaire_answer_weekly.count() == questionnaires_weekly_count):
+            if (questionnaire_answer_weekly.exists()) and (
+                    questionnaire_answer_weekly.count() == questionnaires_weekly_count):
                 status_questionnaire_answer_weekly = True
             else:
                 status_questionnaire_answer_weekly = False
@@ -76,7 +77,7 @@ def check_exercises_every_day(day, healing_period, customer):
         else:
             status_questionnaire_answer_weekly = None
 
-        status_practice_answer = PracticeAnswer.objects.filter(healing_day=healing_day.id, customer=customer).exists()
+        status_practice_answer = AnswerPractice.objects.filter(healing_day=healing_day.id, customer=customer).exists()
 
         if status_questionnaire_answer_weekly in [0, 1]:  # status_questionnaire_answer_weekly == True or False
 
@@ -96,7 +97,7 @@ def get_questionnaire_weekly(day, duration_of_treatment):
     total_number_of_treatment_days = duration_of_treatment * 7
 
     list_of_weekend_days = [number for number in range(1, total_number_of_treatment_days) if number % 7 == 0]
-    # list_of_weekend_days = [2]
+    # list_of_weekend_days = [1]
 
     if day in list_of_weekend_days:
         questionnaire_weekly_list = QuestionnaireWeek.objects.all()
@@ -110,11 +111,20 @@ def get_healing_content(healing_day: QuerySet):
     return content_list
 
 
+def get_questions_healing_day(healing_day):
+    practice = Practice.objects.filter(healing_day=healing_day)
+    if practice.exists():
+        questions = QuestionPractice.objects.filter(practice=practice.first())
+        return questions, practice.first()
+
+
 def get_content_customer(day: int, duration_of_treatment: int, healing_day: QuerySet):
     healing_content = get_healing_content(healing_day)
+    questions_list = get_questions_healing_day(healing_day)
     questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(day, duration_of_treatment)
 
     return {
         'healing_content': healing_content,
+        'questions_list': questions_list,
         'questionnaires_weekly': questionnaires_weekly,
     }

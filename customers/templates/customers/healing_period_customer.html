@@ -98,39 +98,28 @@
                             </div>
 
                             <div class="row d-flex justify-content-start flex-wrap mt-3">
-                                <div class="col-lg-5">
+                                <div class="col-lg-12">
                                     <div class="card mx-5">
+                                        <div class="card-header bg-primary">
+                                            {{ practice.description }}
+                                        </div>
                                         <form role="form" action="" method="POST" enctype="multipart/form-data">
                                             {% csrf_token %}
-                                            <input type="hidden" name="healing_day" value="{{ healing_day_id }}">
+                                            <input type="hidden" name="healing_day_id" value="{{ healing_day_id }}">
                                             <div class="card-body">
-                                                <div class="form-group">
-                                                    <label for="label-content">توضیحات :</label>
-                                                    <textarea class="form-control" name="content" id="label-content"
-                                                              cols="10"
-                                                              rows="10"></textarea>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="label-file">فایل :</label>
-                                                    <input type="file" id="label-file" name="file">
-                                                </div>
+                                                {% for question in questions_list %}
+                                                    <div class="form-group">
+                                                        <label for="label-content">{{ forloop.counter }}) {{ question.text }}
+                                                        </label>
+                                                        <input type="text" class="form-control"
+                                                               name="answer{{ question.id }}">
+                                                    </div>
+                                                {% endfor %}
                                             </div>
                                             <div class="card-footer">
-                                                <button type="submit" class="btn btn-primary">ثیت</button>
+                                                <button type="submit" class="btn btn-primary">ثبت</button>
                                             </div>
                                         </form>
-                                    </div>
-                                </div>
-                                <div class="col-lg-5">
-                                    <div class="card mx-5">
-                                        <div class="card-header bg-danger">
-                                            <h4>هشدار</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <h6> برای ثبت جواب باید حتما یکی از دو فیلد ( توضیحات - فایل ) پر شود
-                                            </h6>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

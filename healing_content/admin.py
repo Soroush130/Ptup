@@ -9,8 +9,11 @@ from .models import (
     QuestionOptionWeek,
     QuestionnaireWeekAnswer,
     QuestionnaireWeekAnswerDetail,
-    PracticeAnswer,
-    PracticeAnswerDetail
+    # PracticeAnswer,
+    # PracticeAnswerDetail,
+    Practice,
+    QuestionPractice,
+    AnswerPractice,
 )
 
 
@@ -37,12 +40,22 @@ admin.site.register(QuestionOptionWeek)
 admin.site.register(QuestionnaireWeekAnswer)
 admin.site.register(QuestionnaireWeekAnswerDetail)
 
-class PracticeAnswerDetailInline(admin.TabularInline):
-    model = PracticeAnswerDetail
 
+# ====================== Old models practice ===============
+# class PracticeAnswerDetailInline(admin.TabularInline):
+#     model = PracticeAnswerDetail
+#
+#
+# class PracticeAnswerAdmin(admin.ModelAdmin):
+#     inlines = [PracticeAnswerDetailInline]
+#
+#
+# admin.site.register(PracticeAnswer, PracticeAnswerAdmin)
+# admin.site.register(PracticeAnswerDetail)
+# ===========================================================
 
-class PracticeAnswerAdmin(admin.ModelAdmin):
-    inlines = [PracticeAnswerDetailInline]
-
-admin.site.register(PracticeAnswer, PracticeAnswerAdmin)
-admin.site.register(PracticeAnswerDetail)
+# ======================= New models practice =================
+admin.site.register(Practice)
+admin.site.register(QuestionPractice)
+admin.site.register(AnswerPractice)
+# ===========================================================

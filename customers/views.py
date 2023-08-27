@@ -16,8 +16,9 @@ from customers.tasks.customers import increase_day_of_healing_period, set_time_h
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
+from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
 from healing_content.forms import PracticeAnswerForm
-from healing_content.models import HealingDay, PracticeAnswerDetail, PracticeAnswer
+from healing_content.models import HealingDay, AnswerPractice
 from illness.models import Illness
 
 
@@ -238,13 +239,15 @@ class HealingPeriodCustomer(View):
             duration_of_treatment=disease_information.healing_period.duration_of_treatment,
             healing_day=healing_day
         )
-
+        questions_list, practice = content_customer['questions_list']
         context = {
             "healing_day_id": healing_day.id,
             "healing_period_title": disease_information.healing_period.title,
             "day_of_healing_period": day,
             "disease_information": disease_information,
             "healing_content": content_customer['healing_content'],
+            "practice": practice,
+            "questions_list": questions_list,
             "questionnaires_weekly": content_customer['questionnaires_weekly'],
         }
 
@@ -252,22 +255,19 @@ class HealingPeriodCustomer(View):
 
     def post(self, request, *args, **kwargs):
         customer = request.user.customer
-        form = PracticeAnswerForm(request.POST, request.FILES)
-        if form.is_valid():
-            cd = form.cleaned_data
-            content = cd['content']
-            file = cd['file']
-            healing_day_id = cd['healing_day']
+        if request.method == "POST":
+            selected_answers = get_list_answer_questionnaire(request.POST.items())
+            healing_day_id = request.POST['healing_day_id']
+
             with transaction.atomic():
-                practice_answer = PracticeAnswer.objects.create(
-                    customer=customer,
-                    healing_day=healing_day_id
-                )
-                PracticeAnswerDetail.objects.create(
-                    practice_answer=practice_answer,
-                    content=content,
-                    file=file
-                )
+                objects_to_create = []
+                for question_practice_id, answer in selected_answers.items():
+                    objects_to_create.append(
+                        AnswerPractice(customer=customer, healing_day_id=healing_day_id,
+                                       question_practice_id=question_practice_id, answer=answer)
+                    )
+                answer_practice = AnswerPractice.objects.bulk_create(objects_to_create)
+                print(answer_practice)
                 messages.success(request, "جواب تمرین با موفقیت ثبت شد")
 
                 # TODO: Increase the day number of the user's healing period
@@ -286,7 +286,7 @@ class HealingPeriodCustomer(View):
 
                 return redirect("customers:healing_period_customer")
         else:
-            messages.error(request, f"{form.errors['__all__'].as_text()}")
+            messages.error(request, f"")
             return redirect("customers:healing_period_customer")
 
 
