@@ -1,0 +1,56 @@
+{% extends 'shared/_MainLayout.html' %}
+
+{% block title %}
+    اعلان ها
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1016.95px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>لیست اعلان ها</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <table class="table table-condensed">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>توضیحات</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for notification in notifications %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}.</td>
+                                            <td>
+                                                {{ notification.content }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

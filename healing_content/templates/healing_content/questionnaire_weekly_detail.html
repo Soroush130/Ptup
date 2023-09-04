@@ -1,0 +1,98 @@
+{% extends "shared/_MainLayout.html" %}
+
+{% block title %}
+
+    پرسشنامه
+
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1621.58px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>پرسشنامه {{ questionnaire.title }}</h1>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            <!-- Default box -->
+            <div class="card card-solid">
+                <div class="card-body pb-0">
+                    <div class="row d-flex align-items-stretch">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>توضیحات</h3>
+                            </div>
+                            <div class="card-pody">
+                                <div class="text" style="padding: 15px 40px">
+                                    {{ questionnaire.description }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex align-items-stretch">
+                        <div class="card col-lg-12">
+                            <div class="card-header">
+                                <h2 class="card-title" style="float: right">سوالات</h2>
+                            </div>
+                            <form action="{% url 'healing_content:complate_questionnaire_weekly' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="questionnaire_id" value="{{ questionnaire.id }}">
+                                <input type="hidden" name="healing_week_id" value="{{ healing_week_id }}">
+                                <input type="hidden" name="questions_count" value="{{ questions_count }}">
+                                <div class="card-body p-0">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 10px">#</th>
+                                            <th style="width: 10px">سوال</th>
+                                            {% for number in number_of_option %}
+                                                <th style="width: 40px">گزینه {{ number }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        {% for question in questions %}
+                                            <tr>
+                                                <td>{{ question.row }}</td>
+                                                <td>{{ question.text }}</td>
+                                                {% for option in question.question_option.all %}
+                                                    <td>
+                                                        {{ option.text }}
+                                                        <input type="radio" value="{{ option.id }}"
+                                                               name="answer{{ question.id }}">
+                                                    </td>
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">ثبت</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block footer_ref %}
+    <script>
+
+
+    </script>
+{% endblock %}

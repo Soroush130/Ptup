@@ -1,0 +1,93 @@
+{% extends "shared/_MainLayout.html" %}
+{% load static %}
+
+{% block title %}
+    دوره درمان
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>انجام تمرین های هفته {{ week }} ام</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                {% for practice, questions in practices.items %}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <h3>تمرین شماره {{ forloop.counter }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-body bg-gray-light">
+                                        <h6>توضیحات : {{ practice.description }}</h6>
+                                    </div>
+                                    <hr>
+                                    <div class="card-body">
+                                        <form action="{% url 'customers:completion_practice' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="healing_week_id" value="{{ healing_week_id }}">
+                                            {% for question in questions %}
+                                                <div class="card">
+                                                    <div class="card-header">{{ question.row }}. {{ question.text }}</div>
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <label for="">متن جواب : </label>
+                                                            <input type="text" class="form-control"
+                                                                   name="answer{{ question.id }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <button type="submit" class="btn btn-block btn-primary">ثبت</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+
+                {% if questionnaires_weekly is not None %}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>پرسشنامه های هفتگی</h3>
+                                </div>
+                                <div class="card-body d-flex flex-wrap">
+                                    {% for questionnaire in questionnaires_weekly %}
+                                        <div class="col-md-3 col-sm-6 col-12">
+                                            <div class="info-box bg-info">
+                                                <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
+
+                                                <div class="info-box-content">
+                                                    <a href="/content/questionnaire_weekly/{{ questionnaire.id }}/{{ healing_week_id }}/"
+                                                       style="color: white">
+                                                        <h5>{{ questionnaire.title }}</h5></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </section>
+
+    </div>
+{% endblock %}

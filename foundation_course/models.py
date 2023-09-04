@@ -9,6 +9,7 @@ from foundation_course.interpretation.interpretation import (
     interpretation_ders,
     interpretation_qli
 )
+from foundation_course.tasks.questionnaire import check_suicide
 
 
 class QuestionnaireTypeChoices(models.IntegerChoices):
@@ -141,6 +142,9 @@ class QuestionnaireAnswer(models.Model):
             return interpretation
 
         elif questionnaire_type == 'bdi':
+            # question_suicide_row = 9
+            # check_suicide(question_suicide_row, self.id, self.customer)
+
             interpretation = interpretation_bdi(self.score)
             return interpretation
 

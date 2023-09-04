@@ -8,7 +8,8 @@ from django.db import transaction
 from customers.tasks.customer_activity_history import create_activity_history
 from foundation_course.decorators import questionnaire_completion
 from foundation_course.models import Questionnaire, Question, QuestionnaireAnswer, QuestionnaireAnswerDetail
-from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
+from foundation_course.tasks.foundation_course import check_foundation_course
+from foundation_course.tasks.questionnaire import get_list_answer_questionnaire, check_suicide
 from foundation_course.utility import calculate_score_each_questionnaire
 
 
@@ -38,7 +39,7 @@ class CompleteQuestionnaireByCustomer(View):
             customer = request.user.customer
             questionnaire_id = request.POST['questionnaire_id']
             questions_count = request.POST['questions_count']
-
+            questionnaire = Questionnaire.objects.get(id=questionnaire_id)
             with transaction.atomic():
 
                 selected_answers = get_list_answer_questionnaire(request.POST.items())
@@ -46,7 +47,7 @@ class CompleteQuestionnaireByCustomer(View):
                 if int(questions_count) == len(selected_answers.keys()):
 
                     questionnaire_answer = QuestionnaireAnswer.objects.create(
-                        questionnaire_id=questionnaire_id,
+                        questionnaire=questionnaire,
                         customer=customer
                     )
 
@@ -62,9 +63,16 @@ class CompleteQuestionnaireByCustomer(View):
 
                     calculate_score_each_questionnaire(questionnaire_answer, answers_list)
 
-                    # Register activity history
+                    # TODO: Register activity history
                     create_activity_history(customer.id, 'تکمیل پرسشنامه',
                                             f'تکمیل پرسشنامه : {questionnaire_answer.questionnaire.__str__()}')
+
+                    # TODO: Let's check if the client is trying to commit suicide or not
+                    if questionnaire.type == 2:
+                        check_suicide(9, questionnaire_answer.id, customer)
+
+                    # TODO: Checking the end of the foundation course
+                    check_foundation_course(request, customer.id)
 
                     return redirect('customers:foundation_course_customer')
                 else:

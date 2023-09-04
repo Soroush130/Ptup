@@ -61,8 +61,11 @@
                                     <li class="nav-item"><a class="nav-link" href="#timeline"
                                                             data-toggle="tab">تاریخچه فعالیت بیمار</a></li>
 
-                                    <li class="nav-item"><a class="nav-link" href="#settings"
-                                                            data-toggle="tab">Settings</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#practice_answer"
+                                                            data-toggle="tab">تمرینات بیمار</a></li>
+
+                                    <li class="nav-item"><a class="nav-link" href="#progress_chart"
+                                                            data-toggle="tab">نمودار روند پیشرفت</a></li>
                                 </ul>
                             </div>
 
@@ -72,7 +75,8 @@
                                     <div class="active tab-pane"
                                          id="questionnaire">
 
-                                        <div class="d-flex justify-content-between flex-wrap">
+                                        <div class="d-flex justify-content-between flex-wrap"
+                                             style="height: 350px; overflow: auto">
 
                                             {% for questionnaire_answer in questionnaire_answer_list %}
                                                 {% if questionnaire_answer.questionnaire.type == 3 %}
@@ -151,15 +155,6 @@
 
                                                             <p class="mx-2">
                                                                 [{{ questionnaire_answer.questionnaire_interpretation.goals.small_unit }}, {{ questionnaire_answer.questionnaire_interpretation.goals.large_unit }}]
-                                                            </p>
-                                                        </div>
-
-
-                                                        <div class="d-flex">
-                                                            <h6>نتیجه پرسشنامه :</h6>
-
-                                                            <p class="mx-2">
-                                                                {{ questionnaire_answer.questionnaire_interpretation }}
                                                             </p>
                                                         </div>
 
@@ -252,7 +247,7 @@
                                     <!-- /.tab-pane -->
                                     <div class="tab-pane" id="timeline">
                                         <!-- The timeline -->
-                                        <div class="timeline timeline-inverse">
+                                        <div class="timeline timeline-inverse" style="height: 350px; overflow: auto">
 
                                             {% for date, activities in customer_activity_history_list.items %}
                                                 <div class="time-label">
@@ -290,65 +285,53 @@
                                     </div>
                                     <!-- /.tab-pane -->
 
-                                    <div class="tab-pane" id="settings">
-                                        <form class="form-horizontal">
-                                            <div class="form-group">
-                                                <label for="inputName" class="col-sm-2 control-label">Name</label>
+                                    <div class="tab-pane" id="practice_answer">
+                                        <div class="row" style="height: 350px; overflow: auto">
+                                            {% for answer in answers_list %}
+                                                <div class="col-lg-2 my-2">
+                                                    {% if answer.status %}
+                                                        <a href="/content/day_feedback_detail/{{ customer_id }}/{{ answer.healing_week.id }}/"
+                                                           style="text-decoration: none; color: white">
+                                                            <div class="color-palette-set">
+                                                                <div class="bg-success color-palette">
+                                                                    <span class="mx-1">هفته {{ answer.week }}ام</span>
+                                                                </div>
+                                                                <div class="bg-success disabled color-palette text-center">
+                                                            <span>
+                                                                    انجام شده
+                                                            </span>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    {% else %}
+                                                        <div class="color-palette-set">
+                                                            <div class="bg-danger color-palette">
+                                                                <span class="mx-1">هفته {{ answer.week }}ام</span>
+                                                            </div>
+                                                            <div class="bg-danger disabled color-palette text-center">
+                                                            <span>
+                                                                انجام نشده
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
 
-                                                <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="inputName"
-                                                           placeholder="Name">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                                        </div>
+                                    </div>
 
-                                                <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="inputEmail"
-                                                           placeholder="Email">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="inputName2" class="col-sm-2 control-label">Name</label>
 
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="inputName2"
-                                                           placeholder="Name">
+                                    <div class="tab-pane" id="progress_chart">
+                                        {% for chart in progress_charts %}
+                                            <div class="row my-2">
+                                                <div class="col-lg">
+                                                    <h5>{{ chart.questionnaire_week_title }}</h5>
+                                                    <canvas id="chart{{ chart.questionnaire_week_id }}"></canvas>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="inputExperience"
-                                                       class="col-sm-2 control-label">Experience</label>
+                                        {% endfor %}
 
-                                                <div class="col-sm-10">
-                                                    <textarea class="form-control" id="inputExperience"
-                                                              placeholder="Experience"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
-
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="inputSkills"
-                                                           placeholder="Skills">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="col-sm-offset-2 col-sm-10">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input type="checkbox"> I agree to the <a href="#">terms and
-                                                            conditions</a>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="col-sm-offset-2 col-sm-10">
-                                                    <button type="submit" class="btn btn-danger">Submit</button>
-                                                </div>
-                                            </div>
-                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -358,4 +341,42 @@
             </div>
         </section>
     </div>
+    {{ progress_charts|json_script:"progress_charts" }}
+{% endblock %}
+
+{% block footer_ref %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script>
+        var progress_charts = JSON.parse(document.getElementById('progress_charts').textContent);
+        var count_chart = {{ count_charts }};
+
+        for (let i = 1; i < count_chart + 1; i++) {
+            var chart_id = "chart" + i;
+
+            let ctx = document.getElementById(chart_id).getContext("2d");
+
+            let chart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: progress_charts[i-1].labels,
+                    datasets: [
+                        {
+                            label: progress_charts[i-1].title,
+                            backgroundColor: "#79AEC8",
+                            borderColor: "#417690",
+                            data: progress_charts[i-1].data
+                        }
+                    ]
+                },
+                options: {
+                    title: {
+                        text: "Gross Volume in 2020",
+                        display: true
+                    }
+                }
+            });
+        }
+
+
+    </script>
 {% endblock %}

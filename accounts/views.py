@@ -94,7 +94,7 @@ def register_page_customer(request):
                 if result:
                     return redirect('accounts:confirm_otp')
                 else:
-                    return redirect('accounts:register_doctor')
+                    return redirect('accounts:register_customer')
         else:
             print(register_form.errors)
     else:
