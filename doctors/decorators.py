@@ -46,6 +46,4 @@ def is_complete_information(view_func):
         else:
             return HttpResponse("شما ادیمن سایت هستید")
 
-        # return view_func(request, *args, **kwargs)
-
     return wrapped_view

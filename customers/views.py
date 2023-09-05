@@ -6,20 +6,18 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db import transaction
 
-from customers.decorators import pass_foundation_course, pass_healing_period
+from customers.decorators import pass_foundation_course, not_pass_healing_period, has_permission_start_treatment
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation
-from customers.tasks.customer_activity_history import get_activity_list, get_content_customer, create_activity_history, \
-    check_exercises_every_week, get_practices_healing_week, get_questionnaire_weekly
-from customers.tasks.customers import increase_week_of_healing_period, set_time_healing_period, \
-    get_practice_answer_list, \
+from customers.tasks.customer_activity_history import get_activity_list, create_activity_history, \
+    get_practices_healing_week, get_questionnaire_weekly
+from customers.tasks.customers import increase_week_of_healing_period, get_practice_answer_list, \
     check_last_day_healing_period, get_progress_charts, group_by_healing_content_each_week
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
-from healing_content.forms import PracticeAnswerForm
-from healing_content.models import HealingWeek, AnswerPractice, HealingContent, Practice
+from healing_content.models import HealingWeek, AnswerPractice
 from illness.models import Illness
 
 
@@ -57,7 +55,7 @@ class CompletionInformationCostumer(View):
     template_name = 'customers/completion_information_customer.html'
 
     def get(self, request):
-        doctors = Doctor.objects.all()
+        doctors = Doctor.objects.filter(is_verify=True)
         customer_form = CustomerForm()
         context = {
             "doctors": doctors,
@@ -156,11 +154,6 @@ class OperationChoiceIllnessCustomer(View):
                 messages.success(request, "نوع بیماری مراجع مشخص شد")
                 return redirect(request.META.get("HTTP_REFERER"))
             else:
-                # customer_diseasen_information = customer_diseasen_information.first()
-                # customer_diseasen_information.illness = illness
-                # customer_diseasen_information.healing_period = illness.healingperiod
-                # customer_diseasen_information.save()
-
                 messages.error(request, "نوع بیماری را نمی توانید تغییر دهید")
                 return redirect(request.META.get("HTTP_REFERER"))
         else:
@@ -186,8 +179,20 @@ class PermissionStartTreatmentCustomer(View):
 
 # ===============================================================================================
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+@method_decorator(has_permission_start_treatment, name='dispatch')
+class FoundationCourseCustomer(View):
+    def get(self, request):
+        questionnaire_list = Questionnaire.objects.all()
+
+        context = {
+            "questionnaire_list": questionnaire_list,
+        }
+        return render(request, 'customers/foundation_course_customer.html', context)
+
+
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 @method_decorator(pass_foundation_course, name='dispatch')
-@method_decorator(pass_healing_period, name='dispatch')
+@method_decorator(not_pass_healing_period, name='dispatch')
 class HealingContentEachWeek(View):
     def get(self, request):
         customer = request.user.customer
@@ -201,21 +206,18 @@ class HealingContentEachWeek(View):
         healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
         contents_in_week = group_by_healing_content_each_week(healing_week)
 
-        # answers_list = get_practice_answer_list(customer)
-
         context = {
             'week': week,
             'healing_week': healing_week,
             'disease_information': disease_information,
             'contents': contents_in_week,
-            # 'answers_list': answers_list,
         }
         return render(request, 'healing_content/healing_period_each_week.html', context)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 @method_decorator(pass_foundation_course, name='dispatch')
-@method_decorator(pass_healing_period, name='dispatch')
+@method_decorator(not_pass_healing_period, name='dispatch')
 class PracticeEachWeek(View):
     def get(self, request, id, *args, **kwargs):
         customer = request.user.customer
@@ -233,8 +235,6 @@ class PracticeEachWeek(View):
             disease_information=disease_information,
             duration_of_treatment=healing_week.healing_period.duration_of_treatment
         )
-        print(questionnaires_weekly_count)
-        print(questionnaires_weekly)
 
         context = {
             'week': healing_week.week,
@@ -247,7 +247,7 @@ class PracticeEachWeek(View):
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 @method_decorator(pass_foundation_course, name='dispatch')
-@method_decorator(pass_healing_period, name='dispatch')
+@method_decorator(not_pass_healing_period, name='dispatch')
 class CompletionPractice(View):
     def post(self, request, *args, **kwargs):
         customer = request.user.customer
@@ -259,15 +259,24 @@ class CompletionPractice(View):
                 objects_to_create = []
                 for question_practice_id, answer in selected_answers.items():
                     if answer != "":
-                        objects_to_create.append(
-                            AnswerPractice(customer=customer, healing_week_id=healing_week_id,
-                                           question_practice_id=question_practice_id, answer=answer)
-                        )
+                        answer_practice = AnswerPractice.objects.filter(customer=customer,
+                                                                        healing_week_id=healing_week_id,
+                                                                        question_practice_id=question_practice_id)
+                        if not answer_practice.exists():
+                            objects_to_create.append(
+                                AnswerPractice(customer=customer, healing_week_id=healing_week_id,
+                                               question_practice_id=question_practice_id, answer=answer)
+                            )
+                        else:
+                            answer_practice = answer_practice.first()
+                            answer_practice.answer = answer
+                            answer_practice.save()
+                            messages.success(request, "جواب تمرین بروزرسانی شد")
                     else:
                         messages.error(request, "لطفا تمرین ها پر کنید")
                         return redirect(request.META.get("HTTP_REFERER"))
 
-                answer_practice = AnswerPractice.objects.bulk_create(objects_to_create)
+                AnswerPractice.objects.bulk_create(objects_to_create)
 
                 # TODO: Register activity history for customer
                 healing_week: HealingWeek = HealingWeek.objects.get(id=healing_week_id)
@@ -280,24 +289,15 @@ class CompletionPractice(View):
                 # TODO: Increase the day number of the user's healing period
                 increase_week_of_healing_period(request, customer)
 
+                # TODO: Checking whether it is the last day of the Healing period or not
+                check_last_day_healing_period(request, healing_week_id, customer)
+
                 return redirect(request.META.get("HTTP_REFERER"))
-
-            #
-
-            #
-            #     messages.success(request, "جواب تمرین با موفقیت ثبت شد")
-            #
-            #     # TODO: Checking whether it is the last day of the Healing period or not
-            #     check_last_day_healing_period(request, healing_week_id, customer)
-            #
-            #     return redirect("customers:healing_period_customer")
         else:
-            messages.error(request, f"")
             return redirect("customers:healing_period_customer")
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
-# TODO : only customer
 class HealingContentMap(View):
     def get(self, request, *args, **kwargs):
         customer = request.user.customer
@@ -314,17 +314,6 @@ class HealingContentMap(View):
             "disease_information": disease_information,
         }
         return render(request, 'healing_content/healing_content_map.html', context)
-
-
-@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
-class FoundationCourseCustomer(View):
-    def get(self, request):
-        questionnaire_list = Questionnaire.objects.all()
-
-        context = {
-            "questionnaire_list": questionnaire_list,
-        }
-        return render(request, 'customers/foundation_course_customer.html', context)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

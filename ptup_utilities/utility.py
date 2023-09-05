@@ -14,46 +14,70 @@ def get_context_customer(user: QuerySet) -> dict:
     return context
 
 
-def get_context_doctor(user: QuerySet) -> dict:
-    list_customers = Customer.objects.filter(treating_doctor=user.doctor)
-    count_customers = list_customers.count()
+# ===================================================================================
 
-    list_messages_not_read = Message.objects.filter(receiver=user, is_read=False)
-    count_messages_not_read = list_messages_not_read.count()
-
+def get_list_customers_in_foundation_course(doctor):
     list_customers_in_foundation_course = CustomerDiseaseInformation.objects.filter(
-        customer__treating_doctor=user.doctor,
+        customer__treating_doctor=doctor,
         is_finished=False,
         is_foundation_course=False,
         is_healing_period=False,
         is_follow_up=False
     )
+    return list_customers_in_foundation_course
 
+
+def get_list_customers_in_healing_period(doctor):
     list_customers_in_healing_period = CustomerDiseaseInformation.objects.filter(
-        customer__treating_doctor=user.doctor,
+        customer__treating_doctor=doctor,
         is_finished=False,
         is_foundation_course=True,
         is_healing_period=False,
         is_follow_up=False
     )
+    return list_customers_in_healing_period
+
+
+def get_list_customers_in_follow_up(doctor):
     list_customers_in_follow_up = CustomerDiseaseInformation.objects.filter(
-        customer__treating_doctor=user.doctor,
+        customer__treating_doctor=doctor,
         is_finished=False,
         is_foundation_course=True,
         is_healing_period=True,
         is_follow_up=False
     )
+    return list_customers_in_follow_up
 
-    context = {
-        "count_customers": count_customers,
-        "count_messages_not_read": count_messages_not_read,
 
-        "list_customers_in_foundation_course": list_customers_in_foundation_course,
-        "list_customers_in_healing_period": list_customers_in_healing_period,
-        "list_customers_in_follow_up": list_customers_in_follow_up,
-    }
-    return context
+def get_context_doctor(user: QuerySet) -> dict:
+    doctor = user.doctor
+    if doctor.is_verify:
+        list_customers = Customer.objects.filter(treating_doctor=doctor)
+        count_customers = list_customers.count()
 
+        list_messages_not_read = Message.objects.filter(receiver=user, is_read=False)
+        count_messages_not_read = list_messages_not_read.count()
+
+        list_customers_in_foundation_course = get_list_customers_in_foundation_course(doctor)
+
+        list_customers_in_healing_period = get_list_customers_in_healing_period(doctor)
+
+        list_customers_in_follow_up = get_list_customers_in_follow_up(doctor)
+
+        context = {
+            "count_customers": count_customers,
+            "count_messages_not_read": count_messages_not_read,
+
+            "list_customers_in_foundation_course": list_customers_in_foundation_course,
+            "list_customers_in_healing_period": list_customers_in_healing_period,
+            "list_customers_in_follow_up": list_customers_in_follow_up,
+        }
+        return context
+    else:
+        return {}
+
+
+# ===================================================================================
 
 def get_context_according_user_role(user: QuerySet, user_role: int) -> dict:
     DOCTOR = 1
