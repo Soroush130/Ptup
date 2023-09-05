@@ -16,6 +16,7 @@ ptup_messages/migrations/0*
 illness/migrations/0*
 healing_content/migrations/0*
 foundation_course/migrations/0*
+followup/migrations/0*
 
 # Media
 static/media_root/*
