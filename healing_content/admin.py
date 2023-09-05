@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (
     HealingContent,
-    HealingDay,
+    HealingWeek,
     DayFeedback,
     QuestionnaireWeek,
     QuestionWeek,
@@ -18,7 +18,7 @@ from .models import (
 
 
 class HealingContentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'healing_day', 'type']
+    list_display = ['id', 'healing_week', 'type']
 
 
 class QuestionOptionWeekInline(admin.TabularInline):
@@ -29,7 +29,7 @@ class QuestionWeekAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionWeekInline]
 
 
-admin.site.register(HealingDay)
+admin.site.register(HealingWeek)
 admin.site.register(HealingContent, HealingContentAdmin)
 admin.site.register(DayFeedback)
 

@@ -18,6 +18,6 @@ class PracticeAnswerForm(forms.Form):
 
 
 class DayFeedbackForm(forms.Form):
-    practice_answer_id = forms.IntegerField()
+    answer_practice_id = forms.IntegerField()
     subject = forms.CharField()
     content = forms.CharField(widget=forms.TextInput)

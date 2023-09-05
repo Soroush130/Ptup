@@ -290,11 +290,11 @@
                                             {% for answer in answers_list %}
                                                 <div class="col-lg-2 my-2">
                                                     {% if answer.status %}
-                                                        <a href="{% url 'healing_content:day_feedback_detail' answer.practice_answer_id %}"
+                                                        <a href="/content/day_feedback_detail/{{ customer_id }}/{{ answer.healing_week.id }}/"
                                                            style="text-decoration: none; color: white">
                                                             <div class="color-palette-set">
                                                                 <div class="bg-success color-palette">
-                                                                    <span class="mx-1">روز {{ answer.day }}ام</span>
+                                                                    <span class="mx-1">هفته {{ answer.week }}ام</span>
                                                                 </div>
                                                                 <div class="bg-success disabled color-palette text-center">
                                                             <span>
@@ -306,7 +306,7 @@
                                                     {% else %}
                                                         <div class="color-palette-set">
                                                             <div class="bg-danger color-palette">
-                                                                <span class="mx-1">روز {{ answer.day }}ام</span>
+                                                                <span class="mx-1">هفته {{ answer.week }}ام</span>
                                                             </div>
                                                             <div class="bg-danger disabled color-palette text-center">
                                                             <span>

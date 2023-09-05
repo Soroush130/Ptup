@@ -58,8 +58,8 @@ class CustomerDiseaseInformation(models.Model):
         verbose_name='دروه درومان ')
     day_of_healing_period = models.PositiveIntegerField(
         default=1,
-        verbose_name='روز',
-        help_text='روز چندم از دوره درمانی '
+        verbose_name='هفته',
+        help_text='هفته چندم از دوره درمانی '
     )
     start_time_period = models.DateTimeField(
         verbose_name='زمان',

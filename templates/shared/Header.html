@@ -236,13 +236,29 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
 
-                    <li class="nav-item">
-                        <a href="{% url 'customers:healing_period' %}" class="nav-link">
-                            <i class="nav-icon fas fa-edit"></i>
+
+                    <li class="nav-item has-treeview menu-open">
+                        <a href="#" class="nav-link active">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>
                                 دوره درمان
+                                <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>
+                        <ul class="nav nav-treeview" style="display: block;">
+                            <li class="nav-item">
+                                <a href="{% url 'customers:healing_period_each_week' %}" class="nav-link active">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>محتوای درمانی</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'customers:healing_content_map' %}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>مسیر دوره درمان</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'ptup_messages:messages' %}" class="nav-link">

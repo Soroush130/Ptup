@@ -46,7 +46,7 @@
                             <form action="{% url 'healing_content:complate_questionnaire_weekly' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="questionnaire_id" value="{{ questionnaire.id }}">
-                                <input type="hidden" name="healing_day_id" value="{{ healing_day_id }}">
+                                <input type="hidden" name="healing_week_id" value="{{ healing_week_id }}">
                                 <input type="hidden" name="questions_count" value="{{ questions_count }}">
                                 <div class="card-body p-0">
                                     <table class="table table-striped">

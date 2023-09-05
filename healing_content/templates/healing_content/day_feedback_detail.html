@@ -22,52 +22,78 @@
             <div class="container-fluid">
                 <div class="row mt-3">
 
-                    <div class="col-lg-5">
+                    <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header bg-primary">
-                                <h5>پاسخ مراجع به تمرین</h5>
+                                <h5>پاسخ بیمار به تمرین ها در این هفته</h5>
                             </div>
                             <div class="card-body ">
 
-                                <div class="content">
-                                    <h6>{{ answer.content }}</h6>
-                                </div>
-                                <br>
-                                <div class="file">
-                                    {% if answer.status_file %}
-                                        <h5 class="btn btn-primary">
-                                            <a href="{{ answer.file }}" class="text-white">فایل</a>
-                                        </h5>
-                                    {% endif %}
-                                </div>
+                                {% for answer_practice in answer_practice_list %}
+                                    <div class="card bg-gray-light">
+                                        <div class="card-header">
+                                            <h5>{{ forloop.counter }}
+                                                - {{ answer_practice.question_practice.text }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <span class="text-bold">جواب بیمار : </span> {{ answer_practice.answer }}
+                                                </div>
+                                                <div class="col-lg-6">
+
+                                                    {% if user_role == 1 %}
+                                                        <div class="card">
+                                                            <div class="card-header bg-primary">
+                                                                <h5>ثبت بازخورد</h5>
+                                                            </div>
+                                                            <form action="{% url 'healing_content:create_feedback' %}"
+                                                                  method="POST">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="answer_practice_id"
+                                                                       value="{{ answer_practice.id }}">
+                                                                <div class="card-body">
+                                                                    <div class="form-group">
+                                                                        <label for="subject">عنوان :</label>
+                                                                        <input type="text" class="form-control"
+                                                                               id="subject"
+                                                                               name="subject"
+                                                                               value="{{ answer_practice.dey_feedbacks.all.first.subject }}">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="content">توضیحات :</label>
+                                                                        <textarea name="content" class="form-control"
+                                                                                  id="content" cols="15"
+                                                                                  rows="10">{{ answer_practice.dey_feedbacks.all.first.content }}</textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-block btn-primary">
+                                                                    ثبت
+                                                                </button>
+
+                                                            </form>
+                                                        </div>
+
+                                                    {% elif user_role == 2 %}
+                                                        <div class="card">
+                                                            <div class="card-header">
+                                                                عنوان بازخورد
+                                                                : {{ answer_practice.dey_feedbacks.all.first.subject }}
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <p> {{ answer_practice.dey_feedbacks.all.first.content }}<span
+                                                                        class="text-bold">توضیحات : </span></p>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
 
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-1"></div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header bg-primary">
-                                <h5>ثبت بازخورد</h5>
-                            </div>
-                            <form action="{% url 'healing_content:create_feedback' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="practice_answer_id" value="{{ practice_answer_id }}">
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="subject">عنوان :</label>
-                                        <input type="text" class="form-control" id="subject" name="subject">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="content">توضیحات :</label>
-                                        <textarea name="content" class="form-control" id="content" cols="15"
-                                                  rows="10"></textarea>
-                                    </div>
-                                </div>
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">ثبت</button>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,131 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+
+{% block title %}
+    مسیر دوره درمان
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>مسیر دوره درمان بیماری </h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="col-lg">
+                        <div class="card">
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#customer_information" data-toggle="tab">
+                                            اطلاعات بیمار
+                                        </a>
+                                    </li>
+                                    <li class="nav-item"><a class="nav-link" href="#practice_answer"
+                                                            data-toggle="tab">تمرینات بیمار</a></li>
+
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="tab-content">
+
+                                    <div class="active tab-pane" id="customer_information">
+                                        <div class="row d-flex" style="height: 350px; overflow: auto">
+                                            <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
+                                                <h5>بیماری : {{ disease_information.illness }}</h5>
+                                            </div>
+                                            <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
+                                                <h5>دوره درمان : {{ disease_information.healing_period }}</h5>
+                                            </div>
+                                            <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
+                                                <h5>در کدام هقته درمانی قرار دارید
+                                                    : {{ disease_information.day_of_healing_period }}</h5>
+                                            </div>
+                                            <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
+                                                <h5>تاریخ شروع درمان
+                                                    : {{ disease_information.start_time_period.date }}</h5>
+                                            </div>
+                                            <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
+                                                <h5>آیا دوره مقدماتی سپری شده است
+                                                    ؟ {% if disease_information.is_foundation_course %}
+                                                        <i class="fas fa-plus-circle" style="color: green"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-minus-circle" style="color: red"></i>
+                                                    {% endif %} </h5>
+                                            </div>
+                                            <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
+                                                <h5>آیا دوره درمان سپری شده است
+                                                    ؟ {% if disease_information.is_healing_period %}
+                                                        <i class="fas fa-plus-circle" style="color: green"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-minus-circle" style="color: red"></i>
+                                                    {% endif %} </h5>
+                                            </div>
+                                            <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
+                                                <h5>آیا دوره فالوآپ سپری شده است
+                                                    ؟ {% if disease_information.is_follow_up %}
+                                                        <i class="fas fa-plus-circle" style="color: green"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-minus-circle" style="color: red"></i>
+                                                    {% endif %} </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane" id="practice_answer">
+                                        <div class="row" style="height: 350px; overflow: auto">
+                                            {% for answer in answers_list %}
+                                                <div class="col-lg-2 my-2">
+                                                    {% if answer.status %}
+                                                        <a href="/content/day_feedback_detail/{{ customer_id }}/{{ answer.healing_week.id }}/"
+                                                           style="text-decoration: none; color: white">
+                                                            <div class="color-palette-set">
+                                                                <div class="bg-success color-palette">
+                                                                    <span class="mx-1">هفته {{ answer.week }}ام</span>
+                                                                </div>
+                                                                <div class="bg-success disabled color-palette text-center">
+                                                            <span>
+                                                                    انجام شده
+                                                            </span>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    {% else %}
+                                                        <div class="color-palette-set">
+                                                            <div class="bg-danger color-palette">
+                                                                <span class="mx-1">هفته {{ answer.week }}ام</span>
+                                                            </div>
+                                                            <div class="bg-danger disabled color-palette text-center">
+                                                            <span>
+                                                                انجام نشده
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

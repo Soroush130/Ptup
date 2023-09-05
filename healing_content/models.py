@@ -1,25 +1,27 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from customers.models import Customer
 from doctors.models import Doctor
 from illness.models import Illness, HealingPeriod
 
 
-class HealingDay(models.Model):
+
+class HealingWeek(models.Model):
     healing_period = models.ForeignKey(HealingPeriod, on_delete=models.CASCADE, verbose_name='دوره درمانی ')
-    day = models.PositiveIntegerField(default=1, verbose_name='شماره روز', help_text='روز چندم از دوره درمانی')
+    week = models.PositiveIntegerField(default=1, verbose_name='شماره هفته', help_text='هفته چندم از دوره درمانی')
 
     class Meta:
-        db_table = 'healing_day'
+        db_table = 'healing_week'
 
     def __str__(self):
-        return f"روز {self.day} از دوره درمان {self.healing_period} || {self.pk}"
+        return f"هفته {self.week} از دوره درمان {self.healing_period} || {self.pk}"
 
     def clean(self):
-        healing_day = HealingDay.objects.filter(healing_period=self.healing_period, day=self.day)
-        if healing_day.exists():
-            raise ValidationError("چنین روزی وجود دارد")
+        healing_week = HealingWeek.objects.filter(healing_period=self.healing_period, week=self.week)
+        if healing_week.exists():
+            raise ValidationError("چنین هفته ای وجود دارد")
 
 
 class HealingContent(models.Model):
@@ -28,18 +30,28 @@ class HealingContent(models.Model):
         ('FILE', 'فایل'),
         ('VOICE', 'صدا'),
     )
-    healing_day = models.ForeignKey(HealingDay, on_delete=models.CASCADE, verbose_name='روز چندم ')
+    healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته چندم ')
     # title =
     type = models.CharField(max_length=8, choices=TYPE_HEALING_CONTENT)
+    # This field is mostly used to group content
+    day = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        default=1,
+        verbose_name='روز هفته',
+        validators=[
+            MinValueValidator(1, message='نباید کمتر از 1 باشید'),
+            MaxValueValidator(7, message='نباید بیشتر از 7 باشد')
+        ]
+    )
     file = models.FileField(upload_to='healing_content/media_practice/', verbose_name='فایل ')
 
     class Meta:
         db_table = 'healing_content'
 
 
-# TODO: develop this model
 class Practice(models.Model):
-    healing_day = models.ForeignKey(HealingDay, on_delete=models.CASCADE, verbose_name='روز چندم ')
+    healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته چندم ')
     description = models.TextField(verbose_name='توضیحات')
 
     class Meta:
@@ -68,10 +80,10 @@ class QuestionPractice(models.Model):
 
 
 class AnswerPractice(models.Model):
-    healing_day = models.ForeignKey(
-        HealingDay,
+    healing_week = models.ForeignKey(
+        HealingWeek,
         on_delete=models.CASCADE,
-        verbose_name='روز چندم '
+        verbose_name='هفته چندم '
     )
     question_practice = models.ForeignKey(
         QuestionPractice,
@@ -167,12 +179,12 @@ class QuestionnaireWeekAnswer(models.Model):
         on_delete=models.PROTECT,
         verbose_name='پرسشنامه'
     )
-    healing_day = models.ForeignKey(
-        HealingDay,
+    healing_week = models.ForeignKey(
+        HealingWeek,
         on_delete=models.CASCADE,
         related_name='day_questionnaire_week_answer',
-        verbose_name='روز',
-        help_text='برای کدام روز و گدام دوره درمان است'
+        verbose_name='هفتههفته',
+        help_text='برای کدام هفته و گدام دوره درمان است'
     )
     customer = models.ForeignKey(
         Customer,
@@ -221,62 +233,6 @@ class QuestionnaireWeekAnswerDetail(models.Model):
     def __str__(self):
         return f'{self.pk}'
 
-
-# ========================================= Answer Practice =================================
-# class PracticeAnswer(models.Model):
-#     # id of HealingDay
-#     healing_day = models.PositiveIntegerField(
-#         verbose_name='روز درمانی'
-#     )
-#     customer = models.ForeignKey(
-#         Customer,
-#         on_delete=models.CASCADE,
-#         related_name='customer_practice_answer',
-#         verbose_name='مراجع'
-#     )
-#     time_answer = models.DateTimeField(
-#         auto_now_add=True,
-#         verbose_name='زمان پاسخ'
-#     )
-#
-#     class Meta:
-#         db_table = 'practice_answer'
-#
-#     def clean(self):
-#         healing_day = PracticeAnswer.objects.filter(healing_day=self.healing_day, customer=self.customer)
-#         if healing_day.exists():
-#             raise ValidationError("برای این روز پاسخ ثبت شده است")
-#
-#
-# class PracticeAnswerDetail(models.Model):
-#     ANSWER_TYPE = (
-#         ('FILE', 'فایل'),
-#         ('TEXT', 'متن'),
-#     )
-#     practice_answer = models.ForeignKey(
-#         PracticeAnswer,
-#         on_delete=models.CASCADE,
-#         related_name='practice_answer_details',
-#         verbose_name='جواب تمرین'
-#     )
-#     content = models.TextField(
-#         null=True,
-#         blank=True,
-#         verbose_name='توضیحات'
-#     )
-#     file = models.FileField(
-#         upload_to='practice_answer/',
-#         null=True,
-#         blank=True,
-#         verbose_name='فایل'
-#     )
-#
-#     class Meta:
-#         db_table = 'practice_answer_detail'
-#
-#     def __str__(self):
-#         return f"{self.practice_answer}"
-#
 
 # ======================================  Day Feedback   ======================
 class DayFeedback(models.Model):
