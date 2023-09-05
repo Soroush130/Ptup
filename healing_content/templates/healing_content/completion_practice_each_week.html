@@ -43,7 +43,8 @@
                                                         <div class="form-group">
                                                             <label for="">متن جواب : </label>
                                                             <input type="text" class="form-control"
-                                                                   name="answer{{ question.id }}">
+                                                                   name="answer{{ question.id }}"
+                                                                   value="{{ question.answer_practice.all.first.answer }}">
                                                         </div>
                                                     </div>
                                                 </div>

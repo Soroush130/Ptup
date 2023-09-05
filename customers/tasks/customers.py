@@ -112,7 +112,7 @@ def check_last_day_healing_period(request, healing_day_id, customer):
         healing_week = HealingWeek.objects.get(id=healing_day_id)
 
         healing_period_last_day = healing_week.healing_period.duration_of_treatment
-        # healing_period_last_day = 1
+        # healing_period_last_day = 2
 
         if healing_week.week == healing_period_last_day:
             disease_info = CustomerDiseaseInformation.objects.filter(customer=customer, is_finished=False).first()
