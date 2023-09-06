@@ -61,9 +61,26 @@ class CustomerDiseaseInformation(models.Model):
         verbose_name='هفته',
         help_text='هفته چندم از دوره درمانی '
     )
+    day_of_follow_up = models.PositiveIntegerField(
+        default=1,
+        verbose_name='روز',
+        help_text='روز چندم از دوره فالوآپ '
+    )
+    start_time_foundation_course = models.DateTimeField(
+        verbose_name='زمان',
+        help_text='زمان شروع دوره مقدماتی ',
+        null=True,
+        blank=True
+    )
     start_time_period = models.DateTimeField(
         verbose_name='زمان',
         help_text='زمان شروع دوره درمان ',
+        null=True,
+        blank=True
+    )
+    start_time_follow_up = models.DateTimeField(
+        verbose_name='زمان',
+        help_text='زمان شروع دوره فالوآپ ',
         null=True,
         blank=True
     )
