@@ -18,7 +18,8 @@ class FollowUpQuestion(models.Model):
         ('NEB', 'رفتارهای غیر هیجانی - رفتارهایی که توسط هیجان ها هدایت نمی شوند'),
     )
     row = models.PositiveIntegerField(
-        verbose_name='ردیف '
+        verbose_name='ردیف ',
+        unique=True
     )
     text = models.TextField(
         verbose_name='متن سوال '
@@ -71,3 +72,36 @@ class FollowUpQuestionAnswer(models.Model):
 
     class Meta:
         db_table = 'followup_question_answer'
+
+
+class FollowUpContent(models.Model):
+    STRUCTURE_EVALUATED = (
+        ('S', 'غمگینی'),
+        ('A', 'اضطراب'),
+        ('AN', 'خشم'),
+        ('H', 'شادی'),
+        ('AC', 'سطح فعالیت'),
+        ('GE', 'آشنایی با نقش هیجان ها'),
+        ('AT', 'توجه آگاهی'),
+        ('CO', 'انعطاف شناختی'),
+        ('TO', 'تحمل احساس های ناخوشایند جسمی'),
+        ('NEB', 'رفتارهای غیر هیجانی - رفتارهایی که توسط هیجان ها هدایت نمی شوند'),
+    )
+    title = models.CharField(
+        max_length=255,
+        verbose_name="عنوان ",
+        null=True,
+        blank=True
+    )
+    structure_evaluated = models.CharField(
+        max_length=5,
+        verbose_name='سازه مورد ارزیابی ',
+        choices=STRUCTURE_EVALUATED
+    )
+    file = models.FileField(
+        verbose_name='فایل ',
+        upload_to='follow_up/content/'
+    )
+
+    class Meta:
+        db_table = 'follow_up_content'

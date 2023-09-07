@@ -37,3 +37,22 @@ def increase_follow_up_day(request, disease_information):
             messages.success(request, "شما به تمام سوالات امروز جواب داده اید")
         else:
             pass
+
+
+def check_question_score(question_id, structure_evaluated, day, customer) -> bool:
+    # day = 5
+    if day >= 5:
+        day_list = list(range(day - 4, day + 1))
+        print(day_list)
+
+        answers = FollowUpQuestionAnswer.objects.filter(question_id=question_id, customer=customer, day__in=day_list)
+
+        if len(answers) == 5:
+            if structure_evaluated in ['S', 'A', 'AN', 'TO']:
+                scores = [True if answer.score > 7 else False for answer in answers]
+                return all(scores)
+            elif structure_evaluated in ['H', 'AC', 'GE', 'AT', 'CO', 'NEB']:
+                scores = [True if answer.score < 3 else False for answer in answers]
+                return all(scores)
+        else:
+            return False
