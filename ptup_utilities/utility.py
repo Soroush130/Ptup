@@ -8,8 +8,12 @@ from ptup_messages.models import Message, MotivationalMessage, Notification
 
 def get_context_customer(user: QuerySet) -> dict:
     motivational_message = MotivationalMessage.objects.random()
+    messages_count = Message.objects.filter(receiver=user).count()
+    notification_count = Notification.objects.filter(receiver=user).count()
     context = {
         "motivational_message": motivational_message,
+        "messages_count": messages_count,
+        "notification_count": notification_count,
     }
     return context
 
