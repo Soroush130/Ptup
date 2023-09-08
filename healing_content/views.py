@@ -64,35 +64,6 @@ class CreateFeedbackView(View):
             return redirect(request.META.get("HTTP_REFERER"))
 
 
-# @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
-# class ShowFeedbackByCustomerView(View):
-#     def get(self, request, healing_week_id, *args, **kwargs):
-#         customer = request.user.customer
-#         doctor = customer.treating_doctor
-#         print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-#         answers_practice_list = AnswerPractice.objects.filter(healing_week_id=healing_week_id)
-#         print(answers_practice_list.values('id'))
-#
-#         try:
-#             day_feedback = DayFeedback.objects.get(
-#                 practice_answer_id=1,
-#                 doctor=doctor,
-#                 practice_answer__customer=customer
-#             )
-#             context = {
-#                 "status": True,
-#                 "day_feedback": day_feedback,
-#             }
-#             return render(request, 'healing_content/show_feed_back_by_customer.html', context)
-#         except DayFeedback.DoesNotExist:
-#             context = {
-#                 "status": False,
-#                 "doctor": doctor,
-#                 "day_feedback": "هیچ بازخوردی ثبت نشده است",
-#             }
-#             return render(request, 'healing_content/show_feed_back_by_customer.html', context)
-
-
 # =============================== Questionnaire Weekly ========================
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class QuestionnaireWeeklyView(View):

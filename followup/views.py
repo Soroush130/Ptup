@@ -6,6 +6,7 @@ from django.views import View
 from django.db import transaction
 
 from customers.models import CustomerDiseaseInformation
+from customers.tasks.customer_activity_history import create_activity_history
 from followup.decorators import after_nine_pm
 from followup.forms import FollowUpQuestionForm
 from followup.models import FollowUpQuestion, FollowUpQuestionAnswer, FollowUpContent
@@ -67,6 +68,13 @@ class FollowUpCustomer(View):
                             customer=customer,
                             score=score,
                             day=day
+                        )
+
+                        # TODO: Register activity history for customer
+                        create_activity_history(
+                            customer_id=customer.id,
+                            subject=f"تکمیل پرسشنامه فالوآپ",
+                            content=f"انجام پرسشنامه روز {day} ام از دوره فالوآپ"
                         )
 
                         # TODO
