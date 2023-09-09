@@ -24,6 +24,9 @@ urlpatterns = [
     path('content/', include("healing_content.urls")),
     path('foundation_course/', include("foundation_course.urls")),
     path('followup/', include("followup.urls")),
+
+    # PWA
+    path('', include('pwa.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

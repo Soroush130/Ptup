@@ -4,6 +4,8 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/dist/js', 'serviceworker.js')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -31,6 +33,7 @@ THIRD_PARTY_APPS = [
     'django_render_partial',
     'django.contrib.humanize',
     'django_quill',
+    'pwa',
 ]
 
 LOCAL_APPS = [
@@ -166,3 +169,38 @@ SESSION_COOKIE_AGE = 86400
 
 # Setting Kavenegar
 KAVENEGAR_API_KEY = '2F776B494544336F2F516C456C704F52737659384D577855566B46617031334F4A796C767A564E494476343D'
+
+# PWA
+PWA_APP_NAME = 'PTUP'
+PWA_APP_THEME_COLOR = '#000000'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': 'static/dist/img/logo_ptup.png',
+        'sizes': '512x512'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': 'static/dist/img/logo_ptup.png',
+        'sizes': '512x512'
+    }
+]
+PWA_APP_DIR = 'rtl'
+PWA_APP_LANG = 'en-US'
+
+
+
+
+
+
+
+
+
+
+
