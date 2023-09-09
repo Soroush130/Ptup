@@ -43,7 +43,6 @@ def check_question_score(question_id, structure_evaluated, day, customer) -> boo
     # day = 5
     if day >= 5:
         day_list = list(range(day - 4, day + 1))
-        print(day_list)
 
         answers = FollowUpQuestionAnswer.objects.filter(question_id=question_id, customer=customer, day__in=day_list)
 

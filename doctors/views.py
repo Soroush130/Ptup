@@ -5,7 +5,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 
 from customers.models import Customer
-from ptup_utilities.utility import send_message_in_protable
+from ptup_utilities.utility import send_notification_in_protable
 from .decorators import is_complete_information_doctor
 from .models import Doctor, IdentificationDocument, ApproachUsedTreatment
 from .forms import DoctorForm, IdentificationDocumentForm, NickNameForm
@@ -44,7 +44,7 @@ class IsVerifyDoctorByStaff(View):
             doctor.save()
 
             content = "مجوز شما توسط ادمین لغو شد"
-            send_message_in_protable(receiver=doctor.user, content=content, sender=request.user)
+            send_notification_in_protable(receiver=doctor.user, content=content, sender=request.user)
 
             response = {
                 'is_taken': True,
@@ -57,7 +57,7 @@ class IsVerifyDoctorByStaff(View):
             doctor.save()
 
             content = "مجوز شما توسط ادمین تایید شد"
-            send_message_in_protable(receiver=doctor.user, content=content, sender=request.user)
+            send_notification_in_protable(receiver=doctor.user, content=content, sender=request.user)
 
             response = {
                 'is_taken': True,

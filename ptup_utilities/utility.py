@@ -90,7 +90,7 @@ def get_context_according_user_role(user: QuerySet, user_role: int) -> dict:
     return context
 
 
-def send_message_in_protable(receiver: QuerySet, content: str, sender: QuerySet) -> bool:
+def send_notification_in_protable(receiver: QuerySet, content: str, sender: QuerySet) -> bool:
     Notification.objects.create(receiver=receiver, content=content, sender=sender)
     return True
 

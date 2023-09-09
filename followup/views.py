@@ -11,10 +11,11 @@ from followup.decorators import after_nine_pm
 from followup.forms import FollowUpQuestionForm
 from followup.models import FollowUpQuestion, FollowUpQuestionAnswer, FollowUpContent
 from followup.utility import increase_follow_up_day, set_start_time_follow_up, check_question_score
+from ptup_utilities.utility import send_notification_in_protable
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
-@method_decorator(after_nine_pm, name='dispatch')
+# @method_decorator(after_nine_pm, name='dispatch')
 class FollowUpCustomer(View):
     template_name = 'followup/follow_up_customer.html'
 
@@ -60,6 +61,11 @@ class FollowUpCustomer(View):
                         # TODO: check score
                         status = check_question_score(question_id, answer.question.structure_evaluated, day, customer)
                         if status:
+                            send_notification_in_protable(
+                                receiver=customer.treating_doctor.user,
+                                content=f'نمره یک سوال پرسشنامه فالوآپ بیمار {customer.nick_name} برای 5 روز متوالی بیش از حد نصاب است',
+                                sender=request.user
+                            )
                             return redirect('follow_up:show_content')
 
                     except FollowUpQuestionAnswer.DoesNotExist:
@@ -86,6 +92,11 @@ class FollowUpCustomer(View):
                         status = check_question_score(question_id, answer_new.question.structure_evaluated, day,
                                                       customer)
                         if status:
+                            send_notification_in_protable(
+                                receiver=customer.treating_doctor.user,
+                                content=f'نمره یک سوال پرسشنامه فالوآپ بیمار {customer.nick_name} برای 5 روز متوالی بیش از حد نصاب است',
+                                sender=request.user
+                            )
                             return redirect('follow_up:show_content')
 
 
