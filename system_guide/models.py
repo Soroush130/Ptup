@@ -2,6 +2,15 @@ from django.db import models
 
 
 class Guide(models.Model):
+    FILE_TYPE = (
+        ('file', 'فایل'),
+        ('video', 'ویدیو')
+    )
+    type = models.CharField(
+        max_length=10,
+        verbose_name='نوع فایل ',
+        choices=FILE_TYPE
+    )
     title = models.CharField(
         verbose_name='عنوان ',
         blank=True,

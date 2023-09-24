@@ -194,14 +194,3 @@ PWA_APP_ICONS_APPLE = [
 ]
 PWA_APP_DIR = 'rtl'
 PWA_APP_LANG = 'en-US'
-
-
-
-
-
-
-
-
-
-
-
