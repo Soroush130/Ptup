@@ -46,6 +46,7 @@ LOCAL_APPS = [
     'healing_content.apps.HealingContentConfig',
     'foundation_course.apps.FoundationCourseConfig',
     'followup.apps.FollowupConfig',
+    'system_guide.apps.SystemGuideConfig',
 ]
 
 INSTALLED_APPS = DJANGO_DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
