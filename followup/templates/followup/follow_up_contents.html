@@ -1,0 +1,45 @@
+{% extends "shared/_MainLayout.html" %}
+
+{% block title %}
+
+    ویدیو
+
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm">
+                        <h1>ویدیو درمانی ( لطفا ویدیو درمانی را مشاهده کنید و سپس به باقی سوال ها جواب دهید )</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                {% for video in videos %}
+                    <div class="row">
+                        <div class="col-lg">
+                            <div class="card">
+                                <div class="card-body">
+                                    <video src="{{ video.file.url }}" width="100%"
+                                           height="100%" controls></video>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{% url 'follow_up:follow_up_customer' %}" class="btn btn-primary">مشاهده
+                                        کردم</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </section>
+    </div>
+{% endblock %}

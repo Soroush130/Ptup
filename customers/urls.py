@@ -34,5 +34,5 @@ urlpatterns = [
 
     path('foundation_course_customer/', views.FoundationCourseCustomer.as_view(), name='foundation_course_customer'),
 
-    path('follow_up_customer/', views.FollowUpCustomer.as_view(), name='follow_up_customer'),
+
 ]

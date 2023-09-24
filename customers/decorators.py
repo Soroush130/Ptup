@@ -51,7 +51,7 @@ def not_pass_healing_period(view_func):
         if not disease_information.is_healing_period:
             return view_func(request, *args, **kwargs)
         else:
-            return redirect('customers:follow_up_customer')
+            return redirect('follow_up:follow_up_customer')
 
     return wrapped_view
 

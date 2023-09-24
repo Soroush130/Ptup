@@ -18,6 +18,7 @@ class QuestionnaireTypeChoices(models.IntegerChoices):
     DERS = 3, 'ders'
     QLI = 4, 'qli'
     NEO = 5, 'neo'
+    BEAQ = 6, 'beaq'
 
 
 class Questionnaire(models.Model):

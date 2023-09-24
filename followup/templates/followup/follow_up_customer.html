@@ -1,0 +1,71 @@
+{% extends "shared/_MainLayout.html" %}
+
+{% block title %}
+
+    دوره فالوآپ
+
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>دوره فالوآپ ( روز {{ day }} )</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                {% for question in questions %}
+                    <div class="row">
+                        <div class="col-lg">
+
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <h5>{{ question.row }} - {{ question.text }}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-body bg-gray-light">
+                                        <span class="text-bold">راهنمایی سوال</span> : {{ question.description }}
+                                    </div>
+
+                                    <div class="card-body bg-gray-light mt-4">
+                                        <form action="" role="form" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="question_id" value="{{ question.id }}">
+                                            <label for="" class="form-group">نمره سوال : </label>
+                                            <select name="score" class="form-control" id="">
+                                                <option value="1" class="text-bold">1</option>
+                                                <option value="2" class="text-bold">2</option>
+                                                <option value="3" class="text-bold">3</option>
+                                                <option value="4" class="text-bold">4</option>
+                                                <option value="5" class="text-bold">5</option>
+                                                <option value="6" class="text-bold">6</option>
+                                                <option value="7" class="text-bold">7</option>
+                                                <option value="8" class="text-bold">8</option>
+                                                <option value="9" class="text-bold">9</option>
+                                                <option value="10" class="text-bold">10</option>
+                                            </select>
+
+                                            <button type="submit" class="btn btn-primary mt-3">ثبت</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+        </section>
+    </div>
+{% endblock %}

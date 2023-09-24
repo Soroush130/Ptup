@@ -315,10 +315,4 @@ class HealingContentMap(View):
         }
         return render(request, 'healing_content/healing_content_map.html', context)
 
-
-@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
-class FollowUpCustomer(View):
-    def get(self, request):
-        return render(request, 'customers/follow_up_customer.html')
-
 # ===============================================================================================

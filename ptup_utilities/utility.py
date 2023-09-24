@@ -8,8 +8,12 @@ from ptup_messages.models import Message, MotivationalMessage, Notification
 
 def get_context_customer(user: QuerySet) -> dict:
     motivational_message = MotivationalMessage.objects.random()
+    messages_count = Message.objects.filter(receiver=user).count()
+    notification_count = Notification.objects.filter(receiver=user).count()
     context = {
         "motivational_message": motivational_message,
+        "messages_count": messages_count,
+        "notification_count": notification_count,
     }
     return context
 
@@ -86,7 +90,7 @@ def get_context_according_user_role(user: QuerySet, user_role: int) -> dict:
     return context
 
 
-def send_message_in_protable(receiver: QuerySet, content: str, sender: QuerySet) -> bool:
+def send_notification_in_protable(receiver: QuerySet, content: str, sender: QuerySet) -> bool:
     Notification.objects.create(receiver=receiver, content=content, sender=sender)
     return True
 

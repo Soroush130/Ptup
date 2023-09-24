@@ -48,11 +48,54 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 col-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-info">
+                                <a href="{% url 'ptup_messages:messages' %}">
+                                    <i class="far fa-envelope"></i>
+                                </a>
+                            </span>
 
+                            <div class="info-box-content">
+                                <span class="info-box-text">پیام ها</span>
+                                <span class="info-box-number">{{ messages_count }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 col-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-success">
+                                <a href="{% url 'ptup_messages:notifications' %}">
+                                    <i class="nav-icon far fa-bell"></i>
+                                </a>
+                            </span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">اعلان ها</span>
+                                <span class="info-box-number">{{ notification_count }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 col-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-warning">
+                                <a href="{% url 'customers:healing_content_map' %}">
+                                    <i class="far fa-copy"></i>
+                                </a>
+                            </span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">پرونده درمانی خودم</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </section>
-        <!-- /.content -->
     </div>
 
 {% endblock %}
