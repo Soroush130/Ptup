@@ -109,8 +109,10 @@
                                             <div>
                                                 <h5>
                                                     {{ forloop.counter }} - {{ identification_document.title }}
-                                                    <a href="{% url 'doctors:delete_document' identification_document.id %}">
-                                                        <i class="fas fa-trash" style="color: red"></i>
+                                                    <a class="btn btn-danger btn-sm" href="{% url 'doctors:delete_document' identification_document.id %}">
+                                                        <i class="fas fa-trash">
+                                                        </i>
+                                                        حذف
                                                     </a>
                                                 </h5>
                                             </div>

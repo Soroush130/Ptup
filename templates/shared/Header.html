@@ -40,10 +40,13 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 
             {% if user_role == 1 %}
-                <div class="image">
-                    <img src="{{ user.doctor.get_image_profile_url }}" class="img-circle elevation-2"
-                         alt="User Image">
-                </div>
+                {% if user.doctor.get_image_profile_url %}
+                    <div class="image">
+                        <img src="{{ user.doctor.get_image_profile_url }}" class="img-circle elevation-2"
+                             alt="User Image">
+                    </div>
+                {% endif %}
+
                 <div class="info">
                     {% if user.doctor %}
                         <a href="{% url 'doctors:detail_doctor' user.doctor.id %}"
