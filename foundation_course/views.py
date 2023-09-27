@@ -71,8 +71,12 @@ class CompleteQuestionnaireByCustomer(View):
                     if questionnaire.type == 2:
                         check_suicide(9, questionnaire_answer.id, customer)
 
+                    messages.success(request, "پرسشنامه به درستی تکمیل شد")
+
                     # TODO: Checking the end of the foundation course
-                    check_foundation_course(request, customer.id)
+                    status_foundation_course = check_foundation_course(request, customer.id)
+                    if status_foundation_course:
+                        return redirect('home')
 
                     return redirect('customers:foundation_course_customer')
                 else:

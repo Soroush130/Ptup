@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib import messages
@@ -182,6 +183,17 @@ class PermissionStartTreatmentCustomer(View):
 @method_decorator(has_permission_start_treatment, name='dispatch')
 class FoundationCourseCustomer(View):
     def get(self, request):
+        with transaction.atomic():
+            disease_information = CustomerDiseaseInformation.objects.filter(
+                customer=request.user.customer,
+                is_finished=False
+            ).first()
+
+            # set time start period
+            if disease_information.start_time_foundation_course is None:
+                disease_information.start_time_foundation_course = timezone.now()
+                disease_information.save()
+
         questionnaire_list = Questionnaire.objects.all()
 
         context = {
@@ -195,24 +207,30 @@ class FoundationCourseCustomer(View):
 @method_decorator(not_pass_healing_period, name='dispatch')
 class HealingContentEachWeek(View):
     def get(self, request):
-        customer = request.user.customer
+        with transaction.atomic():
+            customer = request.user.customer
 
-        disease_information = CustomerDiseaseInformation.objects.filter(
-            customer=customer,
-            is_finished=False
-        ).first()
+            disease_information = CustomerDiseaseInformation.objects.filter(
+                customer=customer,
+                is_finished=False
+            ).first()
 
-        week = disease_information.day_of_healing_period
-        healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
-        contents_in_week = group_by_healing_content_each_week(healing_week)
+            # set time start period
+            if disease_information.start_time_period is None:
+                disease_information.start_time_period = timezone.now()
+                disease_information.save()
 
-        context = {
-            'week': week,
-            'healing_week': healing_week,
-            'disease_information': disease_information,
-            'contents': contents_in_week,
-        }
-        return render(request, 'healing_content/healing_period_each_week.html', context)
+            week = disease_information.day_of_healing_period
+            healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
+            contents_in_week = group_by_healing_content_each_week(healing_week)
+
+            context = {
+                'week': week,
+                'healing_week': healing_week,
+                'disease_information': disease_information,
+                'contents': contents_in_week,
+            }
+            return render(request, 'healing_content/healing_period_each_week.html', context)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -300,19 +318,23 @@ class CompletionPractice(View):
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class HealingContentMap(View):
     def get(self, request, *args, **kwargs):
-        customer = request.user.customer
-        disease_information = CustomerDiseaseInformation.objects.filter(
-            customer=customer,
-            is_finished=False
-        ).first()
+        try:
+            customer = request.user.customer
+            disease_information = CustomerDiseaseInformation.objects.filter(
+                customer=customer,
+                is_finished=False
+            ).first()
 
-        answers_list = get_practice_answer_list(customer)
+            answers_list = get_practice_answer_list(customer)
 
-        context = {
-            "customer_id": customer.id,
-            "answers_list": answers_list,
-            "disease_information": disease_information,
-        }
-        return render(request, 'healing_content/healing_content_map.html', context)
+            context = {
+                "customer_id": customer.id,
+                "answers_list": answers_list,
+                "disease_information": disease_information,
+            }
+            return render(request, 'healing_content/healing_content_map.html', context)
+        except:
+            messages.error(request, "پرونده درمانی برای شما یافت نشد")
+            return redirect('home')
 
 # ===============================================================================================
