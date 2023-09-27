@@ -20,6 +20,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 DJANGO_DEFAULT_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -194,3 +195,15 @@ PWA_APP_ICONS_APPLE = [
 ]
 PWA_APP_DIR = 'rtl'
 PWA_APP_LANG = 'en-US'
+
+# Setting Jazzmin
+JAZZMIN_SETTINGS = {
+    "site_title": "Ptup Admin",
+
+    "site_header": "Ptup",
+
+    "welcome_sign": "Welcome to the Ptup",
+
+    # Copyright on the footer
+    "copyright": "تمام حقوق مادی و معنوی متعلق به سامانه ptup است",
+}

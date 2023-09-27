@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser, AbstractBaseUser
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
@@ -32,7 +32,7 @@ class RoleChoices(models.IntegerChoices):
     CUSTOMER = 2, 'بیمار'
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(verbose_name="شماره تلفن", max_length=21, unique=True)
     role = models.SmallIntegerField(verbose_name="نقش", default=None, null=True, choices=RoleChoices.choices)
     is_accept_rules = models.BooleanField(verbose_name="پذیرش قوانین سایت", default=False)
@@ -62,12 +62,20 @@ class User(AbstractBaseUser):
     def is_admin(self):
         return self.is_staff
 
+    class Meta:
+        verbose_name = 'حساب'
+        verbose_name_plural = 'حساب ها'
+
 
 class SiteRules(models.Model):
     rule = models.CharField(max_length=300, verbose_name='قانون')
 
     def __str__(self):
         return self.rule
+
+    class Meta:
+        verbose_name = 'قانون'
+        verbose_name_plural = 'قوانین سایت'
 
 
 class OtpCode(models.Model):
@@ -79,6 +87,10 @@ class OtpCode(models.Model):
     def __str__(self):
         return self.otp_code
 
+    class Meta:
+        verbose_name = 'کد اعتبارسنجی'
+        verbose_name_plural = 'کدهای اعتبارسنجی'
+
 
 class ForgottenCode(models.Model):
     phone = models.CharField(max_length=15)
@@ -88,3 +100,7 @@ class ForgottenCode(models.Model):
 
     def __str__(self):
         return self.forgot_code
+
+    class Meta:
+        verbose_name = 'کد فراموشی'
+        verbose_name_plural = 'کدهای فراموشی'

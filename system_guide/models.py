@@ -22,4 +22,6 @@ class Guide(models.Model):
     )
 
     class Meta:
+        verbose_name = 'راهنما'
+        verbose_name_plural = 'راهنما ها'
         db_table = 'guide'

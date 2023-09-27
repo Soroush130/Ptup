@@ -23,6 +23,10 @@ class Message(models.Model):
     def get_subject(self):
         return self.subject if self.subject is not None else 'عنوان ندارد'
 
+    class Meta:
+        verbose_name = 'پیام'
+        verbose_name_plural = 'پیام ها'
+
 
 class MotivationalMessageManger(models.Manager):
     def random(self):
@@ -39,6 +43,10 @@ class MotivationalMessage(models.Model):
     def __str__(self):
         return f"motivational message # {self.id}"
 
+    class Meta:
+        verbose_name = 'پیام انگیزشی'
+        verbose_name_plural = 'پیام های انگیزشی'
+
 
 class Notification(models.Model):
     sender = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sender_notification', null=True,
@@ -46,3 +54,7 @@ class Notification(models.Model):
     receiver = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='receiver_notification', null=True,
                                  verbose_name='گیرنده ')
     content = models.TextField()
+
+    class Meta:
+        verbose_name = 'اعلان'
+        verbose_name_plural = 'اعلان ها'

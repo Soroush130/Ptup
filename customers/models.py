@@ -33,6 +33,10 @@ class Customer(models.Model):
     def get_gender(self):
         return 'مرد' if self.gender == 1 else 'زن'
 
+    class Meta:
+        verbose_name = 'بیمار'
+        verbose_name_plural = 'بیماران'
+
 
 class CustomerDiseaseInformation(models.Model):
     """
@@ -111,6 +115,10 @@ class CustomerDiseaseInformation(models.Model):
     def __str__(self):
         return f"{self.customer} , {self.illness} , {self.healing_period}"
 
+    class Meta:
+        verbose_name = 'پرونده بیمار'
+        verbose_name_plural = 'پرونده های بیماران'
+
 
 class CustomerActivityHistory(models.Model):
     customer = models.ForeignKey(
@@ -136,6 +144,8 @@ class CustomerActivityHistory(models.Model):
 
     class Meta:
         db_table = 'customer_activity_history'
+        verbose_name = 'فعالیت'
+        verbose_name_plural = 'تاریخچه فعالیت ها'
 
     def __str__(self):
         return f"history id : {self.pk}"
