@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SystemGuideConfig(AppConfig):
+class GuideConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'system_guide'
+    name = 'guide'

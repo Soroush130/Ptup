@@ -12,6 +12,7 @@ class Guide(models.Model):
         choices=FILE_TYPE
     )
     title = models.CharField(
+        max_length=20,
         verbose_name='عنوان ',
         blank=True,
         null=True

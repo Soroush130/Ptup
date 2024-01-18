@@ -47,7 +47,7 @@ LOCAL_APPS = [
     'healing_content.apps.HealingContentConfig',
     'foundation_course.apps.FoundationCourseConfig',
     'followup.apps.FollowupConfig',
-    'system_guide.apps.SystemGuideConfig',
+    'guide.apps.GuideConfig',
 ]
 
 INSTALLED_APPS = DJANGO_DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -89,16 +89,16 @@ WSGI_APPLICATION = 'Ptup.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
 
         ### Postgres
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ptup',
-        'USER': 'postgres',
-        'PASSWORD': 'ptup',
-        'HOST': '127.0.0.1',
-        'PORT': '5430',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # 'NAME': 'ptup',
+        # 'USER': 'postgres',
+        # 'PASSWORD': 'ptup',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '5430',
     }
 }
 
@@ -173,7 +173,7 @@ SESSION_COOKIE_AGE = 86400
 KAVENEGAR_API_KEY = '2F776B494544336F2F516C456C704F52737659384D577855566B46617031334F4A796C767A564E494476343D'
 
 # PWA
-PWA_APP_NAME = 'PTUP'
+PWA_APP_NAME = 'PT-UP'
 PWA_APP_THEME_COLOR = '#000000'
 PWA_APP_BACKGROUND_COLOR = '#ffffff'
 PWA_APP_DISPLAY = 'standalone'
