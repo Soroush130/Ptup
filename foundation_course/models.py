@@ -9,7 +9,6 @@ from foundation_course.interpretation.interpretation import (
     interpretation_ders,
     interpretation_qli
 )
-from foundation_course.tasks.questionnaire import check_suicide
 
 
 class QuestionnaireTypeChoices(models.IntegerChoices):
@@ -51,6 +50,8 @@ class Questionnaire(models.Model):
 
     class Meta:
         db_table = 'questionnaire'
+        verbose_name = 'پرسشنامه'
+        verbose_name_plural = 'پرسشنامه های دوره مقدماتی'
 
     def __str__(self):
         return self.title
@@ -72,6 +73,8 @@ class Question(models.Model):
 
     class Meta:
         db_table = 'question'
+        verbose_name = 'سوال'
+        verbose_name_plural = 'سوالات دوره مقدماتی'
 
     def __str__(self):
         return f'{self.pk} of {self.questionnaire.title}'
@@ -96,6 +99,8 @@ class QuestionOption(models.Model):
 
     class Meta:
         db_table = 'question_option'
+        verbose_name = 'گزینه'
+        verbose_name_plural = 'گزینه های سوالات دوره مقدماتی'
 
     def __str__(self):
         return f'{self.pk} of question {self.question.pk}'
@@ -130,6 +135,8 @@ class QuestionnaireAnswer(models.Model):
 
     class Meta:
         db_table = 'questionnaire_answer'
+        verbose_name = 'جواب'
+        verbose_name_plural = 'جواب سوالات دوره مقدماتی'
 
     def __str__(self):
         return f'{self.pk} of question {self.questionnaire.pk}'
@@ -183,6 +190,8 @@ class QuestionnaireAnswerDetail(models.Model):
 
     class Meta:
         db_table = 'question_answer_detail'
+        verbose_name = 'جزییات جواب'
+        verbose_name_plural = 'جزییات جواب های دوره مقدماتی'
 
     def __str__(self):
         return f'{self.pk}'

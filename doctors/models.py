@@ -16,6 +16,10 @@ class ApproachUsedTreatment(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'رویکرد درمان'
+        verbose_name_plural = 'رویکرد های درمان'
+
 
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="کاربر")
@@ -56,6 +60,10 @@ class Doctor(models.Model):
     def get_gender(self):
         return 'مرد' if self.gender == 1 else 'زن'
 
+    class Meta:
+        verbose_name = 'دکتر'
+        verbose_name_plural = 'دکترها'
+
 
 class IdentificationDocument(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='دکتر ')
@@ -78,3 +86,7 @@ class IdentificationDocument(models.Model):
             index += 1
 
         return f"{file_size_bytes:.2f} {size_units[index]}"
+
+    class Meta:
+        verbose_name = 'مدرک شناسایی'
+        verbose_name_plural = 'مدارک شناسایی دکترها'

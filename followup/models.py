@@ -35,6 +35,8 @@ class FollowUpQuestion(models.Model):
 
     class Meta:
         db_table = 'follow_up_question'
+        verbose_name = 'سوال'
+        verbose_name_plural = 'سوالات دوره فالوآپ'
 
     def __str__(self):
         return f"{self.row}"
@@ -72,6 +74,8 @@ class FollowUpQuestionAnswer(models.Model):
 
     class Meta:
         db_table = 'followup_question_answer'
+        verbose_name = 'جواب'
+        verbose_name_plural = 'جواب های سوالات دوره فالوآپ'
 
 
 class FollowUpContent(models.Model):
@@ -105,3 +109,5 @@ class FollowUpContent(models.Model):
 
     class Meta:
         db_table = 'follow_up_content'
+        verbose_name = 'محتوا'
+        verbose_name_plural = 'محتوا های دوره فالوآپ'

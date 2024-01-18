@@ -8,6 +8,9 @@ class Illness(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'بیماری'
+        verbose_name_plural = 'لیست بیماری ها'
 
 class HealingPeriod(models.Model):
     illness = models.OneToOneField(Illness, on_delete=models.CASCADE, verbose_name="بیماری ")
@@ -16,3 +19,7 @@ class HealingPeriod(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+    class Meta:
+        verbose_name = 'دوره درمان'
+        verbose_name_plural = 'لیست دوره های درمانی'

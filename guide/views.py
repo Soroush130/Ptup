@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from system_guide.models import Guide
+from guide.models import Guide
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

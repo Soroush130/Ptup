@@ -21,11 +21,11 @@ def home(request):
 def header(request):
     user = request.user
     user_role = user.role
-    is_complete_information = check_information_doctor(user)
+    is_complete_information_doctor = check_information_doctor(user)
     context = {
         'user': user,
         'user_role': user_role,
-        'is_complete_information': is_complete_information,
+        'is_complete_information_doctor': is_complete_information_doctor,
     }
     return render(request, 'shared/Header.html', context)
 

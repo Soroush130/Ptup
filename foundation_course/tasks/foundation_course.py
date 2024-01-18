@@ -4,7 +4,7 @@ from customers.models import Customer
 from foundation_course.models import QuestionnaireAnswer, Questionnaire
 
 
-def check_foundation_course(request, customer_id: int):
+def check_foundation_course(request, customer_id: int) -> bool:
     customer = Customer.objects.get(id=customer_id)
     questionnaire_list = Questionnaire.objects.all()
     questionnaire_answer_list = QuestionnaireAnswer.objects.filter(customer=customer)
@@ -14,6 +14,6 @@ def check_foundation_course(request, customer_id: int):
         disease_information.is_foundation_course = True
         disease_information.save()
         messages.success(request, "شما تمامی پرسشنامه ها را تکمیل کردید")
-
+        return True
     else:
-        pass
+        return False

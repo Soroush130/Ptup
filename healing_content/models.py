@@ -14,6 +14,8 @@ class HealingWeek(models.Model):
 
     class Meta:
         db_table = 'healing_week'
+        verbose_name = 'هفته درمانی'
+        verbose_name_plural = 'هفته های درمانی'
 
     def __str__(self):
         return f"هفته {self.week} از دوره درمان {self.healing_period} || {self.pk}"
@@ -48,6 +50,8 @@ class HealingContent(models.Model):
 
     class Meta:
         db_table = 'healing_content'
+        verbose_name = 'محتوای درمانی'
+        verbose_name_plural = 'محتواهای درمانی'
 
 
 class Practice(models.Model):
@@ -56,6 +60,8 @@ class Practice(models.Model):
 
     class Meta:
         db_table = 'practice'
+        verbose_name = 'تمرین'
+        verbose_name_plural = 'تمرین ها'
 
     def __str__(self):
         return f"Practice with ID #{self.pk}"
@@ -77,6 +83,8 @@ class QuestionPractice(models.Model):
 
     class Meta:
         db_table = 'question_practice'
+        verbose_name = 'سوال'
+        verbose_name_plural = 'سوال تمرینات'
 
 
 class AnswerPractice(models.Model):
@@ -107,6 +115,8 @@ class AnswerPractice(models.Model):
 
     class Meta:
         db_table = 'answer_practices'
+        verbose_name = 'جواب'
+        verbose_name_plural = 'جواب تمرینات'
 
 
 # =========================================== Questionnaire Week ==========================
@@ -126,6 +136,8 @@ class QuestionnaireWeek(models.Model):
 
     class Meta:
         db_table = 'questionnaire_week'
+        verbose_name = 'پرسشنامه'
+        verbose_name_plural = 'پرسشنامه های هفتگی'
 
     def __str__(self):
         return self.title
@@ -147,6 +159,8 @@ class QuestionWeek(models.Model):
 
     class Meta:
         db_table = 'question_week'
+        verbose_name = 'سوال'
+        verbose_name_plural = 'سوالات پرسشنامه های هفتگی'
 
 
 class QuestionOptionWeek(models.Model):
@@ -168,6 +182,8 @@ class QuestionOptionWeek(models.Model):
 
     class Meta:
         db_table = 'question_option_week'
+        verbose_name = 'گزینه'
+        verbose_name_plural = 'گزینه سوالات پرسشنامه های هفتگی'
 
 
 # ------------------------  Question Answer --------------
@@ -205,6 +221,8 @@ class QuestionnaireWeekAnswer(models.Model):
 
     class Meta:
         db_table = 'questionnaire_week_answers'
+        verbose_name = 'جواب'
+        verbose_name_plural = 'جواب پرسشنامه های هفتگی'
 
 
 class QuestionnaireWeekAnswerDetail(models.Model):
@@ -229,6 +247,8 @@ class QuestionnaireWeekAnswerDetail(models.Model):
 
     class Meta:
         db_table = 'questionnaire_week_answer_details'
+        verbose_name = 'جزییات جواب'
+        verbose_name_plural = 'جزییات های جواب'
 
     def __str__(self):
         return f'{self.pk}'
@@ -259,6 +279,8 @@ class DayFeedback(models.Model):
 
     class Meta:
         db_table = 'day_feedback'
+        verbose_name = 'بازخورد'
+        verbose_name_plural = 'بازخورد های تمرینات'
 
     def __str__(self):
         return self.subject

@@ -12,6 +12,7 @@ class Guide(models.Model):
         choices=FILE_TYPE
     )
     title = models.CharField(
+        max_length=20,
         verbose_name='عنوان ',
         blank=True,
         null=True
@@ -22,4 +23,6 @@ class Guide(models.Model):
     )
 
     class Meta:
+        verbose_name = 'راهنما'
+        verbose_name_plural = 'راهنما ها'
         db_table = 'guide'
