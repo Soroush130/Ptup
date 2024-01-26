@@ -7,7 +7,6 @@ from doctors.models import Doctor
 from illness.models import Illness, HealingPeriod
 
 
-
 class HealingWeek(models.Model):
     healing_period = models.ForeignKey(HealingPeriod, on_delete=models.CASCADE, verbose_name='دوره درمانی ')
     week = models.PositiveIntegerField(default=1, verbose_name='شماره هفته', help_text='هفته چندم از دوره درمانی')
@@ -33,7 +32,7 @@ class HealingContent(models.Model):
         ('VOICE', 'صدا'),
     )
     healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته چندم ')
-    # title =
+
     type = models.CharField(max_length=8, choices=TYPE_HEALING_CONTENT)
     # This field is mostly used to group content
     day = models.PositiveIntegerField(

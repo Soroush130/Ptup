@@ -31,8 +31,11 @@ class Message(models.Model):
 class MotivationalMessageManger(models.Manager):
     def random(self):
         count = self.aggregate(count=Count('id'))['count']
-        random_index = randint(0, count - 1)
-        return self.all()[random_index]
+        if count > 0:
+            random_index = randint(0, count - 1)
+            return self.all()[random_index]
+        else:
+            pass
 
 
 class MotivationalMessage(models.Model):

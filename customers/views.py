@@ -135,6 +135,8 @@ class DeterminingCustomerIllness(View):
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class OperationChoiceIllnessCustomer(View):
     def get(self, request, customer_id, illness_id, *args, **kwargs):
+        _URL = request.META.get("HTTP_REFERER")
+
         doctor = request.user.doctor
         illness = Illness.objects.get(id=illness_id)
         customer = Customer.objects.get(id=customer_id)
@@ -147,16 +149,20 @@ class OperationChoiceIllnessCustomer(View):
             )
 
             if not customer_diseasen_information.exists():
-                CustomerDiseaseInformation.objects.create(
-                    customer=customer,
-                    illness=illness,
-                    healing_period=illness.healingperiod
-                )
-                messages.success(request, "نوع بیماری مراجع مشخص شد")
-                return redirect(request.META.get("HTTP_REFERER"))
+                try:
+                    CustomerDiseaseInformation.objects.create(
+                        customer=customer,
+                        illness=illness,
+                        healing_period=illness.healingperiod
+                    )
+                    messages.success(request, "نوع بیماری مراجع مشخص شد")
+                    return redirect(_URL)
+                except:
+                    messages.error(request, "دوره درمانی برای این بیماری وجود ندارد")
+                    return redirect(_URL)
             else:
                 messages.error(request, "نوع بیماری را نمی توانید تغییر دهید")
-                return redirect(request.META.get("HTTP_REFERER"))
+                return redirect(_URL)
         else:
             messages.error(request, "شما مجاز به انتساب بیماری به این بیمار نیستید")
             return redirect('doctors:list_customers_requested')
@@ -207,6 +213,7 @@ class FoundationCourseCustomer(View):
 @method_decorator(not_pass_healing_period, name='dispatch')
 class HealingContentEachWeek(View):
     def get(self, request):
+        _URL = request.META.get("HTTP_REFERER")
         with transaction.atomic():
             customer = request.user.customer
 
@@ -221,16 +228,20 @@ class HealingContentEachWeek(View):
                 disease_information.save()
 
             week = disease_information.day_of_healing_period
-            healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
-            contents_in_week = group_by_healing_content_each_week(healing_week)
+            try:
+                healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
+                contents_in_week = group_by_healing_content_each_week(healing_week)
 
-            context = {
-                'week': week,
-                'healing_week': healing_week,
-                'disease_information': disease_information,
-                'contents': contents_in_week,
-            }
-            return render(request, 'healing_content/healing_period_each_week.html', context)
+                context = {
+                    'week': week,
+                    'healing_week': healing_week,
+                    'disease_information': disease_information,
+                    'contents': contents_in_week,
+                }
+                return render(request, 'healing_content/healing_period_each_week.html', context)
+            except HealingWeek.DoesNotExist:
+                messages.error(request, "هقته درمانی تعریف نشده است")
+                return redirect(_URL)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

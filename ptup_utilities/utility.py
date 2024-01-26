@@ -1,12 +1,13 @@
 from typing import Any
 
 from django.db.models import QuerySet
+from django.shortcuts import redirect
 
 from customers.models import Customer, CustomerDiseaseInformation
 from ptup_messages.models import Message, MotivationalMessage, Notification
 
 
-def get_context_customer(user: QuerySet) -> dict:
+def get_context_customer(user: QuerySet, roll_back_url) -> dict:
     motivational_message = MotivationalMessage.objects.random()
     messages_count = Message.objects.filter(receiver=user).count()
     notification_count = Notification.objects.filter(receiver=user).count()
@@ -53,9 +54,10 @@ def get_list_customers_in_follow_up(doctor):
     return list_customers_in_follow_up
 
 
-def get_context_doctor(user: QuerySet) -> dict:
+def get_context_doctor(user: QuerySet, roll_back_url) -> dict:
     doctor = user.doctor
     if doctor.is_verify:
+
         list_customers = Customer.objects.filter(treating_doctor=doctor)
         count_customers = list_customers.count()
 
@@ -83,10 +85,9 @@ def get_context_doctor(user: QuerySet) -> dict:
 
 # ===================================================================================
 
-def get_context_according_user_role(user: QuerySet, user_role: int) -> dict:
+def get_context_according_user_role(roll_back_url, user, user_role) -> dict:
     DOCTOR = 1
-    context = get_context_doctor(user) if user_role == DOCTOR else get_context_customer(user)
-
+    context = get_context_doctor(user, roll_back_url) if user_role == DOCTOR else get_context_customer(user, roll_back_url)
     return context
 
 

@@ -12,6 +12,7 @@ class Illness(models.Model):
         verbose_name = 'بیماری'
         verbose_name_plural = 'لیست بیماری ها'
 
+
 class HealingPeriod(models.Model):
     illness = models.OneToOneField(Illness, on_delete=models.CASCADE, verbose_name="بیماری ")
     title = models.CharField(max_length=255, null=True, blank=True, verbose_name="عنوان دوره درمان ")

@@ -8,13 +8,12 @@ from ptup_utilities.utility import get_context_according_user_role
 @login_required(login_url='accounts:login')
 @is_complete_information
 def home(request):
+    _URL = request.META.get("HTTP_REFERER")
     user = request.user
     role = user.role
     DOCTOR = 1
     _template_name = 'home_doctor.html' if role == DOCTOR else 'home_customer.html'
-
-    context = get_context_according_user_role(user, role)
-
+    context = get_context_according_user_role(roll_back_url=_URL, user=user, user_role=role)
     return render(request, _template_name, context)
 
 
