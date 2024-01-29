@@ -14,7 +14,7 @@ from customers.tasks.customer_activity_history import get_activity_list, create_
     get_practices_healing_week, get_questionnaire_weekly
 from customers.tasks.customers import increase_week_of_healing_period, get_practice_answer_list, \
     check_last_day_healing_period, get_progress_charts, group_by_healing_content_each_week, set_time_healing_period
-from customers.utility import normalize_data_filter_customer
+from customers.utility import normalize_data_filter_customer, show_errors_CustomerForm
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
@@ -73,9 +73,9 @@ class CompletionInformationCostumer(View):
             messages.success(request, "اطلاعات به درستی ثبت شد")
             return redirect('/')
         else:
-            # print(">>>>>>>>>>> ERRORS <<<<<<<<<<<<<<<<<< ")
-            # print(customer_form.errors)
-            pass
+            error_message = show_errors_CustomerForm(customer_form.errors)
+            messages.error(request, error_message)
+            return redirect(request.META.get("HTTP_REFERER"))
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

@@ -15,20 +15,24 @@ def pass_foundation_course(view_func):
 
     @wraps(view_func)
     def wrapped_view(request, *args, **kwargs):
-        customer = request.user.customer
+        try:
+            customer = request.user.customer
 
-        disease_information = CustomerDiseaseInformation.objects.filter(
-            customer=customer,
-            is_finished=False
-        )
-        if disease_information.exists():
-            if disease_information.first().is_foundation_course:
-                return view_func(request, *args, **kwargs)
+            disease_information = CustomerDiseaseInformation.objects.filter(
+                customer=customer,
+                is_finished=False
+            )
+            if disease_information.exists():
+                if disease_information.first().is_foundation_course:
+                    return view_func(request, *args, **kwargs)
+                else:
+                    return redirect('customers:foundation_course_customer')
             else:
-                return redirect('customers:foundation_course_customer')
-        else:
-            messages.info(request, "بیماری برای شما انتخاب نشده است")
-            return redirect('home')
+                messages.info(request, "بیماری برای شما انتخاب نشده است")
+                return redirect('home')
+        except:
+            messages.error(request, "ابتدا اطلاعات خود را تکمیل کنید")
+            return redirect("customers:completion_information_customer")
 
     return wrapped_view
 

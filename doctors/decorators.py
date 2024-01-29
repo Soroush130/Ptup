@@ -48,6 +48,6 @@ def is_complete_information(view_func):
                 messages.error(request, "ابتدا اطلاعات خود را تکمیل کنید")
                 return redirect('customers:completion_information_customer')
         else:
-            return HttpResponse("شما ادیمن سایت هستید")
+            return redirect('admin/')
 
     return wrapped_view

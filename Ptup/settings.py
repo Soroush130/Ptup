@@ -198,11 +198,11 @@ PWA_APP_LANG = 'en-US'
 
 # Setting Jazzmin
 JAZZMIN_SETTINGS = {
-    "site_title": "Ptup Admin",
+    "site_title": "ادمین پنل",
 
     "site_header": "Ptup",
 
-    "welcome_sign": "Welcome to the Ptup",
+    "welcome_sign": "خوش آمدید",
 
     # Copyright on the footer
     "copyright": "تمام حقوق مادی و معنوی متعلق به سامانه ptup است",
