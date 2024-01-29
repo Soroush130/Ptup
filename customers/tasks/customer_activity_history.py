@@ -53,7 +53,6 @@ def get_activity(year, month, day, customer: QuerySet):
 
 # ===================================== Healing Content Customer =========================
 def check_exercises_every_week(week, disease_information, healing_period, customer):
-
     if week > 0:
 
         healing_week = HealingWeek.objects.get(week=week, healing_period=healing_period)

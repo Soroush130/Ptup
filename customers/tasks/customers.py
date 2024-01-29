@@ -22,7 +22,7 @@ def increase_week_of_healing_period(request, customer: QuerySet):
         ).first()
 
         healing_period = disease_information.healing_period
-        week = disease_information.day_of_healing_period
+        week = disease_information.week_of_healing_period
 
         healing_week = HealingWeek.objects.get(week=week, healing_period=healing_period)
         practices = Practice.objects.filter(healing_week=healing_week)
@@ -39,7 +39,7 @@ def increase_week_of_healing_period(request, customer: QuerySet):
                 if (questionnaire_answer_weekly.exists()) and (
                         questionnaire_answer_weekly.count() == questionnaire_weekly.count()):
 
-                    disease_information.day_of_healing_period += 1
+                    disease_information.week_of_healing_period += 1
                     disease_information.save()
                     messages.success(request, "به هفته درمانی جدید خوش آمدید")
                 else:

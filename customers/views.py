@@ -13,7 +13,7 @@ from customers.models import Customer, CustomerDiseaseInformation
 from customers.tasks.customer_activity_history import get_activity_list, create_activity_history, \
     get_practices_healing_week, get_questionnaire_weekly
 from customers.tasks.customers import increase_week_of_healing_period, get_practice_answer_list, \
-    check_last_day_healing_period, get_progress_charts, group_by_healing_content_each_week
+    check_last_day_healing_period, get_progress_charts, group_by_healing_content_each_week, set_time_healing_period
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
@@ -73,8 +73,9 @@ class CompletionInformationCostumer(View):
             messages.success(request, "اطلاعات به درستی ثبت شد")
             return redirect('/')
         else:
-            print(">>>>>>>>>>> ERRORS <<<<<<<<<<<<<<<<<< ")
-            print(customer_form.errors)
+            # print(">>>>>>>>>>> ERRORS <<<<<<<<<<<<<<<<<< ")
+            # print(customer_form.errors)
+            pass
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -180,7 +181,7 @@ class PermissionStartTreatmentCustomer(View):
             messages.success(request, 'تغییرات اعمال شد')
             return redirect(request.META.get("HTTP_REFERER"))
         else:
-            print(form.errors)
+            # print(form.errors)
             return redirect(request.META.get("HTTP_REFERER"))
 
 
@@ -222,12 +223,13 @@ class HealingContentEachWeek(View):
                 is_finished=False
             ).first()
 
-            # set time start period
-            if disease_information.start_time_period is None:
-                disease_information.start_time_period = timezone.now()
-                disease_information.save()
+            # TODO: set time start period
+            set_time_healing_period(disease_information)
+            # if disease_information.start_time_period is None:
+            #     disease_information.start_time_period = timezone.now()
+            #     disease_information.save()
 
-            week = disease_information.day_of_healing_period
+            week = disease_information.week_of_healing_period
             try:
                 healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
                 contents_in_week = group_by_healing_content_each_week(healing_week)

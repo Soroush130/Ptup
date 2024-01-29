@@ -60,7 +60,7 @@ class CustomerDiseaseInformation(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='دروه درومان ')
-    day_of_healing_period = models.PositiveIntegerField(
+    week_of_healing_period = models.PositiveIntegerField(
         default=1,
         verbose_name='هفته',
         help_text='هفته چندم از دوره درمانی '
@@ -95,7 +95,7 @@ class CustomerDiseaseInformation(models.Model):
     )
     is_healing_period = models.BooleanField(
         default=False,
-        verbose_name='بله/خیر ',
+        verbose_name='دوره درمان ',
         help_text='آیا دوره درمان را گذرانده است'
     )
     is_follow_up = models.BooleanField(
