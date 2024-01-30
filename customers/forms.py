@@ -4,13 +4,6 @@ from customers.models import Customer
 
 
 class CustomerForm(forms.ModelForm):
-    age = forms.IntegerField(
-        error_messages={'required': 'فیلد سن اجباری است'}
-    )
-    treating_doctor = forms.CharField(
-        error_messages={'required': 'فیلد دکتر معالج اجباری است'}
-    )
-
     class Meta:
         model = Customer
         fields = (
@@ -18,6 +11,14 @@ class CustomerForm(forms.ModelForm):
             'gender',
             'treating_doctor',
         )
+        error_messages = {
+            "treating_doctor": {
+                'required': 'فیلد دکتر معالج اجباری است'
+            },
+            "age": {
+                'required': 'فیلد سن اجباری است'
+            }
+        }
 
 
 class PermissionStartTreatmentCustomerForm(forms.Form):
