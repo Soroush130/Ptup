@@ -6,6 +6,9 @@ from accounts.utilites import phone_number_decryption
 from doctors.models import Doctor
 from illness.models import Illness, HealingPeriod
 
+import jdatetime
+from persiantools.jdatetime import JalaliDate
+
 
 class GenderChoices(models.IntegerChoices):
     MEN = 1, 'مرد'
@@ -118,6 +121,10 @@ class CustomerDiseaseInformation(models.Model):
     class Meta:
         verbose_name = 'پرونده بیمار'
         verbose_name_plural = 'پرونده های بیماران'
+
+    @property
+    def show_start_time_period_persian(self):
+        return JalaliDate(self.start_time_period).strftime("%Y/%m/%d")
 
 
 class CustomerActivityHistory(models.Model):
