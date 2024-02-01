@@ -337,7 +337,6 @@ class HealingContentMap(View):
                 customer=customer,
                 is_finished=False
             ).first()
-            print(f" >>>>>>>>>>>>>>>>>> Data : {disease_information.show_start_time_period_persian}")
 
             answers_list = get_practice_answer_list(customer)
 

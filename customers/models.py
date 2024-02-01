@@ -6,7 +6,6 @@ from accounts.utilites import phone_number_decryption
 from doctors.models import Doctor
 from illness.models import Illness, HealingPeriod
 
-import jdatetime
 from persiantools.jdatetime import JalaliDate
 
 
