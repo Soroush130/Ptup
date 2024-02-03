@@ -10,7 +10,7 @@ from foundation_course.decorators import questionnaire_completion
 from foundation_course.models import Questionnaire, Question, QuestionnaireAnswer, QuestionnaireAnswerDetail
 from foundation_course.tasks.foundation_course import check_foundation_course
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire, check_suicide
-from foundation_course.utility import calculate_score_each_questionnaire
+from foundation_course.utility import calculate_score_each_questionnaire, check_question_for_questionnaire
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -21,15 +21,19 @@ class QuestionnaireDetail(View):
 
         number_of_option = "".join([str(i) for i in range(1, questionnaire.number_of_options + 1)])
 
-        questions = Question.objects.filter(questionnaire=questionnaire).order_by('row')
+        exists_question, questions = check_question_for_questionnaire(questionnaire=questionnaire)
+        if exists_question == False:
+            messages.info(request, "سوالی برای این پرسشنامه پیدا نشد")
+            return redirect("customers:foundation_course_customer")
+        else:
 
-        context = {
-            "questionnaire": questionnaire,
-            "number_of_option": number_of_option,
-            "questions": questions,
-            "questions_count": questions.count(),
-        }
-        return render(request, 'foundation_course/questionnaire_detail.html', context)
+            context = {
+                "questionnaire": questionnaire,
+                "number_of_option": number_of_option,
+                "questions": questions,
+                "questions_count": questions.count(),
+            }
+            return render(request, 'foundation_course/questionnaire_detail.html', context)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
