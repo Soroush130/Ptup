@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from doctors.models import Doctor
-from ptup_utilities.utility import set_session, get_session
+from ptup_utilities.utility import set_session, get_session, show_custom_errors
 from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm, OtpCodeForm, ForgotPasswordForm, \
     ChangePasswordForm
 from .decorators import login_not_required, is_staff_or_superuser, is_otp_code_verify, check_last_otp_code_user
@@ -275,7 +275,8 @@ class ForgotPasswordView(View):
             else:
                 return redirect('accounts:forgot_password')
         else:
-            print(form.errors)
+            error_message = show_custom_errors(form.errors)
+            messages.error(request, error_message)
             return redirect('accounts:forgot_password')
 
 
@@ -306,7 +307,8 @@ class ConfirmForgotPasswordView(View):
                 messages.info(request, "کد منقضی شده است")
                 return redirect(request.META.get("HTTP_REFERER"))
         else:
-            print(form.errors)
+            error_message = show_custom_errors(form.errors)
+            messages.error(request, error_message)
             return redirect(request.META.get("HTTP_REFERER"))
 
 
@@ -331,7 +333,8 @@ class ChangePasswordView(View):
                 messages.success(request, "رمز عبور با موفقیت تغییر یافت")
                 return redirect('accounts:login')
         else:
-            print(form.errors)
+            error_message = show_custom_errors(form.errors)
+            messages.error(request, error_message)
             return redirect(request.META.get("HTTP_REFERER"))
 
 
