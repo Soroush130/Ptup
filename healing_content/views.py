@@ -12,7 +12,7 @@ from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
 from foundation_course.utility import calculate_score_each_questionnaire_weekly
 from healing_content.forms import DayFeedbackForm
 from healing_content.models import DayFeedback, QuestionnaireWeek, QuestionWeek, \
-    QuestionnaireWeekAnswer, QuestionnaireWeekAnswerDetail, AnswerPractice, HealingWeek
+    QuestionnaireWeekAnswer, QuestionnaireWeekAnswerDetail, AnswerPractice
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

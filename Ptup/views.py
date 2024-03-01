@@ -31,7 +31,3 @@ def header(request):
 
 def footer(request):
     return render(request, 'shared/Footer.html', {})
-
-
-def page_404(request):
-    return render(request, 'page_404.html', {})

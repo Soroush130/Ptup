@@ -38,7 +38,7 @@ def check_information_customer(user: QuerySet) -> bool:
 
 def show_errors_CustomerForm(erros):
     """
-    This function used to for show custom message
+    This function used to for show custom messages
     +++ Only for CustomerForm
     :param erros:
     :return: message_error

@@ -8,7 +8,7 @@ from accounts.models import User
 from ptup_messages.decorators import is_receiver_or_sender
 from ptup_messages.forms import MessageForm
 from ptup_messages.models import Message, Notification
-from ptup_messages.utility import read_message
+from ptup_messages.utility import read_message, show_errors_SendMessage
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -85,8 +85,9 @@ class SendMessageView(View):
                 messages.error(request, "کاربر مورد نظر یافت نشد")
                 return redirect('ptup_messages:send_messages')
         else:
-            print(message_form.errors)
-            return redirect('ptup_messages:send_messages')
+            error_message = show_errors_SendMessage(message_form.errors)
+            messages.error(request, error_message)
+            return redirect(request.META.get("HTTP_REFERER"))
 
 
 # ======================================= Notification ===========================

@@ -333,3 +333,12 @@ class ChangePasswordView(View):
         else:
             print(form.errors)
             return redirect(request.META.get("HTTP_REFERER"))
+
+
+# ==============================    Handel Errors 404 and 500    =======================================
+def handler404(request, exception):
+    return render(request, 'page_404.html', status=404)
+
+
+def handler500(request, exception):
+    return render(request, 'page_500.html', status=404)

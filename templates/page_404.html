@@ -1,60 +1,45 @@
-{% extends 'shared/_MainLayout.html' %}
 {% load static %}
 
-{% block title %}
-    404
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-    <div class="content-wrapper" style="min-height: 1276.08px;">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>404 Error Page</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">404 Error Page</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-        <!-- Main content -->
-        <section class="content">
-            <div class="error-page">
-                <h2 class="headline text-warning"> 404</h2>
+	<title>404 HTML Template by Colorlib</title>
 
-                <div class="error-content">
-                    <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
 
-                    <p>
-                        We could not find the page you were looking for.
-                        Meanwhile, you may <a href="../../index.html">return to dashboard</a> or try using the search
-                        form.
-                    </p>
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="{% static 'dist/css/error_404.css' %}" />
 
-                    <form class="search-form">
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Search">
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
 
-                            <div class="input-group-append">
-                                <button type="submit" name="submit" class="btn btn-warning"><i
-                                        class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- /.input-group -->
-                    </form>
-                </div>
-                <!-- /.error-content -->
-            </div>
-            <!-- /.error-page -->
-        </section>
-        <!-- /.content -->
-    </div>
-{% endblock %}
+</head>
+
+<body>
+
+	<div id="notfound">
+		<div class="notfound">
+			<div class="notfound-404">
+				<div></div>
+				<h1>404</h1>
+			</div>
+			<h2>Page not found</h2>
+			<p>The page you are looking for might have been removed had its name changed or is temporarily unavailable.</p>
+			<a href="#">home page</a>
+		</div>
+	</div>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
+</html>

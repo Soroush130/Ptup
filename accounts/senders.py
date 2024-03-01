@@ -13,5 +13,4 @@ class SmsSender:
         request = requests.get(
             f'https://api.kavenegar.com/v1/{api_key}/verify/lookup.json?receptor={phone}&token={code}&template={template}')
 
-        print(request.status_code)
         return request.status_code

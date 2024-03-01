@@ -5,6 +5,8 @@ from django.conf.urls.static import static
 from . import views
 from ptup_utilities.views import RulesSite
 
+handler404 = 'accounts.views.handler404'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -12,7 +14,6 @@ urlpatterns = [
     path('footer', views.footer, name="footer"),
 
     path('', views.home, name="home"),
-    path('page_404/', views.page_404, name="page_404"),
     path('site_rules/', RulesSite.as_view(), name="site_rules"),
 
     # apps
