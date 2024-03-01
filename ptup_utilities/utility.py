@@ -118,7 +118,7 @@ def delete_session(request, key: str) -> None:
         pass
 
 
-# ====================== Show Custom Error ======================
+# ====================== Show Custom Errors ======================
 def show_custom_errors(erros):
     """
     This function used to for show custom messages
