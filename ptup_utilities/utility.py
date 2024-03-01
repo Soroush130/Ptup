@@ -87,7 +87,8 @@ def get_context_doctor(user: QuerySet, roll_back_url) -> dict:
 
 def get_context_according_user_role(roll_back_url, user, user_role) -> dict:
     DOCTOR = 1
-    context = get_context_doctor(user, roll_back_url) if user_role == DOCTOR else get_context_customer(user, roll_back_url)
+    context = get_context_doctor(user, roll_back_url) if user_role == DOCTOR else get_context_customer(user,
+                                                                                                       roll_back_url)
     return context
 
 
@@ -115,3 +116,18 @@ def delete_session(request, key: str) -> None:
         del request.session[key]
     else:
         pass
+
+
+# ====================== Show Custom Error ======================
+def show_custom_errors(erros):
+    """
+    This function used to for show custom messages
+    :param erros:
+    :return: message_error
+    """
+    message_error = []
+    for field, errors in erros.items():
+        error = f"{[error for error in errors][0]}"
+        message_error.append(error)
+
+    return "  ||   ".join(message_error)

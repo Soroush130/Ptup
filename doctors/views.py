@@ -5,7 +5,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 
 from customers.models import Customer
-from ptup_utilities.utility import send_notification_in_protable
+from ptup_utilities.utility import send_notification_in_protable, show_custom_errors
 from .decorators import is_complete_information_doctor
 from .models import Doctor, IdentificationDocument, ApproachUsedTreatment
 from .forms import DoctorForm, IdentificationDocumentForm, NickNameForm
@@ -93,9 +93,8 @@ class CompletionInformationDoctor(View):
             messages.info(request, "اطلاعات به درستی ثبت شد . لطفا مدارک مربوطه را ارسال کنید")
             return redirect('doctors:get_identification_document_doctor')
         else:
-            print('>>>>>>>>>>>>>>> ERRORS <<<<<<<<<<<<<<<')
-            print(doctor_form.errors)
-            print('-' * 60)
+            error_message = show_custom_errors(doctor_form.errors)
+            messages.error(request, error_message)
             return redirect(request.META.get("HTTP_REFERER"))
 
 
@@ -108,9 +107,8 @@ class UpdateInformationDoctor(View):
             messages.success(request, "اطلاعات ویرایش شد")
             return redirect(request.META.get("HTTP_REFERER"))
         else:
-            print(">>>>>>>>>> ERRORS <<<<<<<<<<<<<<<<")
-            print(doctor_form.errors)
-            messages.error(request, f"{doctor_form.errors}")
+            error_message = show_custom_errors(doctor_form.errors)
+            messages.error(request, error_message)
             return redirect(request.META.get("HTTP_REFERER"))
 
 
@@ -138,9 +136,8 @@ class GetIdentificationDocumentDoctor(View):
             messages.info(request, "فایل آپلود شد")
             return redirect(request.META.get("HTTP_REFERER"))
         else:
-            print('>>>>>>>>>>>>>>> ERRORS <<<<<<<<<< ')
-            print(identification_document_form.errors)
-            print('-' * 60)
+            error_message = show_custom_errors(identification_document_form.errors)
+            messages.error(request, error_message)
             return redirect(request.META.get("HTTP_REFERER"))
 
 
@@ -173,5 +170,6 @@ class ListCustomerEachDoctor(View):
             messages.info(request, "نام مستعار ویرایش شد")
             return redirect(request.META.get("HTTP_REFERER"))
         else:
-            print(">>>>>>>>>>>>> ERRORS <<<<<<<<<<<")
-            print(nick_name_form.errors)
+            error_message = show_custom_errors(nick_name_form.errors)
+            messages.error(request, error_message)
+            return redirect(request.META.get("HTTP_REFERER"))

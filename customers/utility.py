@@ -34,18 +34,3 @@ def check_information_customer(user: QuerySet) -> bool:
         return True
     except Customer.DoesNotExist:
         return False
-
-
-def show_errors_CustomerForm(erros):
-    """
-    This function used to for show custom messages
-    +++ Only for CustomerForm
-    :param erros:
-    :return: message_error
-    """
-    message_error = []
-    for field, errors in erros.items():
-        error = f"{[error for error in errors][0]}"
-        message_error.append(error)
-
-    return "  ||   ".join(message_error)
