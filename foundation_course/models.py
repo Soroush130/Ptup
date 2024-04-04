@@ -7,7 +7,8 @@ from foundation_course.interpretation.interpretation import (
     interpretation_bai,
     interpretation_bdi,
     interpretation_ders,
-    interpretation_qli
+    interpretation_qli,
+    interpretation_medi
 )
 
 
@@ -18,6 +19,7 @@ class QuestionnaireTypeChoices(models.IntegerChoices):
     QLI = 4, 'qli'
     NEO = 5, 'neo'
     BEAQ = 6, 'beaq'
+    MEDI = 7, 'medi'
 
 
 class Questionnaire(models.Model):
@@ -75,9 +77,6 @@ class Question(models.Model):
         db_table = 'question'
         verbose_name = 'سوال'
         verbose_name_plural = 'سوالات دوره مقدماتی'
-
-    def __str__(self):
-        return f'{self.pk} of {self.questionnaire.title}'
 
 
 class QuestionOption(models.Model):
@@ -162,6 +161,10 @@ class QuestionnaireAnswer(models.Model):
 
         elif questionnaire_type == "qli" and self.questionnaire.dependency is not None:
             interpretation = interpretation_qli(self.score, self.id, self.questionnaire)
+            return interpretation
+
+        elif questionnaire_type == 'medi':
+            interpretation = interpretation_medi(self.score, self.id)
             return interpretation
 
         else:

@@ -195,3 +195,117 @@ def index_family(scores: dict) -> float:
         score_family += value
 
     return score_family
+
+
+# ================================  MEDI  ======================================
+def interpretation_medi(score: float, id: int):
+    from foundation_course.models import QuestionnaireAnswerDetail
+    answer_list = QuestionnaireAnswerDetail.objects.filter(questionnaire_answer_id=id)
+
+    result_irritable_mood = index_irritable_mood(answer_list=answer_list)
+    result_positive_mood = index_positive_mood(answer_list=answer_list)
+    result_depressed_mood = index_depressed_mood(answer_list=answer_list)
+    result_spontaneous_arousal = index_spontaneous_arousal(answer_list=answer_list)
+    result_physical_anxiety = index_physical_anxiety(answer_list=answer_list)
+    result_social_anxiety = index_social_anxiety(answer_list=answer_list)
+    result_disturbing_thoughts = index_disturbing_thoughts(answer_list=answer_list)
+    result_re_traumatic_experience = index_re_traumatic_experience(answer_list=answer_list)
+    result_avoid = index_avoid(answer_list=answer_list)
+
+    return {
+        "irritable_mood": result_irritable_mood,
+        "positive_mood": result_positive_mood,
+        "depressed_mood": result_depressed_mood,
+        "spontaneous_arousal": result_spontaneous_arousal,
+        "physical_anxiety": result_physical_anxiety,
+        "social_anxiety": result_social_anxiety,
+        "disturbing_thoughts": result_disturbing_thoughts,
+        "re_traumatic_experience": result_re_traumatic_experience,
+        "avoid": result_avoid,
+    }
+
+
+def calc_score_selected_questions_in_questionnaire_medi(keys, answer_list):
+    """
+    Calculate the score of selected questions in a questionnaire
+    :param keys:
+    :param answer_list:
+    :return: score
+    """
+    score = 0
+    answer_list = answer_list.filter(question__row__in=keys)
+    for answer in answer_list:
+        score += answer.question_option.coefficient
+    return score
+
+
+def index_irritable_mood(answer_list):
+    """
+    خلق و خوی روان‌ آزرده
+    """
+    keys = [1, 10, 16, 32, 35]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_positive_mood(answer_list):
+    """
+        خلق و خوی مثبت
+    """
+    keys = [2, 17, 24, 33, 36]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_depressed_mood(answer_list):
+    """
+        خلق افسرده
+    """
+    keys = [3, 11, 25, 37, 43]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_spontaneous_arousal(answer_list):
+    """
+        برانگیختگی خودانگیخته
+    """
+    keys = [4, 13, 18, 26, 44]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_physical_anxiety(answer_list):
+    """
+        اضطراب جسمانی
+    """
+    keys = [6, 19, 28, 38, 45]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_social_anxiety(answer_list):
+    """
+        اضطراب اجتماعی
+    """
+    keys = [7, 14, 22, 41, 47]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_disturbing_thoughts(answer_list):
+    """
+        افکار مزاحم
+    """
+    keys = [5, 12, 21, 30, 40, 46]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_re_traumatic_experience(answer_list):
+    """
+        تجربۀ مجدد تروماتیک
+    """
+    keys = [8, 20, 29, 39, 48]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_avoid(answer_list):
+    """
+    اجتناب
+    """
+    keys = [9, 15, 23, 27, 31, 34, 42, 49]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)

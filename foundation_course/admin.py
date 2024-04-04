@@ -16,17 +16,31 @@ class QuestionOptionInline(admin.TabularInline):
 
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionInline]
+    list_display = [
+        "questionnaire",
+        "row",
+        "text",
+    ]
 
 
 class QuestionnaireAdmin(admin.ModelAdmin):
     list_display = ['title', 'type', 'dependency']
 
 
+class QuestionOptionAdmin(admin.ModelAdmin):
+    list_display = [
+        'question',
+        'coefficient',
+        'text',
+        'row',
+    ]
+
+
 admin.site.register(Questionnaire, QuestionnaireAdmin)
 
 admin.site.register(Question, QuestionAdmin)
 
-admin.site.register(QuestionOption)
+admin.site.register(QuestionOption, QuestionOptionAdmin)
 
 
 class QuestionnaireAnswerAdmin(admin.ModelAdmin):
@@ -52,6 +66,14 @@ class QuestionnaireAnswerAdmin(admin.ModelAdmin):
                 obj.delete()
 
 
+class QuestionnaireAnswerDetailAdmin(admin.ModelAdmin):
+    list_display = [
+        "questionnaire_answer",
+        "question",
+        "question_option",
+    ]
+
+
 admin.site.register(QuestionnaireAnswer, QuestionnaireAnswerAdmin)
 
-admin.site.register(QuestionnaireAnswerDetail)
+admin.site.register(QuestionnaireAnswerDetail, QuestionnaireAnswerDetailAdmin)

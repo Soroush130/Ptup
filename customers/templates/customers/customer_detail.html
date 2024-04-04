@@ -215,6 +215,94 @@
 
 
                                                     </div>
+                                                {% elif questionnaire_answer.questionnaire.type == 7 %}
+                                                    <div class="post col-lg-6">
+
+                                                        <h5>{{ forloop.counter }} -
+                                                            {{ questionnaire_answer.questionnaire.title }}</h5>
+
+                                                        <div class="col-lg-6 my-3"
+                                                             style="border-top: 2px dashed #bbb;"></div>
+
+                                                        <h6>امتیاز کاربر از این پرسشنامه
+                                                            : {{ questionnaire_answer.score }}</h6>
+
+                                                        <h6>تاریخ : {{ questionnaire_answer.answer_time }}</h6>
+
+                                                        <div class="d-flex">
+                                                            <h6>خلق و خوی روان آزرده :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.irritable_mood }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>خلق و خوی مثبت :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.positive_mood }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>خلق افسرده :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.depressed_mood }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>برانگیختگی خودانگیخته :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.spontaneous_arousal }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>اضطراب جسمانی :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.physical_anxiety }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>اضطراب اجتماعی :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.social_anxiety }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>افکار مزاحم :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.disturbing_thoughts }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>تجربه مجدد تروماتیک :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.re_traumatic_experience }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>اجتناب :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.avoid }}
+                                                            </p>
+                                                        </div>
+
+
+                                                    </div>
                                                 {% else %}
                                                     <div class="post col-lg-6">
 
@@ -358,13 +446,13 @@
             let chart = new Chart(ctx, {
                 type: "line",
                 data: {
-                    labels: progress_charts[i-1].labels,
+                    labels: progress_charts[i - 1].labels,
                     datasets: [
                         {
-                            label: progress_charts[i-1].title,
+                            label: progress_charts[i - 1].title,
                             backgroundColor: "#79AEC8",
                             borderColor: "#417690",
-                            data: progress_charts[i-1].data
+                            data: progress_charts[i - 1].data
                         }
                     ]
                 },
