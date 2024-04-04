@@ -18,7 +18,11 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionInline]
 
 
-admin.site.register(Questionnaire)
+class QuestionnaireAdmin(admin.ModelAdmin):
+    list_display = ['title', 'type', 'dependency']
+
+
+admin.site.register(Questionnaire, QuestionnaireAdmin)
 
 admin.site.register(Question, QuestionAdmin)
 
