@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from customers.models import CustomerActivityHistory
 from healing_content.models import HealingContent, QuestionnaireWeek, HealingWeek, QuestionnaireWeekAnswer, Practice, \
-    QuestionPractice, AnswerPractice
+    QuestionPractice, AnswerPractice, PracticeContent
 
 
 def create_activity_history(customer_id, subject, content) -> QuerySet:
@@ -124,9 +124,14 @@ def get_practices_healing_week(healing_week):
         # answer_practice = AnswerPractice.objects.filter(healing_week=healing_week, question_practice__practice=practice)
 
         questions = QuestionPractice.objects.filter(practice=practice)
+        contents = PracticeContent.objects.filter(practice=practice)
 
         # if questions.count() != answer_practice.count():
-        practices_dict[practice] = list(questions)
+
+        practices_dict[practice] = {
+            'questions': list(questions),
+            'contents': list(contents)
+        }
 
     return practices_dict
 

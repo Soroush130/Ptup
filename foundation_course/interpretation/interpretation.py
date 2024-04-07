@@ -133,6 +133,7 @@ def interpretation_qli(score: float, id: int, questionnaire):
     for answer in answer_list_part_one:
         row = answer.question.row
         answer_score_part_one = answer.question_option.coefficient
+        # TODO : check
         answer_score_part_two = answer_list_part_two.get(question__row=row).question_option.coefficient
 
         balanced_score = (answer_score_part_one - 3.5) * answer_score_part_two

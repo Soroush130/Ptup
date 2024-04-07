@@ -66,6 +66,23 @@ class Practice(models.Model):
         return f"Practice with ID #{self.pk}"
 
 
+class PracticeContent(models.Model):
+    TYPE_PRACTICE_CONTENT = (
+        ('MEDIA', 'ویدیو'),
+        ('FILE', 'فایل'),
+        ('VOICE', 'صدا'),
+    )
+
+    practice = models.ForeignKey(Practice, on_delete=models.CASCADE, related_name='practice_contents')
+    type = models.CharField(max_length=8, choices=TYPE_PRACTICE_CONTENT)
+    file = models.FileField(upload_to='healing_content/media_practice/', verbose_name='فایل ')
+
+    class Meta:
+        db_table = 'practice_content'
+        verbose_name = 'فایل تمرین ها'
+        verbose_name_plural = 'فایل های تمرین ها'
+
+
 class QuestionPractice(models.Model):
     practice = models.ForeignKey(
         Practice,

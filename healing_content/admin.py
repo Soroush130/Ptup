@@ -14,6 +14,7 @@ from .models import (
     Practice,
     QuestionPractice,
     AnswerPractice,
+    PracticeContent,
 )
 
 
@@ -55,7 +56,14 @@ admin.site.register(QuestionnaireWeekAnswerDetail)
 # ===========================================================
 
 # ======================= New models practice =================
-admin.site.register(Practice)
+class PracticeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'healing_week']
+
+class PracticeContentAdmin(admin.ModelAdmin):
+    list_display = ['practice', 'type', 'file']
+
+admin.site.register(Practice, PracticeAdmin)
+admin.site.register(PracticeContent, PracticeContentAdmin)
 admin.site.register(QuestionPractice)
 admin.site.register(AnswerPractice)
 # ===========================================================

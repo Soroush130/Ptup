@@ -20,7 +20,7 @@
 
         <section class="content">
             <div class="container-fluid">
-                {% for practice, questions in practices.items %}
+                {% for practice, practice_items in practices.items %}
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card">
@@ -30,24 +30,50 @@
                                 <div class="card-body">
                                     <div class="card-body bg-gray-light">
                                         <h6>توضیحات : {{ practice.description }}</h6>
+                                        <hr>
+                                        <h6>فایل های تمرین :</h6>
+                                        <ul>
+                                            {% for key, contents in practice_items.items %}
+                                                {% if key == "contents" %}
+                                                    {% for content in contents %}
+                                                        <li>
+                                                            {% if content.type == 'FILE' %}
+                                                                <a href="{{ content.file.url }}"
+                                                                   download>فایل</a>
+                                                            {% elif conetnt.type == 'MEDIA' %}
+                                                                <a href="{{ content.file.url }}"
+                                                                   download>ویدیو</a>
+                                                            {% elif conetnt.type == 'VOICE' %}
+                                                                <a href="{{ content.file.url }}"
+                                                                   download>صدا</a>
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
                                     </div>
                                     <hr>
                                     <div class="card-body">
                                         <form action="{% url 'customers:completion_practice' %}" method="POST">
                                             {% csrf_token %}
                                             <input type="hidden" name="healing_week_id" value="{{ healing_week_id }}">
-                                            {% for question in questions %}
-                                                <div class="card">
-                                                    <div class="card-header">{{ question.row }}. {{ question.text }}</div>
-                                                    <div class="card-body">
-                                                        <div class="form-group">
-                                                            <label for="">متن جواب : </label>
-                                                            <input type="text" class="form-control"
-                                                                   name="answer{{ question.id }}"
-                                                                   value="{{ question.answer_practice.all.first.answer }}">
+                                            {% for key, questions in practice_items.items %}
+                                                {% if key == "questions" %}
+                                                    {% for question in questions %}
+                                                        <div class="card">
+                                                            <div class="card-header">{{ question.row }}. {{ question.text }}</div>
+                                                            <div class="card-body">
+                                                                <div class="form-group">
+                                                                    <label for="">متن جواب : </label>
+                                                                    <input type="text" class="form-control"
+                                                                           name="answer{{ question.id }}"
+                                                                           value="{{ question.answer_practice.all.first.answer }}">
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                    {% endfor %}
+                                                {% endif %}
                                             {% endfor %}
                                             <button type="submit" class="btn btn-block btn-primary">ثبت</button>
                                         </form>
