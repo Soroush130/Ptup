@@ -6,6 +6,19 @@
 
 {% endblock %}
 
+
+{% block header_ref %}
+    <style>
+        .question-step {
+            display: none;
+        }
+
+        .question-step.active {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <div class="content-wrapper" style="min-height: 1621.58px;">
         <!-- Content Header (Page header) -->
@@ -61,7 +74,7 @@
 
                                         <tbody>
                                         {% for question in questions %}
-                                            <tr>
+                                            <tr class="question-step">
                                                 <td>{{ question.row }}</td>
                                                 <td>{{ question.text }}</td>
                                                 {% for option in question.question_option.all %}
@@ -77,8 +90,16 @@
 
                                     </table>
                                 </div>
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">ثبت</button>
+                                <div class="card-footer"
+                                     style="display: flex;justify-content: space-between;align-items: center;">
+                                    <div class="control-btn">
+                                        <button class="btn btn-primary" type="button" onclick="nextStep()"
+                                                style="margin: 0 10px"><-
+                                        </button>
+                                        <button class="btn btn-primary" type="button" onclick="backStep()">-></button>
+                                    </div>
+
+                                    <button type="submit" id="submit-btn" class="btn btn-primary" style="display: none">ثبت</button>
                                 </div>
                             </form>
                         </div>
@@ -91,7 +112,42 @@
 
 {% block footer_ref %}
     <script>
+        const questionSteps = document.querySelectorAll('.question-step');
+        const questionCount = questionSteps.length;
+        let currentStep = 0;
+        showStep(currentStep, questionSteps);
 
+        function showStep(stepIndex, questionSteps) {
+            questionSteps.forEach((step, index) => {
+                if (index === stepIndex) {
+                    step.className += 'active'
+                } else {
+                    step.className = 'question-step';
+                }
+            });
+
+            if(stepIndex === questionCount-1){
+                document.getElementById("submit-btn").style.display = 'block';
+            }else{
+                document.getElementById("submit-btn").style.display = 'none';
+            }
+        }
+
+        function nextStep() {
+            currentStep += 1;
+            if (currentStep > questionCount - 1) {
+                currentStep = questionCount - 1;
+            }
+            showStep(currentStep, questionSteps);
+        }
+
+        function backStep() {
+            currentStep -= 1;
+            if (currentStep <= 0) {
+                currentStep = 0;
+            }
+            showStep(currentStep, questionSteps);
+        }
 
     </script>
 {% endblock %}
