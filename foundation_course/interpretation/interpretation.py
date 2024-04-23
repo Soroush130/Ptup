@@ -310,3 +310,62 @@ def index_avoid(answer_list):
     """
     keys = [9, 15, 23, 27, 31, 34, 42, 49]
     return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+# ================================  NEO  ======================================
+def interpretation_neo(id: int):
+    from foundation_course.models import QuestionnaireAnswerDetail
+    answer_list = QuestionnaireAnswerDetail.objects.filter(questionnaire_answer_id=id)
+
+    result_nervousness = index_nervousness(answer_list=answer_list)
+    result_being_extroverted = index_being_extroverted(answer_list=answer_list)
+    result_openness = index_openness(answer_list=answer_list)
+    result_agree = index_agree(answer_list=answer_list)
+    result_conscientiousness = index_conscientiousness(answer_list=answer_list)
+
+    return {
+        "nervousness": result_nervousness,
+        "being_extroverted": result_being_extroverted,
+        "openness": result_openness,
+        "agree": result_agree,
+        "conscientiousness": result_conscientiousness,
+    }
+
+
+def calc_score_selected_questions_in_questionnaire_neo(keys, answer_list):
+    """
+    Calculate the score of selected questions in a questionnaire
+    :param keys:
+    :param answer_list:
+    :return: score
+    """
+    score = 0
+    answer_list = answer_list.filter(question__row__in=keys)
+    for answer in answer_list:
+        score += answer.question_option.coefficient
+    return score
+
+
+def index_nervousness(answer_list):
+    keys = [1, 6, 11, 16, 21, 26, 31, 36, 41, 46, 51, 56]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_being_extroverted(answer_list):
+    keys = [2, 7, 12, 17, 22, 27, 32, 37, 42, 47, 52, 57]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_openness(answer_list):
+    keys = [3, 8, 13, 18, 23, 28, 33, 38, 43, 48, 53, 58]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_agree(answer_list):
+    keys = [4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)
+
+
+def index_conscientiousness(answer_list):
+    keys = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
+    return calc_score_selected_questions_in_questionnaire_medi(keys=keys, answer_list=answer_list)

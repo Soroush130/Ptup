@@ -8,7 +8,8 @@ from foundation_course.interpretation.interpretation import (
     interpretation_bdi,
     interpretation_ders,
     interpretation_qli,
-    interpretation_medi
+    interpretation_medi,
+    interpretation_neo
 )
 
 
@@ -167,6 +168,9 @@ class QuestionnaireAnswer(models.Model):
             interpretation = interpretation_medi(self.score, self.id)
             return interpretation
 
+        elif questionnaire_type == 'neo':
+            interpretation = interpretation_neo(self.id)
+            return interpretation
         else:
             pass
 

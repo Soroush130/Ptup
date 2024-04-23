@@ -303,6 +303,62 @@
 
 
                                                     </div>
+                                                {% elif questionnaire_answer.questionnaire.type == 5 %}
+                                                    <div class="post col-lg-6">
+
+                                                        <h5>{{ forloop.counter }} -
+                                                            {{ questionnaire_answer.questionnaire.title }}</h5>
+
+                                                        <div class="col-lg-6 my-3"
+                                                             style="border-top: 2px dashed #bbb;"></div>
+
+                                                        <h6>امتیاز کاربر از این پرسشنامه
+                                                            : {{ questionnaire_answer.score }}</h6>
+
+                                                        <h6>تاریخ : {{ questionnaire_answer.answer_time }}</h6>
+
+                                                        <div class="d-flex">
+                                                            <h6>روان رنجور خویی :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.nervousness }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>برونگرا بودن :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.being_extroverted }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>گشودگی :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.openness }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>موافق بودن :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.agree }}
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            <h6>وظیفه شناسی :</h6>
+
+                                                            <p class="mx-2">
+                                                                {{ questionnaire_answer.questionnaire_interpretation.conscientiousness }}
+                                                            </p>
+                                                        </div>
+
+
+                                                    </div>
                                                 {% else %}
                                                     <div class="post col-lg-6">
 
