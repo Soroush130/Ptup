@@ -69,7 +69,7 @@ class SendMessageView(View):
         return render(request, 'ptup_messages/send_message.html', context)
 
     def post(self, request):
-        message_form = MessageForm(request.POST)
+        message_form = MessageForm(request.POST, request.FILES)
         if message_form.is_valid():
             phone = message_form.cleaned_data['receiver']
             try:
@@ -77,11 +77,13 @@ class SendMessageView(View):
                     Q(phone__exact=phone) | Q(phone__exact=phone_number_encryption(phone_number=phone))).first()
                 subject = message_form.cleaned_data['subject']
                 content = message_form.cleaned_data['content']
+                file = message_form.cleaned_data['file']
                 Message.objects.create(
                     sender=request.user,
                     receiver=receiver,
                     subject=subject,
-                    content=content
+                    content=content,
+                    file=file
                 )
                 messages.success(request, "پیام شما ارسال شد")
                 return redirect('ptup_messages:messages')

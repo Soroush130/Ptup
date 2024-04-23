@@ -73,13 +73,14 @@
                                 <h3 class="card-title" style="float: right">پیام جدید</h3>
                             </div>
 
-                            <form action="" method="POST">
+                            <form action="" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
 
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="">گیرنده :</label>
-                                        <input type="text" class="form-control" name="receiver" placeholder="">
+                                        <input type="text" class="form-control" name="receiver"
+                                               placeholder="شماره تلفن گیرنده را وارد کنید">
                                     </div>
                                     <div class="form-group">
                                         <label for="">عنوان پیام :</label>
@@ -89,8 +90,11 @@
                                         <label for="">متن پیام :</label>
                                         <textarea class="form-control" name="content" id="" cols="123"
                                                   rows="10"></textarea>
-{#                                        {{ message_form.media }}#}
-{#                                        {{ message_form.content }}#}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="">فایل :</label>
+                                        <input type="file" class="form-control" name="file" placeholder="">
                                     </div>
                                 </div>
 

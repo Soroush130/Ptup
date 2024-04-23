@@ -13,6 +13,7 @@ class Message(models.Model):
                                  verbose_name='گیرنده ')
     subject = models.CharField(max_length=255, null=True, blank=True, default=None, verbose_name='عنوان')
     content = models.TextField(verbose_name='متن پیام ')
+    file = models.FileField(verbose_name='فایل پیام', null=True, blank=True)
     is_read = models.BooleanField(verbose_name='خوانده شده/نشده', default=False)
     created_at = models.DateTimeField(default=timezone.now, verbose_name='تاریخ ساخت')
 

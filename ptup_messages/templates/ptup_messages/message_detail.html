@@ -90,16 +90,19 @@
                                            data-container="body" title="Delete">
                                             <i class="far fa-trash-alt"></i></a>
                                     </div>
-                                    <!-- /.btn-group -->
-                                    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip"
-                                            title="Print" onclick="printPage()">
-                                        <i class="fas fa-print"></i></button>
                                 </div>
                                 <!-- /.mailbox-controls -->
                                 <div class="mailbox-read-message">
                                     <p>
                                         {{ message.content }}
                                     </p>
+
+                                    {% if message.file %}
+                                        <hr>
+                                        <hr>
+                                        <a href="{{ message.file.url }}" download="">فایل پیام</a>
+                                    {% endif %}
+
                                 </div>
                             </div>
                         </div>
@@ -113,13 +116,4 @@
         <!-- /.content -->
     </div>
 
-{% endblock %}
-
-
-{% block footer_ref %}
-    <script>
-        function printPage() {
-            window.print();
-        }
-    </script>
 {% endblock %}

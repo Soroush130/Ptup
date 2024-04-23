@@ -1,6 +1,5 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from ptup_messages.models import Message
 from django_quill.forms import QuillFormField
 
 
@@ -13,3 +12,4 @@ class MessageForm(forms.Form):
     receiver = forms.CharField(validators=[validate_receiver])
     subject = forms.CharField()
     content = QuillFormField()
+    file = forms.FileField(widget=forms.FileInput)
