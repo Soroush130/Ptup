@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.db.models import Q
 
 from accounts.models import User
 from ptup_messages.decorators import is_receiver_or_sender
@@ -10,6 +11,7 @@ from ptup_messages.forms import MessageForm
 from ptup_messages.models import Message, Notification
 from ptup_messages.utility import read_message
 from ptup_utilities.utility import show_custom_errors
+from accounts.utilites import phone_number_encryption
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -71,7 +73,8 @@ class SendMessageView(View):
         if message_form.is_valid():
             phone = message_form.cleaned_data['receiver']
             try:
-                receiver = User.objects.get(phone__exact=phone)
+                receiver = User.objects.filter(
+                    Q(phone__exact=phone) | Q(phone__exact=phone_number_encryption(phone_number=phone))).first()
                 subject = message_form.cleaned_data['subject']
                 content = message_form.cleaned_data['content']
                 Message.objects.create(
