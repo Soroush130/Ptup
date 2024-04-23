@@ -247,34 +247,33 @@ class HealingContentEachWeek(View):
                 return redirect(_URL)
 
 
-@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
-@method_decorator(pass_foundation_course, name='dispatch')
-@method_decorator(not_pass_healing_period, name='dispatch')
-class PracticeEachWeek(View):
-    def get(self, request, id, *args, **kwargs):
-        customer = request.user.customer
 
-        disease_information = CustomerDiseaseInformation.objects.filter(
-            customer=customer,
-            is_finished=False
-        ).first()
+@login_required(login_url="accounts:login")
+@pass_foundation_course
+@not_pass_healing_period
+def practice_each_week(request, practice_each_week_id):
+    customer = request.user.customer
 
-        healing_week = HealingWeek.objects.get(id=id)
+    disease_information = CustomerDiseaseInformation.objects.filter(
+        customer=customer,
+        is_finished=False
+    ).first()
 
-        practices = get_practices_healing_week(healing_week)
+    healing_week = HealingWeek.objects.get(id=practice_each_week_id)
 
-        questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
-            disease_information=disease_information,
-            duration_of_treatment=healing_week.healing_period.duration_of_treatment
-        )
+    practices = get_practices_healing_week(healing_week)
 
-        context = {
-            'week': healing_week.week,
-            'healing_week_id': healing_week.id,
-            'practices': practices,
-            'questionnaires_weekly': questionnaires_weekly,
-        }
-        return render(request, 'healing_content/completion_practice_each_week.html', context)
+    questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
+        disease_information=disease_information,
+        duration_of_treatment=healing_week.healing_period.duration_of_treatment
+    )
+    context = {
+        'week': healing_week.week,
+        'healing_week_id': healing_week.id,
+        'practices': practices,
+        'questionnaires_weekly': questionnaires_weekly,
+    }
+    return render(request, 'healing_content/completion_practice_each_week.html', context)
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

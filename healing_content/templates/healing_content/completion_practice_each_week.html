@@ -37,15 +37,15 @@
                                                 {% if key == "contents" %}
                                                     {% for content in contents %}
                                                         <li>
-                                                            {% if content.type == 'FILE' %}
-                                                                <a href="{{ content.file.url }}"
-                                                                   download>فایل</a>
-                                                            {% elif conetnt.type == 'MEDIA' %}
-                                                                <a href="{{ content.file.url }}"
-                                                                   download>ویدیو</a>
-                                                            {% elif conetnt.type == 'VOICE' %}
-                                                                <a href="{{ content.file.url }}"
-                                                                   download>صدا</a>
+                                                            {% if content.type == "MEDIA" %}
+                                                                <a href="{{ content.file.url }}" download><h6>
+                                                                    ویدیو</h6></a>
+                                                            {% elif content.type == "VOICE" %}
+                                                                <a href="{{ content.file.url }}" download><h6>
+                                                                    صدا</h6></a>
+                                                            {% elif content.type == "FILE" %}
+                                                                <a href="{{ content.file.url }}" download><h6>
+                                                                    فایل</h6></a>
                                                             {% endif %}
                                                         </li>
                                                     {% endfor %}
