@@ -2,9 +2,8 @@ from django.contrib import messages
 from django.db.models import QuerySet
 from django.db import transaction
 from django.utils import timezone
-from django.db.models import Count
 from customers.models import CustomerDiseaseInformation
-from customers.tasks.customer_activity_history import check_exercises_every_week, get_questionnaire_weekly
+from customers.tasks.customer_activity_history import get_practices_healing_week
 from healing_content.models import HealingWeek, QuestionnaireWeekAnswer, AnswerPractice, HealingContent, Practice, \
     QuestionPractice, QuestionnaireWeek
 
@@ -43,7 +42,7 @@ def increase_week_of_healing_period(request, customer: QuerySet):
                     disease_information.save()
                     messages.success(request, "به هفته درمانی جدید خوش آمدید")
                 else:
-                    messages.error(request, "لطفا پرسشنامه های هفتگی را تکمیل کنید")
+                    messages.warning(request, "هشدار :تمرین ثبت شد، لطفا پرسشنامه های هفتگی را تکمیل کنید")
 
             else:
                 messages.error(request, "لطفا به باقی تمرین ها جواب بدهید")
@@ -157,11 +156,10 @@ def get_progress_charts(customer: QuerySet):
 
 
 #################################################################
-# TODO : for develop
-def group_by_healing_content_each_week(healing_week) -> dict:
-    group_by_contents = {}
-    for day in range(1, 8):
-        contents_in_day = HealingContent.objects.filter(healing_week=healing_week, day=day)
-        group_by_contents[day] = list(contents_in_day)
-
-    return group_by_contents
+# def group_by_healing_content_each_week(healing_week) -> dict:
+#     group_by_contents = {}
+#     for day in range(1, 8):
+#         contents_in_day = HealingContent.objects.filter(healing_week=healing_week, day=day)
+#         group_by_contents[day] = list(contents_in_day)
+#
+#     return group_by_contents

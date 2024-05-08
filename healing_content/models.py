@@ -33,7 +33,28 @@ class HealingContent(models.Model):
     )
     healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته چندم ')
 
-    type = models.CharField(max_length=8, choices=TYPE_HEALING_CONTENT)
+    type = models.CharField(max_length=8, choices=TYPE_HEALING_CONTENT, verbose_name='نوع فایل')
+    # This field is mostly used to group content
+    # day = models.PositiveIntegerField(
+    #     null=True,
+    #     blank=True,
+    #     default=1,
+    #     verbose_name='روز هفته',
+    #     validators=[
+    #         MinValueValidator(1, message='نباید کمتر از 1 باشید'),
+    #         MaxValueValidator(7, message='نباید بیشتر از 7 باشد')
+    #     ]
+    # )
+    file = models.FileField(upload_to='healing_content/media_practice/', verbose_name='فایل ')
+
+    class Meta:
+        db_table = 'healing_content'
+        verbose_name = 'محتوای درمانی'
+        verbose_name_plural = 'محتواهای درمانی'
+
+
+class Practice(models.Model):
+    healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته چندم ')
     # This field is mostly used to group content
     day = models.PositiveIntegerField(
         null=True,
@@ -45,16 +66,6 @@ class HealingContent(models.Model):
             MaxValueValidator(7, message='نباید بیشتر از 7 باشد')
         ]
     )
-    file = models.FileField(upload_to='healing_content/media_practice/', verbose_name='فایل ')
-
-    class Meta:
-        db_table = 'healing_content'
-        verbose_name = 'محتوای درمانی'
-        verbose_name_plural = 'محتواهای درمانی'
-
-
-class Practice(models.Model):
-    healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته چندم ')
     description = models.TextField(verbose_name='توضیحات')
 
     class Meta:
@@ -74,6 +85,7 @@ class PracticeContent(models.Model):
     )
 
     practice = models.ForeignKey(Practice, on_delete=models.CASCADE, related_name='practice_contents')
+    title = models.CharField(max_length=300, blank=True, null=True)
     type = models.CharField(max_length=8, choices=TYPE_PRACTICE_CONTENT)
     file = models.FileField(upload_to='healing_content/media_practice/', verbose_name='فایل ')
 

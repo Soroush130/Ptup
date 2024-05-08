@@ -13,12 +13,12 @@ from customers.models import Customer, CustomerDiseaseInformation
 from customers.tasks.customer_activity_history import get_activity_list, create_activity_history, \
     get_practices_healing_week, get_questionnaire_weekly
 from customers.tasks.customers import increase_week_of_healing_period, get_practice_answer_list, \
-    check_last_day_healing_period, get_progress_charts, group_by_healing_content_each_week, set_time_healing_period
+    check_last_day_healing_period, get_progress_charts, set_time_healing_period
 from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
-from healing_content.models import HealingWeek, AnswerPractice
+from healing_content.models import HealingWeek, AnswerPractice, HealingContent
 from illness.models import Illness
 from ptup_utilities.utility import show_custom_errors
 
@@ -233,7 +233,9 @@ class HealingContentEachWeek(View):
             week = disease_information.week_of_healing_period
             try:
                 healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
-                contents_in_week = group_by_healing_content_each_week(healing_week)
+                contents_in_week = HealingContent.objects.filter(healing_week=healing_week)
+                # contents_in_week = group_by_healing_content_each_week(healing_week)
+                print(contents_in_week)
 
                 context = {
                     'week': week,
@@ -245,7 +247,6 @@ class HealingContentEachWeek(View):
             except HealingWeek.DoesNotExist:
                 messages.error(request, "هقته درمانی تعریف نشده است")
                 return redirect(_URL)
-
 
 
 @login_required(login_url="accounts:login")

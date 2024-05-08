@@ -118,22 +118,24 @@ def get_healing_content(healing_week: QuerySet):
 
 
 def get_practices_healing_week(healing_week):
-    practices_dict = {}
-    practices = Practice.objects.filter(healing_week=healing_week)
-    for practice in practices:
-        # answer_practice = AnswerPractice.objects.filter(healing_week=healing_week, question_practice__practice=practice)
+    group_by_contents = {}
 
-        questions = QuestionPractice.objects.filter(practice=practice)
-        contents = PracticeContent.objects.filter(practice=practice)
+    for day in range(1, 8):
+        practices_dict = {}
+        practices = Practice.objects.filter(healing_week=healing_week, day=day)
+        for practice in practices:
 
-        # if questions.count() != answer_practice.count():
+            questions = QuestionPractice.objects.filter(practice=practice)
+            contents = PracticeContent.objects.filter(practice=practice)
 
-        practices_dict[practice] = {
-            'questions': list(questions),
-            'contents': list(contents)
-        }
+            practices_dict[practice] = {
+                'questions': list(questions),
+                'contents': list(contents)
+            }
 
-    return practices_dict
+        group_by_contents[day] = practices_dict
+
+    return group_by_contents
 
 
 def get_content_customer(disease_information: QuerySet, week: int, duration_of_treatment: int, healing_week: QuerySet):

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    دوره درمان
+    تمرین ها
 {% endblock %}
 
 {% block content %}
@@ -20,69 +20,75 @@
 
         <section class="content">
             <div class="container-fluid">
-                {% for practice, practice_items in practices.items %}
+
+                {% for day, practices_in_day in practices.items %}
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-header bg-primary">
-                                    <h3>تمرین شماره {{ forloop.counter }}</h3>
+                                    <h3>تمرین های روز {{ day }}</h3>
                                 </div>
-                                <div class="card-body">
-                                    <div class="card-body bg-gray-light">
-                                        <h6>توضیحات : {{ practice.description }}</h6>
-                                        <hr>
-                                        <h6>فایل های تمرین :</h6>
-                                        <ul>
-                                            {% for key, contents in practice_items.items %}
-                                                {% if key == "contents" %}
-                                                    {% for content in contents %}
-                                                        <li>
-                                                            {% if content.type == "MEDIA" %}
-                                                                <a href="{{ content.file.url }}" download><h6>
-                                                                    ویدیو</h6></a>
-                                                            {% elif content.type == "VOICE" %}
-                                                                <a href="{{ content.file.url }}" download><h6>
-                                                                    صدا</h6></a>
-                                                            {% elif content.type == "FILE" %}
-                                                                <a href="{{ content.file.url }}" download><h6>
-                                                                    فایل</h6></a>
-                                                            {% endif %}
-                                                        </li>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                    <hr>
+                                {% for practice, practice_items in practices_in_day.items %}
                                     <div class="card-body">
-                                        <form action="{% url 'customers:completion_practice' %}" method="POST">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="healing_week_id" value="{{ healing_week_id }}">
-                                            {% for key, questions in practice_items.items %}
-                                                {% if key == "questions" %}
-                                                    {% for question in questions %}
-                                                        <div class="card">
-                                                            <div class="card-header">{{ question.row }}. {{ question.text }}</div>
-                                                            <div class="card-body">
-                                                                <div class="form-group">
-                                                                    <label for="">متن جواب : </label>
-                                                                    <input type="text" class="form-control"
-                                                                           name="answer{{ question.id }}"
-                                                                           value="{{ question.answer_practice.all.first.answer }}">
+                                        <div class="card-body bg-gray-light">
+                                            <h6>توضیحات : {{ practice.description }}</h6>
+                                            <hr>
+                                            <h6>فایل های تمرین :</h6>
+                                            <ul>
+                                                {% for key, contents in practice_items.items %}
+                                                    {% if key == "contents" %}
+                                                        {% for content in contents %}
+                                                            <li>
+                                                                {% if content.type == "MEDIA" %}
+                                                                    <a href="{{ content.file.url }}" download><h6>
+                                                                        ویدیو : {{ content.title }}</h6></a>
+                                                                {% elif content.type == "VOICE" %}
+                                                                    <a href="{{ content.file.url }}" download><h6>
+                                                                        صدا : {{ content.title }}</h6></a>
+                                                                {% elif content.type == "FILE" %}
+                                                                    <a href="{{ content.file.url }}" download><h6>
+                                                                        فایل : {{ content.title }}</h6></a>
+                                                                {% endif %}
+                                                            </li>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <hr>
+                                        <div class="card-body">
+                                            <form action="{% url 'customers:completion_practice' %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="healing_week_id"
+                                                       value="{{ healing_week_id }}">
+                                                {% for key, questions in practice_items.items %}
+                                                    {% if key == "questions" %}
+                                                        {% for question in questions %}
+                                                            <div class="card">
+                                                                <div class="card-header">{{ question.row }}. {{ question.text }}</div>
+                                                                <div class="card-body">
+                                                                    <div class="form-group">
+                                                                        <label for="">متن جواب : </label>
+                                                                        <input type="text" class="form-control"
+                                                                               name="answer{{ question.id }}"
+                                                                               value="{{ question.answer_practice.all.first.answer }}">
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            {% endfor %}
-                                            <button type="submit" class="btn btn-block btn-primary">ثبت</button>
-                                        </form>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <button type="submit" class="btn btn-block btn-primary">ثبت</button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
+                                {% endfor %}
+
                             </div>
                         </div>
                     </div>
                 {% endfor %}
+
 
 
 

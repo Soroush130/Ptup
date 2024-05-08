@@ -42,25 +42,14 @@ admin.site.register(QuestionnaireWeekAnswer)
 admin.site.register(QuestionnaireWeekAnswerDetail)
 
 
-# ====================== Old models practice ===============
-# class PracticeAnswerDetailInline(admin.TabularInline):
-#     model = PracticeAnswerDetail
-#
-#
-# class PracticeAnswerAdmin(admin.ModelAdmin):
-#     inlines = [PracticeAnswerDetailInline]
-#
-#
-# admin.site.register(PracticeAnswer, PracticeAnswerAdmin)
-# admin.site.register(PracticeAnswerDetail)
-# ===========================================================
-
-# ======================= New models practice =================
+# ======================= models practice =================
 class PracticeAdmin(admin.ModelAdmin):
     list_display = ['id', 'healing_week']
 
+
 class PracticeContentAdmin(admin.ModelAdmin):
-    list_display = ['practice', 'type', 'file']
+    list_display = ['practice', 'title', 'type', 'file']
+
 
 admin.site.register(Practice, PracticeAdmin)
 admin.site.register(PracticeContent, PracticeContentAdmin)
