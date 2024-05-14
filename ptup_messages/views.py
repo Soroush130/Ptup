@@ -9,9 +9,9 @@ from accounts.models import User
 from ptup_messages.decorators import is_receiver_or_sender
 from ptup_messages.forms import MessageForm
 from ptup_messages.models import Message, Notification
-from ptup_messages.utility import read_message
+from ptup_messages.utility import read_message, get_contacts_doctor, get_contacts_customer
 from ptup_utilities.utility import show_custom_errors
-from accounts.utilites import phone_number_encryption
+from accounts.utilites import phone_number_encryption, phone_number_decryption
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -63,9 +63,30 @@ class DeleteMessageView(View):
 class SendMessageView(View):
     def get(self, request):
         message_form = MessageForm()
-        context = {
-            "message_form": message_form,
-        }
+
+        user = request.user
+        context = {}
+
+        if user.role == 1:  # Doctor
+            contacts = {}
+            customers = get_contacts_doctor(user)
+
+            for customer in customers:
+                contacts[customer.nick_name] = phone_number_decryption(phone_number=customer.user.phone)
+
+            context = {
+                "message_form": message_form,
+                "contacts": contacts,
+                "user_role": user.role,
+            }
+        elif user.role == 2:  # Customer
+            contacts = get_contacts_customer(user)
+            context = {
+                "message_form": message_form,
+                "contacts": contacts,
+                "user_role": user.role,
+            }
+
         return render(request, 'ptup_messages/send_message.html', context)
 
     def post(self, request):
