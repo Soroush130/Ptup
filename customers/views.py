@@ -210,48 +210,45 @@ class FoundationCourseCustomer(View):
         return render(request, 'customers/foundation_course_customer.html', context)
 
 
-@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
-@method_decorator(pass_foundation_course, name='dispatch')
-@method_decorator(not_pass_healing_period, name='dispatch')
-class HealingContentEachWeek(View):
-    def get(self, request):
-        _URL = request.META.get("HTTP_REFERER")
-        with transaction.atomic():
-            customer = request.user.customer
+@login_required(login_url="accounts:login")
+# @pass_foundation_course
+# @not_pass_healing_period
+def healing_content_each_week(request):
+    _URL = request.META.get("HTTP_REFERER")
+    with transaction.atomic():
+        customer = request.user.customer
 
-            disease_information = CustomerDiseaseInformation.objects.filter(
-                customer=customer,
-                is_finished=False
-            ).first()
+        disease_information = CustomerDiseaseInformation.objects.filter(
+            customer=customer,
+            is_finished=False
+        ).first()
 
-            # TODO: set time start period
-            set_time_healing_period(disease_information)
-            # if disease_information.start_time_period is None:
-            #     disease_information.start_time_period = timezone.now()
-            #     disease_information.save()
+        # TODO: set time start period
+        set_time_healing_period(disease_information)
+        # if disease_information.start_time_period is None:
+        #     disease_information.start_time_period = timezone.now()
+        #     disease_information.save()
 
-            week = disease_information.week_of_healing_period
-            try:
-                healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
-                contents_in_week = HealingContent.objects.filter(healing_week=healing_week)
-                # contents_in_week = group_by_healing_content_each_week(healing_week)
-                print(contents_in_week)
+        week = disease_information.week_of_healing_period
+        try:
+            healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
+            contents_in_week = HealingContent.objects.filter(healing_week=healing_week)
 
-                context = {
-                    'week': week,
-                    'healing_week': healing_week,
-                    'disease_information': disease_information,
-                    'contents': contents_in_week,
-                }
-                return render(request, 'healing_content/healing_period_each_week.html', context)
-            except HealingWeek.DoesNotExist:
-                messages.error(request, "هقته درمانی تعریف نشده است")
-                return redirect(_URL)
+            context = {
+                'week': week,
+                'healing_week': healing_week,
+                'disease_information': disease_information,
+                'contents': contents_in_week,
+            }
+            return render(request, 'healing_content/healing_period_each_week.html', context)
+        except HealingWeek.DoesNotExist:
+            messages.error(request, "هقته درمانی تعریف نشده است")
+            return redirect(_URL)
 
 
 @login_required(login_url="accounts:login")
-@pass_foundation_course
-@not_pass_healing_period
+# @pass_foundation_course
+# @not_pass_healing_period
 def practice_each_week(request, practice_each_week_id):
     customer = request.user.customer
 

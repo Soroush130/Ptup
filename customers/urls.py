@@ -23,7 +23,7 @@ urlpatterns = [
 
     # --------------------------------------------------
 
-    path('healing_period_each_week/', views.HealingContentEachWeek.as_view(), name='healing_period_each_week'),
+    path('healing_period_each_week/', views.healing_content_each_week, name='healing_period_each_week'),
 
     path('practices_each_week/<int:practice_each_week_id>/', views.practice_each_week,
          name='practices_each_week'),
