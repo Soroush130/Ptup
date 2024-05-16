@@ -69,9 +69,11 @@
                                                                 <div class="card-body">
                                                                     <div class="form-group">
                                                                         <label for="">متن جواب : </label>
+                                                                        {% load answer_customer_filter %}
+                                                                        <h2>{{ question.answer_practice.all|get_answer_customer:request.user }}</h2>
                                                                         <input type="text" class="form-control"
                                                                                name="answer{{ question.id }}"
-                                                                               value="{{ question.answer_practice.all.first.answer }}">
+                                                                               value="{{ question.answer_practice.all|get_answer_customer:request.user.customer }}">
                                                                     </div>
                                                                 </div>
                                                             </div>
