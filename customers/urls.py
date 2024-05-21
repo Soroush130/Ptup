@@ -28,6 +28,8 @@ urlpatterns = [
     path('practices_each_week/<int:practice_each_week_id>/', views.practice_each_week,
          name='practices_each_week'),
 
+    path('questionnaires_weekly/', views.questionnaires_weekly, name='questionnaires_weekly'),
+
     path('healing_content_map/', views.HealingContentMap.as_view(), name="healing_content_map"),
 
     path('completion_practice/', views.CompletionPractice.as_view(), name='completion_practice'),

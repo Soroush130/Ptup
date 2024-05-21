@@ -116,7 +116,7 @@ class CompleteQuestionnaireWeeklyByCustomer(View):
 
                     calculate_score_each_questionnaire_weekly(questionnaire_answer, answers_list)
 
-                    # TODO: Increase the day number of the user's healing period
+                    # TODO: Increase the week number of the user's healing period
                     increase_week_of_healing_period(request, customer)
 
                     # TODO: Checking whether it is the last day of the Healing period or not

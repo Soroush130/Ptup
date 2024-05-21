@@ -261,15 +261,15 @@ def practice_each_week(request, practice_each_week_id):
 
     practices = get_practices_healing_week(healing_week)
 
-    questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
-        disease_information=disease_information,
-        duration_of_treatment=healing_week.healing_period.duration_of_treatment
-    )
+    # questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
+    #     disease_information=disease_information,
+    #     duration_of_treatment=healing_week.healing_period.duration_of_treatment
+    # )
     context = {
         'week': healing_week.week,
         'healing_week_id': healing_week.id,
         'practices': practices,
-        'questionnaires_weekly': questionnaires_weekly,
+        # 'questionnaires_weekly': questionnaires_weekly,
     }
     return render(request, 'healing_content/completion_practice_each_week.html', context)
 
@@ -348,4 +348,27 @@ class HealingContentMap(View):
             messages.error(request, "پرونده درمانی برای شما یافت نشد")
             return redirect('home')
 
+
 # ===============================================================================================
+@login_required(login_url="accounts:login")
+def questionnaires_weekly(request):
+    customer = request.user.customer
+
+    disease_information = CustomerDiseaseInformation.objects.filter(
+        customer=customer,
+        is_finished=False
+    ).first()
+    week = disease_information.week_of_healing_period
+
+    questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly()
+
+    try:
+        healing_week = HealingWeek.objects.get(week=week, healing_period=disease_information.healing_period)
+        context = {
+            'healing_week_id': healing_week.id,
+            'questionnaires_weekly': questionnaires_weekly,
+        }
+        return render(request, 'healing_content/questionnaire_weekly.html', context)
+    except HealingWeek.DoesNotExist:
+        messages.error(request, "چنین هفته درمانی در سامانه وجود ندارد")
+        return redirect('home')

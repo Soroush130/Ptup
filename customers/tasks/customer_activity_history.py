@@ -89,27 +89,32 @@ def check_exercises_every_week(week, disease_information, healing_period, custom
         return True, week + 1, healing_period
 
 
-def get_questionnaire_weekly(disease_information, duration_of_treatment):
-    date_now = timezone.now()
+# def get_questionnaire_weekly(disease_information, duration_of_treatment):
+#     date_now = timezone.now()
+#
+#     start_time_period = disease_information.start_time_period
+#
+#     total_number_of_treatment_days = duration_of_treatment * 7
+#
+#     list_of_weekend_days: list[int] = [number for number in range(1, total_number_of_treatment_days) if number % 7 == 0]
+#
+#     list_of_weekend_dates: list[datetime] = []
+#     for day in list_of_weekend_days:
+#         date = start_time_period.date() + timedelta(days=day)
+#         list_of_weekend_dates.append(date)
+#
+#     # date_now = datetime.strptime("2023-09-06", "%Y-%m-%d").date()
+#
+#     if date_now in list_of_weekend_dates:
+#         questionnaire_weekly_list = QuestionnaireWeek.objects.all()
+#         return questionnaire_weekly_list, questionnaire_weekly_list.count()
+#     else:
+#         return None, 0
 
-    start_time_period = disease_information.start_time_period
-
-    total_number_of_treatment_days = duration_of_treatment * 7
-
-    list_of_weekend_days: list[int] = [number for number in range(1, total_number_of_treatment_days) if number % 7 == 0]
-
-    list_of_weekend_dates: list[datetime] = []
-    for day in list_of_weekend_days:
-        date = start_time_period.date() + timedelta(days=day)
-        list_of_weekend_dates.append(date)
-
-    # date_now = datetime.strptime("2023-09-06", "%Y-%m-%d").date()
-
-    if date_now in list_of_weekend_dates:
-        questionnaire_weekly_list = QuestionnaireWeek.objects.all()
-        return questionnaire_weekly_list, questionnaire_weekly_list.count()
-    else:
-        return None, 0
+# TODO : new logic for test
+def get_questionnaire_weekly():
+    questionnaire_weekly_list = QuestionnaireWeek.objects.all()
+    return questionnaire_weekly_list, questionnaire_weekly_list.count()
 
 
 def get_healing_content(healing_week: QuerySet):
@@ -124,7 +129,6 @@ def get_practices_healing_week(healing_week):
         practices_dict = {}
         practices = Practice.objects.filter(healing_week=healing_week, day=day)
         for practice in practices:
-
             questions = QuestionPractice.objects.filter(practice=practice)
             contents = PracticeContent.objects.filter(practice=practice)
 

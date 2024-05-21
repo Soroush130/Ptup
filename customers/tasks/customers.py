@@ -3,9 +3,9 @@ from django.db.models import QuerySet
 from django.db import transaction
 from django.utils import timezone
 from customers.models import CustomerDiseaseInformation
-from customers.tasks.customer_activity_history import get_practices_healing_week
-from healing_content.models import HealingWeek, QuestionnaireWeekAnswer, AnswerPractice, HealingContent, Practice, \
-    QuestionPractice, QuestionnaireWeek
+# from customers.tasks.customer_activity_history import get_practices_healing_week
+from healing_content.models import HealingWeek, QuestionnaireWeekAnswer, AnswerPractice, Practice, QuestionPractice, \
+    QuestionnaireWeek
 
 
 def increase_week_of_healing_period(request, customer: QuerySet):
@@ -153,7 +153,6 @@ def get_progress_charts(customer: QuerySet):
         })
 
     return charts
-
 
 #################################################################
 # def group_by_healing_content_each_week(healing_week) -> dict:

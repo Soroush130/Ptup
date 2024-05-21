@@ -1,0 +1,51 @@
+{% extends "shared/_MainLayout.html" %}
+{% load static %}
+
+{% block title %}
+    پرسشنامه ها
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>پرسشنامه های هفتگی</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>پرسشنامه های هفتگی</h3>
+                            </div>
+                            <div class="card-body d-flex flex-wrap">
+                                {% for questionnaire in questionnaires_weekly %}
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <div class="info-box bg-info">
+                                            <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
+
+                                            <div class="info-box-content">
+                                                <a href="/content/questionnaire_weekly/{{ questionnaire.id }}/{{ healing_week_id }}/"
+                                                   style="color: white">
+                                                    <h5>{{ questionnaire.title }}</h5></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+{% endblock %}
