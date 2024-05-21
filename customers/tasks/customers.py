@@ -26,7 +26,8 @@ def increase_week_of_healing_period(request, customer: QuerySet):
         healing_week = HealingWeek.objects.get(week=week, healing_period=healing_period)
         practices = Practice.objects.filter(healing_week=healing_week)
         questions_in_practice = QuestionPractice.objects.filter(practice__in=practices)
-        answers_in_question = AnswerPractice.objects.filter(question_practice__in=questions_in_practice)
+        answers_in_question = AnswerPractice.objects.filter(question_practice__in=questions_in_practice,
+                                                            customer=customer)
 
         if answers_in_question.exists() and questions_in_practice.exists():
 
