@@ -211,7 +211,7 @@ class FoundationCourseCustomer(View):
 
 
 @login_required(login_url="accounts:login")
-# @pass_foundation_course
+@pass_foundation_course
 # @not_pass_healing_period
 def healing_content_each_week(request):
     _URL = request.META.get("HTTP_REFERER")

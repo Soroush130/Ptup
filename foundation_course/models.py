@@ -103,7 +103,7 @@ class QuestionOption(models.Model):
         verbose_name_plural = 'گزینه های سوالات دوره مقدماتی'
 
     def __str__(self):
-        return f'{self.pk} of question {self.question.pk}'
+        return f'گزینه {self.row} از سوال {self.question.pk}'
 
 
 #  ===================================================================
@@ -139,7 +139,8 @@ class QuestionnaireAnswer(models.Model):
         verbose_name_plural = 'جواب سوالات دوره مقدماتی'
 
     def __str__(self):
-        return f'{self.pk} of question {self.questionnaire.pk}'
+        return f'جواب {self.pk} از {self.questionnaire.title}'
+
 
     @property
     def questionnaire_interpretation(self):
@@ -161,7 +162,7 @@ class QuestionnaireAnswer(models.Model):
             return interpretation
 
         elif questionnaire_type == "qli" and self.questionnaire.dependency is not None:
-            interpretation = interpretation_qli(self.score, self.id, self.questionnaire)
+            interpretation = interpretation_qli(self.customer, self.id, self.questionnaire)
             return interpretation
 
         elif questionnaire_type == 'medi':
@@ -199,6 +200,11 @@ class QuestionnaireAnswerDetail(models.Model):
         db_table = 'question_answer_detail'
         verbose_name = 'جزییات جواب'
         verbose_name_plural = 'جزییات جواب های دوره مقدماتی'
+        unique_together = [
+            'questionnaire_answer',
+            'question',
+            'question_option',
+        ]
 
     def __str__(self):
         return f'{self.pk}'

@@ -24,7 +24,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 
 class QuestionnaireAdmin(admin.ModelAdmin):
-    list_display = ['title', 'type', 'dependency']
+    list_display = ['id', 'title', 'type', 'dependency']
 
 
 class QuestionOptionAdmin(admin.ModelAdmin):
@@ -71,6 +71,17 @@ class QuestionnaireAnswerDetailAdmin(admin.ModelAdmin):
         "questionnaire_answer",
         "question",
         "question_option",
+    ]
+    search_fields = [
+        'questionnaire_answer__customer__nick_name',
+        'question__questionnaire__title',
+        'question__row',
+    ]
+    list_filter = [
+        'question__questionnaire__title',
+        'questionnaire_answer__customer__nick_name',
+        'question__row',
+        'questionnaire_answer',
     ]
 
 

@@ -120,21 +120,27 @@ def index_goals(answer_list):
 
 # ================================================================================
 
-def interpretation_qli(score: float, id: int, questionnaire):
+def interpretation_qli(customer, id: int, questionnaire):
     from foundation_course.models import QuestionnaireAnswerDetail
 
     db_score = {}
 
-    answer_list_part_one = QuestionnaireAnswerDetail.objects.filter(questionnaire_answer_id=id)
-    id = questionnaire.dependency.id
-    answer_list_part_two = QuestionnaireAnswerDetail.objects.filter(questionnaire_answer__questionnaire_id=id)
+    answer_list_part_one = QuestionnaireAnswerDetail.objects.filter(questionnaire_answer_id=id,
+                                                                    questionnaire_answer__customer=customer)
+
+    questionnaire_dependency_id = questionnaire.dependency.id
+
+    answer_list_part_two = QuestionnaireAnswerDetail.objects.filter(
+        questionnaire_answer__questionnaire_id=questionnaire_dependency_id,
+        questionnaire_answer__customer=customer)
 
     total_balanced_score = 0
     for answer in answer_list_part_one:
         row = answer.question.row
         answer_score_part_one = answer.question_option.coefficient
-        # TODO : check
-        answer_score_part_two = answer_list_part_two.get(question__row=row).question_option.coefficient
+        answer_score_part_two = answer_list_part_two.get(
+            question__row=row,
+        ).question_option.coefficient
 
         balanced_score = (answer_score_part_one - 3.5) * answer_score_part_two
 

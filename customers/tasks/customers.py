@@ -134,7 +134,6 @@ def get_progress_charts(customer: QuerySet):
         else:
             pass
 
-    # print(questionnaire_weekly_list)
     charts = []
     for questionnaire_weekly in questionnaire_weekly_list:
         questionnaire_answer = QuestionnaireWeekAnswer.objects.filter(customer=customer,
