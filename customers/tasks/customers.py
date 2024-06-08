@@ -10,7 +10,7 @@ from healing_content.models import HealingWeek, QuestionnaireWeekAnswer, AnswerP
 
 def increase_week_of_healing_period(request, customer: QuerySet):
     """
-    This is function used to increase day of healing period when register practice answer
+    This is function used to increase week of healing period when register practice answer
     :param customer:
     :return:
     """
@@ -34,7 +34,8 @@ def increase_week_of_healing_period(request, customer: QuerySet):
             if answers_in_question.count() == questions_in_practice.count():
 
                 questionnaire_weekly = QuestionnaireWeek.objects.all()
-                questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(healing_week=healing_week)
+                questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(healing_week=healing_week,
+                                                                                     customer=customer)
 
                 if (questionnaire_answer_weekly.exists()) and (
                         questionnaire_answer_weekly.count() == questionnaire_weekly.count()):

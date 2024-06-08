@@ -276,7 +276,7 @@ class QuestionnaireWeekAnswerDetail(models.Model):
     class Meta:
         db_table = 'questionnaire_week_answer_details'
         verbose_name = 'جزییات جواب'
-        verbose_name_plural = 'جزییات های جواب'
+        verbose_name_plural = 'جزییات جواب پرسشنامه های هفتگی'
 
     def __str__(self):
         return f'{self.pk}'

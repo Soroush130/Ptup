@@ -315,7 +315,7 @@ class CompletionPractice(View):
                     content=f"انجام تمرین های هفته {healing_week.week}ام ، {healing_week.healing_period}"
                 )
 
-                # TODO: Increase the day number of the user's healing period
+                # TODO: Increase the week number of the user's healing period
                 increase_week_of_healing_period(request, customer)
 
                 # TODO: Checking whether it is the last day of the Healing period or not
@@ -351,6 +351,7 @@ class HealingContentMap(View):
 
 # ===============================================================================================
 @login_required(login_url="accounts:login")
+@pass_foundation_course
 def questionnaires_weekly(request):
     customer = request.user.customer
 

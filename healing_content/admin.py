@@ -38,7 +38,20 @@ admin.site.register(QuestionnaireWeek)
 admin.site.register(QuestionWeek, QuestionWeekAdmin)
 admin.site.register(QuestionOptionWeek)
 
-admin.site.register(QuestionnaireWeekAnswer)
+
+class QuestionnaireWeekAnswerAdmin(admin.ModelAdmin):
+    list_display = [
+        'questionnaire_week',
+        'healing_week',
+        'customer',
+        'answer_time',
+        'score',
+    ]
+
+    list_filter = ['customer']
+
+
+admin.site.register(QuestionnaireWeekAnswer, QuestionnaireWeekAnswerAdmin)
 admin.site.register(QuestionnaireWeekAnswerDetail)
 
 
