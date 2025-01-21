@@ -295,22 +295,26 @@ class CompletionPractice(View):
         if request.method == "POST":
             selected_answers = get_list_answer_questionnaire(request.POST.items())
             healing_week_id = request.POST['healing_week_id']
+            uploaded_files = request.FILES  # Handle uploaded files
 
             with transaction.atomic():
                 objects_to_create = []
                 for question_practice_id, answer in selected_answers.items():
                     if answer != "":
+                        file = uploaded_files.get(f"file{question_practice_id}")
                         answer_practice = AnswerPractice.objects.filter(customer=customer,
                                                                         healing_week_id=healing_week_id,
                                                                         question_practice_id=question_practice_id)
                         if not answer_practice.exists():
                             objects_to_create.append(
                                 AnswerPractice(customer=customer, healing_week_id=healing_week_id,
-                                               question_practice_id=question_practice_id, answer=answer)
+                                               question_practice_id=question_practice_id, answer=answer, file=file)
                             )
                         else:
                             answer_practice = answer_practice.first()
                             answer_practice.answer = answer
+                            if file:
+                                answer_practice.file = file
                             answer_practice.save()
                             messages.success(request, "جواب تمرین بروزرسانی شد")
                     else:

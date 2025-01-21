@@ -67,5 +67,18 @@ class PracticeContentAdmin(admin.ModelAdmin):
 admin.site.register(Practice, PracticeAdmin)
 admin.site.register(PracticeContent, PracticeContentAdmin)
 admin.site.register(QuestionPractice)
-admin.site.register(AnswerPractice)
+
+
+class AnswerPracticeAdmin(admin.ModelAdmin):
+    list_display = [
+        "healing_week",
+        "question_practice",
+        "answer",
+        "file",
+        "customer",
+        "time_answer",
+    ]
+
+
+admin.site.register(AnswerPractice, AnswerPracticeAdmin)
 # ===========================================================

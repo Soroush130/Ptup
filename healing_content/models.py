@@ -130,6 +130,12 @@ class AnswerPractice(models.Model):
     answer = models.TextField(
         verbose_name='جواب'
     )
+    file = models.FileField(
+        upload_to='practices/practice_answer_files/',
+        null=True,
+        blank=True,
+        verbose_name='فایل'
+    )
     customer = models.ForeignKey(
         Customer,
         on_delete=models.CASCADE,
