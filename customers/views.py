@@ -6,7 +6,9 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db import transaction
+from django.db.models import Count
 
+from accounts.models import CountLoginUser
 from customers.decorators import pass_foundation_course, not_pass_healing_period, has_permission_start_treatment
 from customers.forms import CustomerForm, PermissionStartTreatmentCustomerForm
 from customers.models import Customer, CustomerDiseaseInformation
@@ -39,6 +41,15 @@ class CustomerInformationDetail(View):
 
         progress_charts = get_progress_charts(customer)
 
+        # Count Login User
+        one_week_ago = timezone.now() - timezone.timedelta(days=7)
+        logins_last_week = (
+            CountLoginUser.objects.filter(date_login__gte=one_week_ago, user=customer.user)
+                .values('user__id', 'user__phone')
+                .annotate(login_count=Count('id'))
+                .order_by('-login_count')
+        )
+
         context = {
             "customer": customer,
             "customer_id": customer_id,
@@ -48,6 +59,7 @@ class CustomerInformationDetail(View):
 
             "count_charts": len(progress_charts),
             "progress_charts": progress_charts,
+            "logins_last_week": logins_last_week,
         }
         return render(request, 'customers/customer_detail.html', context)
 

@@ -1,5 +1,5 @@
 from django.contrib.auth.admin import UserAdmin
-from .models import User, SiteRules, OtpCode, ForgottenCode
+from .models import User, SiteRules, OtpCode, ForgottenCode, CountLoginUser
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib import admin
 
@@ -27,6 +27,7 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('phone',)
     filter_horizontal = ()
 
+
 admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(SiteRules)
@@ -40,3 +41,9 @@ admin.site.register(OtpCode, OtpCodeAdmin)
 
 admin.site.register(ForgottenCode)
 
+
+class CountLoginUserAdmin(admin.ModelAdmin):
+    list_display = ['user', 'date_login']
+
+
+admin.site.register(CountLoginUser, CountLoginUserAdmin)

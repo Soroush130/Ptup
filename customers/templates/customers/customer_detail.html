@@ -66,6 +66,9 @@
 
                                     <li class="nav-item"><a class="nav-link" href="#progress_chart"
                                                             data-toggle="tab">نمودار روند پیشرفت</a></li>
+
+                                    <li class="nav-item"><a class="nav-link" href="#count_login_user"
+                                                            data-toggle="tab">تاریخ های ورود کاربر به پرتابل</a></li>
                                 </ul>
                             </div>
 
@@ -476,6 +479,19 @@
                                             </div>
                                         {% endfor %}
 
+                                    </div>
+
+
+                                    <div class="tab-pane" id="count_login_user">
+                                        <h4>گزارش ورود کاربران در یک هفته گذشته</h4>
+                                        <br>
+
+                                        <h5>تعداد ورود این بیمار :
+                                            {% for login in logins_last_week %}
+                                                <tr>
+                                                    <td>{{ login.login_count }}</td>
+                                                </tr>
+                                            {% endfor %}</h5>
                                     </div>
                                 </div>
                             </div>

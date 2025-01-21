@@ -104,3 +104,15 @@ class ForgottenCode(models.Model):
     class Meta:
         verbose_name = 'کد فراموشی'
         verbose_name_plural = 'کدهای فراموشی'
+
+
+class CountLoginUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='یوزر')
+    date_login = models.DateTimeField(verbose_name='تاریخ ورود به پرتابل')
+
+    def __str__(self):
+        return f"{self.user.phone}"
+
+    class Meta:
+        verbose_name = 'تاریخ ورود کاربر'
+        verbose_name_plural = 'تاریخ های ورود کاربر'

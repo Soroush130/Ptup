@@ -10,7 +10,7 @@ from ptup_utilities.utility import set_session, get_session, show_custom_errors
 from .forms import LoginUserForm, RegisterCustomerForm, RegisterDoctorForm, OtpCodeForm, ForgotPasswordForm, \
     ChangePasswordForm
 from .decorators import login_not_required, is_staff_or_superuser, is_otp_code_verify, check_last_otp_code_user
-from .models import User, RoleChoices, OtpCode, ForgottenCode
+from .models import User, RoleChoices, OtpCode, ForgottenCode, CountLoginUser
 from .senders import SmsSender
 from .utilites import phone_number_encryption, generate_otp_code, create_otp_code, sms
 from django.contrib import messages
@@ -36,6 +36,8 @@ def login_page(request):
 
             if user:
                 login(request, user)
+                CountLoginUser.objects.create(user=user, date_login=timezone.now())
+
                 if not remember_me:
                     request.session.set_expiry(0)
 
