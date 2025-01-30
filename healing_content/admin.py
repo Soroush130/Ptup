@@ -15,6 +15,7 @@ from .models import (
     QuestionPractice,
     AnswerPractice,
     PracticeContent,
+    HealingWeekViewLog,
 )
 
 
@@ -81,4 +82,12 @@ class AnswerPracticeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AnswerPractice, AnswerPracticeAdmin)
+
+
 # ===========================================================
+
+
+@admin.register(HealingWeekViewLog)
+class HealingWeekViewLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'healing_week', 'viewed_at')
+    list_filter = ('healing_week__healing_period', 'user')

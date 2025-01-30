@@ -5,7 +5,11 @@ from django.utils import timezone
 from customers.models import CustomerDiseaseInformation
 # from customers.tasks.customer_activity_history import get_practices_healing_week
 from healing_content.models import HealingWeek, QuestionnaireWeekAnswer, AnswerPractice, Practice, QuestionPractice, \
-    QuestionnaireWeek
+    QuestionnaireWeek, HealingWeekViewLog
+
+
+def create_healing_content_view_log(user, healing_week):
+    HealingWeekViewLog.objects.create(user=user, healing_week=healing_week)
 
 
 def increase_week_of_healing_period(request, customer: QuerySet):
@@ -40,8 +44,12 @@ def increase_week_of_healing_period(request, customer: QuerySet):
                 if (questionnaire_answer_weekly.exists()) and (
                         questionnaire_answer_weekly.count() == questionnaire_weekly.count()):
 
+                    # Register healing content view log for user
+                    create_healing_content_view_log(user=request.user, healing_week=healing_week)
+
                     disease_information.week_of_healing_period += 1
                     disease_information.save()
+
                     messages.success(request, "به هفته درمانی جدید خوش آمدید")
                 else:
                     messages.warning(request, "هشدار :تمرین ثبت شد، لطفا پرسشنامه های هفتگی را تکمیل کنید")

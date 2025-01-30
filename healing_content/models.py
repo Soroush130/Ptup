@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+from accounts.models import User
 from customers.models import Customer
 from doctors.models import Doctor
 from illness.models import Illness, HealingPeriod
@@ -23,6 +24,22 @@ class HealingWeek(models.Model):
         healing_week = HealingWeek.objects.filter(healing_period=self.healing_period, week=self.week)
         if healing_week.exists():
             raise ValidationError("چنین هفته ای وجود دارد")
+
+
+class HealingWeekViewLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='مراجع')
+    healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته درمانی')
+
+    viewed_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ مشاهده")
+
+    class Meta:
+        db_table = 'healing_content_view_log'
+        verbose_name = 'گزارش مشاهده محتوا'
+        verbose_name_plural = 'گزارشات مشاهده محتوا'
+        unique_together = ('user', 'healing_week')
+
+    def __str__(self):
+        return f"{self.user} - هفته {self.healing_week.week} - {self.viewed_at}"
 
 
 class HealingContent(models.Model):

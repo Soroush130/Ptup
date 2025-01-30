@@ -5,14 +5,17 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.db import transaction
 
+from accounts.utilites import phone_number_decryption
 from customers.models import Customer
 from customers.tasks.customer_activity_history import create_activity_history
 from customers.tasks.customers import increase_week_of_healing_period, check_last_day_healing_period
+from doctors.models import Doctor
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
 from foundation_course.utility import calculate_score_each_questionnaire_weekly
 from healing_content.forms import DayFeedbackForm
 from healing_content.models import DayFeedback, QuestionnaireWeek, QuestionWeek, \
-    QuestionnaireWeekAnswer, QuestionnaireWeekAnswerDetail, AnswerPractice
+    QuestionnaireWeekAnswer, QuestionnaireWeekAnswerDetail, AnswerPractice, HealingWeekViewLog
+from illness.models import HealingPeriod
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
@@ -130,3 +133,33 @@ class CompleteQuestionnaireWeeklyByCustomer(View):
                 else:
                     messages.error(request, "لطفا پرسشنامه را تکمیل کنید")
                     return redirect(request.META.get("HTTP_REFERER"))
+
+
+# ============================= Healing Week View Log ======================
+@method_decorator(login_required(login_url="accounts:login"), name='dispatch')
+class ReportsHealingWeekViewLog(View):
+    def get(self, request, *args, **kwargs):
+        doctor = Doctor.objects.get(user=request.user)
+        customers = Customer.objects.filter(treating_doctor=doctor)
+        healing_periods = HealingPeriod.objects.all()
+
+        reports = {}
+        for healing_period in healing_periods:
+
+            reports[healing_period.title] = []
+            customers = customers.filter(customer_disease_information__healing_period=healing_period)
+
+            for customer in customers:
+                username = customer.nick_name if customer.nick_name is not None else phone_number_decryption(phone_number=customer.user.phone)
+                count_view = HealingWeekViewLog.objects.filter(
+                    user=customer.user,
+                    healing_week__healing_period=healing_period
+                ).count()
+                reports[healing_period.title].append(
+                    {username: count_view}
+                )
+
+        context = {
+            "reports": reports,
+        }
+        return render(request, 'healing_content/healing_week_view_logs.html', context)

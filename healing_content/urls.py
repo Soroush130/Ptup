@@ -12,6 +12,8 @@ urlpatterns = [
 
     path('create_feedback/', views.CreateFeedbackView.as_view(), name="create_feedback"),
 
+    path('healing_week_view_log/', views.ReportsHealingWeekViewLog.as_view(), name="healing_week_view_log"),
+
     # Questionnaire Weekly
     path('questionnaire_weekly/<int:questionnaire_id>/<int:healing_week_id>/', views.QuestionnaireWeeklyView.as_view(),
          name="questionnaire_weekly"),

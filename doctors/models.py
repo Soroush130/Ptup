@@ -1,8 +1,14 @@
 from django.db import models
 from django.utils import timezone
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
+# from datetime import datetime
+from kavenegar import *
+import requests
 
+from Ptup.settings import KAVENEGAR_API_KEY
 from accounts.models import User
-from datetime import datetime
+from accounts.utilites import phone_number_decryption
 
 
 class GenderChoices(models.IntegerChoices):
@@ -90,3 +96,44 @@ class IdentificationDocument(models.Model):
     class Meta:
         verbose_name = 'مدرک شناسایی'
         verbose_name_plural = 'مدارک شناسایی دکترها'
+
+
+class SendSms(models.Model):
+    TYPE_MESSAGES = (
+        ("ONE", "روز اول هفته (دوشنبه‌ها)"),
+        ("SECOND", "روز یکی مونده به آخر (یکشنبه)"),
+    )
+    type_sms = models.CharField(max_length=100, choices=TYPE_MESSAGES, verbose_name='نوع پیام')
+    customers = models.ManyToManyField('customers.Customer', verbose_name='بیماران')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'پیامک'
+        verbose_name_plural = 'پیامک ها'
+
+
+@receiver(m2m_changed, sender=SendSms.customers.through)
+def send_sms_by_doctor_to_customers(sender, instance, action, **kwargs):
+    api_key = '4B7A74474B48663357344144706B2B3656594E553459484B566A56517857664C746F6F6D7655346F434C633D'
+    code = '.'
+    # Check if the action is post_add (customers added)
+    if action == 'post_add':
+        if instance.type_sms == "ONE":
+            template_sms = 'template1'
+            for customer in instance.customers.all():
+                receptor = phone_number_decryption(phone_number=customer.user.phone)
+
+                response = requests.get(
+                    f'https://api.kavenegar.com/v1/{api_key}/verify/lookup.json?receptor={receptor}&token={code}&template={template_sms}')
+
+                print(response.status_code)
+
+        elif instance.type_sms == "SECOND":
+            template_sms = 'template2'
+            for customer in instance.customers.all():
+                receptor = phone_number_decryption(phone_number=customer.user.phone)
+
+                response = requests.get(
+                    f'https://api.kavenegar.com/v1/{api_key}/verify/lookup.json?receptor={receptor}&token={code}&template={template_sms}')
+
+                print(response.status_code)
