@@ -21,6 +21,7 @@ class Customer(models.Model):
     gender = models.SmallIntegerField(choices=GenderChoices.choices, default=GenderChoices.MEN, verbose_name='جنسیت')
     treating_doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True, verbose_name='دکتر معالج')
     permission_start_treatment = models.BooleanField(default=False, verbose_name='اجازه شروع دوره درمان')
+    permission_ask_question = models.BooleanField(default=False, verbose_name='اجازه سوال پرسیدن')
 
     def __str__(self):
         return f"{self.user} : {self.nick_name} with id {self.id}"

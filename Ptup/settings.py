@@ -48,6 +48,7 @@ LOCAL_APPS = [
     'foundation_course.apps.FoundationCourseConfig',
     'followup.apps.FollowupConfig',
     'guide.apps.GuideConfig',
+    'question_answer_app.apps.QuestionAnswerAppConfig',
 ]
 
 INSTALLED_APPS = DJANGO_DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS

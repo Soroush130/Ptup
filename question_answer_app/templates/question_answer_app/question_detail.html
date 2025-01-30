@@ -1,0 +1,100 @@
+{% extends "shared/_MainLayout.html" %}
+{% load static %}
+
+{% block title %}
+    جزییات سوال
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>جزییات سوال</h1>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                {% if flag %}
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h1 class="card-title" style="float: right">متن سوال
+                                        : {{ question.question_text }}</h1>
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <form role="form" action="/question_answer_app/submit_answer/{{ question.id }}/"
+                                      method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="answerqueswtion">پاسخ :</label>
+                                            <input type="text" class="form-control" id="answerqueswtion"
+                                                   placeholder="پاسخ را وارد کنید" name="answer_text">
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary">ثبت</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" style="float: right">جواب های داده شده</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body p-0">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>بیمار</th>
+                                        <th>دکتر</th>
+                                        <th>جواب</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for question_answer in question_answers %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>
+                                                {% if question_answer.question.customer.nick_name is not None %}
+                                                    {{ question_answer.question.customer.nick_name }}
+                                                {% else %}
+                                                    {{ question_answer.question.customer.phone }}
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ question_answer.question.doctor }}</td>
+                                            <td>
+                                                {{ question_answer.answer_text }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+{% endblock %}

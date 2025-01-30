@@ -26,6 +26,7 @@ urlpatterns = [
     path('foundation_course/', include("foundation_course.urls")),
     path('followup/', include("followup.urls")),
     path('guide/', include("guide.urls")),
+    path('question_answer_app/', include("question_answer_app.urls")),
 
     # PWA
     path('', include('pwa.urls')),

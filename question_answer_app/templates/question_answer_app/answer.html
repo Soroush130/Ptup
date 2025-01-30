@@ -1,0 +1,69 @@
+{% extends "shared/_MainLayout.html" %}
+{% load static %}
+
+{% block title %}
+    پرسش و پاسخ
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper" style="min-height: 1232.89px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>سوالات مطرح شده</h1>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>مراجع</th>
+                                        <th>دکتر</th>
+                                        <th>سوال</th>
+                                        <th>زمان</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for question in questions %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>
+                                                {% if question.customer.nick_name is not None %}
+                                                    {{ question.customer.nick_name }}
+                                                {% else %}
+                                                    {{ question.customer.phone }}
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ question.doctor }}</td>
+                                            <td>
+                                                <a href="/question_answer_app/question_detail/{{ question.id }}/"
+                                                   style="color: black;">{{ question.question_text }}</a>
+                                            </td>
+                                            <td>{{ question.created_at }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+{% endblock %}
