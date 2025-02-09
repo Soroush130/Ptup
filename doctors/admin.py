@@ -8,7 +8,7 @@ admin.site.register(ApproachUsedTreatment)
 
 class SendSmsAdmin(admin.ModelAdmin):
     list_display = (
-        "type_sms",
+        "message",
         "created_at",
     )
 
