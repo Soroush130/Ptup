@@ -12,7 +12,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>مسیر دوره درمان بیماری </h1>
+                        <h1>مسیر دوره درمان تشخیص اصلی </h1>
                     </div>
                 </div>
             </div>
@@ -29,11 +29,11 @@
                                 <ul class="nav nav-pills">
                                     <li class="nav-item">
                                         <a class="nav-link active" href="#customer_information" data-toggle="tab">
-                                            اطلاعات بیمار
+                                            اطلاعات مراجع
                                         </a>
                                     </li>
                                     <li class="nav-item"><a class="nav-link" href="#practice_answer"
-                                                            data-toggle="tab">تمرینات بیمار</a></li>
+                                                            data-toggle="tab">تمرینات مراجع</a></li>
 
                                 </ul>
                             </div>
@@ -44,7 +44,7 @@
                                     <div class="active tab-pane" id="customer_information">
                                         <div class="row d-flex" style="height: 350px; overflow: auto">
                                             <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
-                                                <h5>بیماری : {{ disease_information.illness }}</h5>
+                                                <h5>تشخیص اصلی : {{ disease_information.illness }}</h5>
                                             </div>
                                             <div class="col-lg-5 bg-gray-light m-1 d-flex justify-content-start align-items-center">
                                                 <h5>دوره درمان : {{ disease_information.healing_period }}</h5>

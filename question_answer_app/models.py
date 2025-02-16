@@ -7,7 +7,7 @@ from doctors.models import Doctor
 
 class Question(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='مراجع')
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='دکتر')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='درمانگر')
     question_text = models.TextField(verbose_name='متن سوال :')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='زمان ایجاد سوال')
 

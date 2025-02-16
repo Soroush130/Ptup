@@ -19,7 +19,7 @@ class Customer(models.Model):
     nick_name = models.CharField(verbose_name="نام مستعار", max_length=255, null=True, blank=True)
     age = models.PositiveIntegerField(default=0, verbose_name='سن')
     gender = models.SmallIntegerField(choices=GenderChoices.choices, default=GenderChoices.MEN, verbose_name='جنسیت')
-    treating_doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True, verbose_name='دکتر معالج')
+    treating_doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True, verbose_name='درمانگر')
     permission_start_treatment = models.BooleanField(default=False, verbose_name='اجازه شروع دوره درمان')
     permission_ask_question = models.BooleanField(default=False, verbose_name='اجازه سوال پرسیدن')
 
@@ -37,8 +37,8 @@ class Customer(models.Model):
         return 'مرد' if self.gender == 1 else 'زن'
 
     class Meta:
-        verbose_name = 'بیمار'
-        verbose_name_plural = 'بیماران'
+        verbose_name = 'مراجع'
+        verbose_name_plural = 'لیست مراجع'
 
 
 class CustomerDiseaseInformation(models.Model):
@@ -50,13 +50,13 @@ class CustomerDiseaseInformation(models.Model):
         Customer,
         related_name='customer_disease_information',
         on_delete=models.CASCADE,
-        verbose_name="بیمار "
+        verbose_name="مراجع "
     )
     illness = models.ForeignKey(
         Illness,
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name='بیماری '
+        verbose_name='تشخیص '
     )
     healing_period = models.ForeignKey(
         HealingPeriod,
@@ -119,8 +119,8 @@ class CustomerDiseaseInformation(models.Model):
         return f"{self.customer} , {self.illness} , {self.healing_period}"
 
     class Meta:
-        verbose_name = 'پرونده بیمار'
-        verbose_name_plural = 'پرونده های بیماران'
+        verbose_name = 'پرونده مراجع'
+        verbose_name_plural = 'پرونده های مراجع'
 
     @property
     def show_start_time_period_persian(self):
@@ -132,7 +132,7 @@ class CustomerActivityHistory(models.Model):
         Customer,
         on_delete=models.CASCADE,
         related_name='customer_activity_history',
-        verbose_name='بیمار'
+        verbose_name='مراجع'
     )
     subject = models.CharField(
         max_length=255,

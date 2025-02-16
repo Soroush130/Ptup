@@ -118,7 +118,7 @@ class QuestionnaireAnswer(models.Model):
     )
     customer = models.ForeignKey(
         Customer,
-        verbose_name='بیمار',
+        verbose_name='مراجع',
         related_name='questionnaire_answer_customer',
         on_delete=models.CASCADE
     )

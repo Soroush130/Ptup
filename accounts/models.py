@@ -28,8 +28,8 @@ class UserManager(BaseUserManager):
 
 class RoleChoices(models.IntegerChoices):
     ADMIN = 0, 'ادمین'
-    DOCTER = 1, 'دکتر'
-    CUSTOMER = 2, 'بیمار'
+    DOCTER = 1, 'درمانگر'
+    CUSTOMER = 2, 'مراجع'
 
 
 class User(AbstractBaseUser, PermissionsMixin):

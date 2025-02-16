@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    لیست بیماران
+    لیست مراجع
 {% endblock %}
 
 {% block header_ref %}
@@ -34,7 +34,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>بیماران</h1>
+                        <h1>مراجعان</h1>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -75,17 +75,17 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title" style="float: right">لیست بیماران {{ request.user.doctor }}</h3>
+                                <h3 class="card-title" style="float: right">لیست مراجع {{ request.user.doctor }}</h3>
 
                                 <div class="card-tools" style="float: left">
                                     <div class="dropdown">
                                         <button class="btn btn-primary" type="button" data-customer="can_started"
                                                 id="customer_list_can_started">
-                                            بیمارانی که اجازه شروع درمان دارند
+                                            مراجعانی که اجازه شروع درمان دارند
                                         </button>
                                         <button class="btn btn-primary" type="button" data-customer="can_not_started"
                                                 id="customer_list_can_not_started">
-                                            بیمارانی که اجازه شروع درمان ندارند
+                                            مراجعانی که اجازه شروع درمان ندارند
                                         </button>
                                     </div>
 

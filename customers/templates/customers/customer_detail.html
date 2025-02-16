@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    اطلاعات بیمار
+    اطلاعات مراجع
 {% endblock %}
 
 {% block content %}
@@ -12,7 +12,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>پرونده بیمار</h1>
+                        <h1>پرونده مراجع</h1>
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                                         <b>جنسیت</b> <a class="float-right">{{ customer.get_gender_display }}</a>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>دکتر معالج</b> <a class="float-right">{{ customer.treating_doctor }}</a>
+                                        <b>درمانگر</b> <a class="float-right">{{ customer.treating_doctor }}</a>
                                     </li>
                                 </ul>
 
@@ -59,10 +59,10 @@
                                         </a>
                                     </li>
                                     <li class="nav-item"><a class="nav-link" href="#timeline"
-                                                            data-toggle="tab">تاریخچه فعالیت بیمار</a></li>
+                                                            data-toggle="tab">تاریخچه فعالیت مراجع</a></li>
 
                                     <li class="nav-item"><a class="nav-link" href="#practice_answer"
-                                                            data-toggle="tab">تمرینات بیمار</a></li>
+                                                            data-toggle="tab">تمرینات مراجع</a></li>
 
                                     <li class="nav-item"><a class="nav-link" href="#progress_chart"
                                                             data-toggle="tab">نمودار روند پیشرفت</a></li>
@@ -486,7 +486,7 @@
                                         <h4>گزارش ورود کاربران در یک هفته گذشته</h4>
                                         <br>
 
-                                        <h5>تعداد ورود این بیمار :
+                                        <h5>تعداد ورود این مراجع :
                                             {% for login in logins_last_week %}
                                                 <tr>
                                                     <td>{{ login.login_count }}</td>

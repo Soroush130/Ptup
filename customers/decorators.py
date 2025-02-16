@@ -8,7 +8,7 @@ from customers.models import CustomerDiseaseInformation
 
 def pass_foundation_course(view_func):
     """
-    این تابع چک میکند آیا بیمار دوره مقدماتی را گذارنده است یا خیر ؟
+    این تابع چک میکند آیا مراجع دوره مقدماتی را گذارنده است یا خیر ؟
     :param view_func:
     :return:
     """
@@ -28,7 +28,7 @@ def pass_foundation_course(view_func):
                 else:
                     return redirect('customers:foundation_course_customer')
             else:
-                messages.info(request, "بیماری برای شما انتخاب نشده است")
+                messages.info(request, "تشخیصی برای شما انتخاب نشده است")
                 return redirect('home')
         except:
             messages.error(request, "ابتدا اطلاعات خود را تکمیل کنید")
@@ -39,7 +39,7 @@ def pass_foundation_course(view_func):
 
 def not_pass_healing_period(view_func):
     """
-    این تابع بررسی میکند آیا بیمار دوره درمان را گذرانده است یا خیر ؟
+    این تابع بررسی میکند آیا مراجع دوره درمان را گذرانده است یا خیر ؟
     :param view_func:
     :return:
     """

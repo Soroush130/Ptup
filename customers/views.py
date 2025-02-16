@@ -142,7 +142,7 @@ class DeterminingCustomerIllness(View):
                 }
                 return render(request, self.template_name, context)
         else:
-            messages.error(request, "شما مجاز به مشاهده اطلاعات این بیمار نیستید")
+            messages.error(request, "شما مجاز به مشاهده اطلاعات این مراجع نیستید")
             return redirect('doctors:list_customers_requested')
 
 
@@ -169,16 +169,16 @@ class OperationChoiceIllnessCustomer(View):
                         illness=illness,
                         healing_period=illness.healingperiod
                     )
-                    messages.success(request, "نوع بیماری مراجع مشخص شد")
+                    messages.success(request, "نوع تشخیص مراجع مشخص شد")
                     return redirect(_URL)
                 except:
-                    messages.error(request, "دوره درمانی برای این بیماری وجود ندارد")
+                    messages.error(request, "دوره درمانی برای این تشخیص وجود ندارد")
                     return redirect(_URL)
             else:
-                messages.error(request, "نوع بیماری را نمی توانید تغییر دهید")
+                messages.error(request, "نوع تشخیص را نمی توانید تغییر دهید")
                 return redirect(_URL)
         else:
-            messages.error(request, "شما مجاز به انتساب بیماری به این بیمار نیستید")
+            messages.error(request, "شما مجاز به انتساب تشخیص به این مراجع نیستید")
             return redirect('doctors:list_customers_requested')
 
 

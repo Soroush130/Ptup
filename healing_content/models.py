@@ -255,7 +255,7 @@ class QuestionnaireWeekAnswer(models.Model):
     )
     customer = models.ForeignKey(
         Customer,
-        verbose_name='بیمار',
+        verbose_name='مراجع',
         related_name='customer_questionnaire_answer',
         on_delete=models.CASCADE
     )
@@ -317,7 +317,7 @@ class DayFeedback(models.Model):
     doctor = models.ForeignKey(
         Doctor,
         on_delete=models.CASCADE,
-        verbose_name='دکتر',
+        verbose_name='درمانگر',
         related_name='doctor_day_feedbacks'
     )
     subject = models.CharField(

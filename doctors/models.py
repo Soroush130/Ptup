@@ -46,7 +46,7 @@ class Doctor(models.Model):
     is_verify = models.BooleanField(default=False, verbose_name='اجازه شروع فعالیت')
 
     def __str__(self):
-        return f"دکتر {self.first_name} {self.last_name}"
+        return f"درمانگر {self.first_name} {self.last_name}"
 
     @property
     def get_full_name(self):
@@ -64,12 +64,12 @@ class Doctor(models.Model):
         return 'مرد' if self.gender == 1 else 'زن'
 
     class Meta:
-        verbose_name = 'دکتر'
-        verbose_name_plural = 'دکترها'
+        verbose_name = 'درمانگر'
+        verbose_name_plural = 'لیست درمانگرها'
 
 
 class IdentificationDocument(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='دکتر ')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name='درمانگر ')
     title = models.CharField(max_length=255, verbose_name='عنوان فایل ')
     file = models.FileField(verbose_name='فایل ', upload_to='files/identification_document/')
     created_at = models.DateTimeField(default=timezone.now)
@@ -92,11 +92,11 @@ class IdentificationDocument(models.Model):
 
     class Meta:
         verbose_name = 'مدرک شناسایی'
-        verbose_name_plural = 'مدارک شناسایی دکترها'
+        verbose_name_plural = 'مدارک شناسایی درمانگرها'
 
 
 class SendSms(models.Model):
-    customers = models.ManyToManyField('customers.Customer', verbose_name='بیماران')
+    customers = models.ManyToManyField('customers.Customer', verbose_name='لیست مراجع')
     message = models.TextField(verbose_name='متن پیام')
     created_at = models.DateTimeField(auto_now_add=True)
 

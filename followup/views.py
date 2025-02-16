@@ -63,7 +63,7 @@ class FollowUpCustomer(View):
                         if status:
                             send_notification_in_protable(
                                 receiver=customer.treating_doctor.user,
-                                content=f'نمره یک سوال پرسشنامه فالوآپ بیمار {customer.nick_name} برای 5 روز متوالی بیش از حد نصاب است',
+                                content=f'نمره یک سوال پرسشنامه فالوآپ مراجع {customer.nick_name} برای 5 روز متوالی بیش از حد نصاب است',
                                 sender=request.user
                             )
                             return redirect('follow_up:show_content')
@@ -94,7 +94,7 @@ class FollowUpCustomer(View):
                         if status:
                             send_notification_in_protable(
                                 receiver=customer.treating_doctor.user,
-                                content=f'نمره یک سوال پرسشنامه فالوآپ بیمار {customer.nick_name} برای 5 روز متوالی بیش از حد نصاب است',
+                                content=f'نمره یک سوال پرسشنامه فالوآپ مراجع {customer.nick_name} برای 5 روز متوالی بیش از حد نصاب است',
                                 sender=request.user
                             )
                             return redirect('follow_up:show_content')

@@ -13,7 +13,7 @@ class CustomerForm(forms.ModelForm):
         )
         error_messages = {
             "treating_doctor": {
-                'required': 'فیلد دکتر معالج اجباری است'
+                'required': 'فیلد درمانگر معالج اجباری است'
             },
             "age": {
                 'required': 'فیلد سن اجباری است'
