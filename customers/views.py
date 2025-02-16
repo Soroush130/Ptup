@@ -20,7 +20,7 @@ from customers.utility import normalize_data_filter_customer
 from doctors.models import Doctor
 from foundation_course.models import Questionnaire, QuestionnaireAnswer
 from foundation_course.tasks.questionnaire import get_list_answer_questionnaire
-from healing_content.models import HealingWeek, AnswerPractice, HealingContent
+from healing_content.models import HealingWeek, AnswerPractice, HealingContent, Practice
 from illness.models import Illness
 from ptup_utilities.utility import show_custom_errors
 
@@ -273,10 +273,6 @@ def practice_each_week(request, practice_each_week_id):
 
     practices = get_practices_healing_week(healing_week)
 
-    # questionnaires_weekly, questionnaires_weekly_count = get_questionnaire_weekly(
-    #     disease_information=disease_information,
-    #     duration_of_treatment=healing_week.healing_period.duration_of_treatment
-    # )
     context = {
         'week': healing_week.week,
         'healing_week_id': healing_week.id,
@@ -287,59 +283,105 @@ def practice_each_week(request, practice_each_week_id):
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
-@method_decorator(pass_foundation_course, name='dispatch')
-@method_decorator(not_pass_healing_period, name='dispatch')
 class CompletionPractice(View):
     def post(self, request, *args, **kwargs):
         customer = request.user.customer
-        if request.method == "POST":
-            selected_answers = get_list_answer_questionnaire(request.POST.items())
-            healing_week_id = request.POST['healing_week_id']
-            uploaded_files = request.FILES  # Handle uploaded files
+        healing_week_id = request.POST.get('healing_week_id')
+        practice_id = request.POST.get('practice_id')
+        answer_text = request.POST.get('answer', '').strip()
+        uploaded_file = request.FILES.get(f"file{practice_id}")
 
-            with transaction.atomic():
-                objects_to_create = []
-                for question_practice_id, answer in selected_answers.items():
-                    if answer != "":
-                        file = uploaded_files.get(f"file{question_practice_id}")
-                        answer_practice = AnswerPractice.objects.filter(customer=customer,
-                                                                        healing_week_id=healing_week_id,
-                                                                        question_practice_id=question_practice_id)
-                        if not answer_practice.exists():
-                            objects_to_create.append(
-                                AnswerPractice(customer=customer, healing_week_id=healing_week_id,
-                                               question_practice_id=question_practice_id, answer=answer, file=file)
-                            )
-                        else:
-                            answer_practice = answer_practice.first()
-                            answer_practice.answer = answer
-                            if file:
-                                answer_practice.file = file
-                            answer_practice.save()
-                            messages.success(request, "جواب تمرین بروزرسانی شد")
-                    else:
-                        messages.error(request, "لطفا تمرین ها پر کنید")
-                        return redirect(request.META.get("HTTP_REFERER"))
+        if not healing_week_id or not practice_id:
+            messages.error(request, "داده‌های ورودی نامعتبر هستند.")
+            return redirect(request.META.get("HTTP_REFERER", "customers:healing_period_customer"))
 
-                AnswerPractice.objects.bulk_create(objects_to_create)
+        try:
+            healing_week = HealingWeek.objects.get(id=healing_week_id)
+            practice = Practice.objects.get(id=practice_id)
+        except (HealingWeek.DoesNotExist, Practice.DoesNotExist):
+            messages.error(request, "تمرین یا هفته درمان یافت نشد.")
+            return redirect(request.META.get("HTTP_REFERER", "customers:healing_period_customer"))
 
-                # TODO: Register activity history for customer
-                healing_week: HealingWeek = HealingWeek.objects.get(id=healing_week_id)
-                create_activity_history(
-                    customer_id=customer.id,
-                    subject=f"{healing_week.healing_period}",
-                    content=f"انجام تمرین های هفته {healing_week.week}ام ، {healing_week.healing_period}"
-                )
+        with transaction.atomic():
+            answer_practice, created = AnswerPractice.objects.get_or_create(
+                customer=customer,
+                healing_week=healing_week,
+                practice=practice,
+                defaults={'answer': answer_text, 'file': uploaded_file}
+            )
+            if not created:
+                answer_practice.answer = answer_text
+                if uploaded_file:
+                    answer_practice.file = uploaded_file
+                answer_practice.save()
+                messages.success(request, "جواب تمرین بروزرسانی شد.")
+            else:
+                messages.success(request, "جواب تمرین ذخیره شد.")
 
-                # TODO: Increase the week number of the user's healing period
-                increase_week_of_healing_period(request, customer)
+            create_activity_history(
+                customer_id=customer.id,
+                subject=f"{healing_week.healing_period}",
+                content=f"انجام تمرین‌های هفته {healing_week.week} ام، {healing_week.healing_period}"
+            )
 
-                # TODO: Checking whether it is the last day of the Healing period or not
-                check_last_day_healing_period(request, healing_week_id, customer)
+            increase_week_of_healing_period(request, customer)
+            check_last_day_healing_period(request, healing_week_id, customer)
 
-                return redirect(request.META.get("HTTP_REFERER"))
-        else:
-            return redirect("customers:healing_period_customer")
+        return redirect(request.META.get("HTTP_REFERER", "customers:healing_period_customer"))
+
+
+# Old CompletionPractice
+# class CompletionPractice(View):
+#     def post(self, request, *args, **kwargs):
+#         customer = request.user.customer
+#         if request.method == "POST":
+#             selected_answers = get_list_answer_questionnaire(request.POST.items())
+#             healing_week_id = request.POST['healing_week_id']
+#             uploaded_files = request.FILES  # Handle uploaded files
+#
+#             with transaction.atomic():
+#                 objects_to_create = []
+#                 for question_practice_id, answer in selected_answers.items():
+#                     if answer != "":
+#                         file = uploaded_files.get(f"file{question_practice_id}")
+#                         answer_practice = AnswerPractice.objects.filter(customer=customer,
+#                                                                         healing_week_id=healing_week_id,
+#                                                                         question_practice_id=question_practice_id)
+#                         if not answer_practice.exists():
+#                             objects_to_create.append(
+#                                 AnswerPractice(customer=customer, healing_week_id=healing_week_id,
+#                                                question_practice_id=question_practice_id, answer=answer, file=file)
+#                             )
+#                         else:
+#                             answer_practice = answer_practice.first()
+#                             answer_practice.answer = answer
+#                             if file:
+#                                 answer_practice.file = file
+#                             answer_practice.save()
+#                             messages.success(request, "جواب تمرین بروزرسانی شد")
+#                     else:
+#                         messages.error(request, "لطفا تمرین ها پر کنید")
+#                         return redirect(request.META.get("HTTP_REFERER"))
+#
+#                 AnswerPractice.objects.bulk_create(objects_to_create)
+#
+#                 # TODO: Register activity history for customer
+#                 healing_week: HealingWeek = HealingWeek.objects.get(id=healing_week_id)
+#                 create_activity_history(
+#                     customer_id=customer.id,
+#                     subject=f"{healing_week.healing_period}",
+#                     content=f"انجام تمرین های هفته {healing_week.week}ام ، {healing_week.healing_period}"
+#                 )
+#
+#                 # TODO: Increase the week number of the user's healing period
+#                 increase_week_of_healing_period(request, customer)
+#
+#                 # TODO: Checking whether it is the last day of the Healing period or not
+#                 check_last_day_healing_period(request, healing_week_id, customer)
+#
+#                 return redirect(request.META.get("HTTP_REFERER"))
+#         else:
+#             return redirect("customers:healing_period_customer")
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

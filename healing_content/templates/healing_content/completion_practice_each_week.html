@@ -7,12 +7,11 @@
 
 {% block content %}
     <div class="content-wrapper" style="min-height: 1232.89px;">
-        <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>انجام تمرین های هفته {{ week }} ام</h1>
+                        <h1>انجام تمرین‌های هفته {{ week }} ام</h1>
                     </div>
                 </div>
             </div>
@@ -20,115 +19,62 @@
 
         <section class="content">
             <div class="container-fluid">
-
-                {% for day, practices_in_day in practices.items %}
+                {% for practice, practice_data in practices.items %}
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-header bg-primary">
-                                    <h3>تمرین های روز {{ day }}</h3>
+                                    <h3>تمرین : {{ practice.description }}</h3>
                                 </div>
-                                {% for practice, practice_items in practices_in_day.items %}
-                                    <div class="card-body">
-                                        <div class="card-body bg-gray-light">
-                                            <h6>توضیحات : {{ practice.description }}</h6>
-                                            <hr>
-                                            <h6>فایل های تمرین :</h6>
-                                            <ul>
-                                                {% for key, contents in practice_items.items %}
-                                                    {% if key == "contents" %}
-                                                        {% for content in contents %}
-                                                            <li>
-                                                                {% if content.type == "MEDIA" %}
-                                                                    <a href="{{ content.file.url }}" download><h6>
-                                                                        ویدیو : {{ content.title }}</h6></a>
-                                                                {% elif content.type == "VOICE" %}
-                                                                    <a href="{{ content.file.url }}" download><h6>
-                                                                        صدا : {{ content.title }}</h6></a>
-                                                                {% elif content.type == "FILE" %}
-                                                                    <a href="{{ content.file.url }}" download><h6>
-                                                                        فایل : {{ content.title }}</h6></a>
-                                                                {% endif %}
-                                                            </li>
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
+                                <div class="card-body">
+                                    <div class="card-body bg-gray-light">
+                                        <h6>توضیحات : {{ practice.description }}</h6>
                                         <hr>
-                                        <div class="card-body">
-                                            <form action="{% url 'customers:completion_practice' %}" method="POST"
-                                                  enctype="multipart/form-data">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="healing_week_id"
-                                                       value="{{ healing_week_id }}">
-                                                {% for key, questions in practice_items.items %}
-                                                    {% if key == "questions" %}
-                                                        {% for question in questions %}
-                                                            <div class="card">
-                                                                <div class="card-header">{{ question.row }}. {{ question.text }}</div>
-                                                                <div class="card-body">
-                                                                    <div class="form-group">
-                                                                        <label for="">متن جواب : </label>
-                                                                        {% load answer_customer_filter %}
-                                                                        <h2>{{ question.answer_practice.all|get_answer_customer:request.user }}</h2>
-                                                                        <input type="text" class="form-control"
-                                                                               name="answer{{ question.id }}"
-                                                                               value="{{ question.answer_practice.all|get_answer_customer:request.user.customer }}">
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label for="">آپلود فایل (اختیاری):</label>
-                                                                        <input type="file" class="form-control-file"
-                                                                               name="file{{ question.id }}">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                                <button type="submit" class="btn btn-block btn-primary">ثبت</button>
-                                            </form>
-                                        </div>
+                                        <h6>فایل‌های تمرین :</h6>
+                                        <ul>
+                                            {% for content in practice_data.contents %}
+                                                <li>
+                                                    <a href="{{ content.file.url }}" download>
+                                                        <h6>
+                                                            {% if content.type == "MEDIA" %}
+                                                                ویدیو : {{ content.title }}
+                                                            {% elif content.type == "VOICE" %}
+                                                                صدا : {{ content.title }}
+                                                            {% elif content.type == "FILE" %}
+                                                                فایل : {{ content.title }}
+                                                            {% endif %}
+                                                        </h6>
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
                                     </div>
-                                {% endfor %}
-
+                                    <hr>
+                                    <div class="card-body">
+                                        <form action="{% url 'customers:completion_practice' %}" method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="healing_week_id" value="{{ healing_week_id }}">
+                                            <input type="hidden" name="practice_id" value="{{ practice.id }}">
+                                            <div class="form-group">
+                                                <label for="answer">متن جواب:</label>
+                                                <textarea class="form-control" name="answer" rows="4">{{ practice_data.answer_practice.answer }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="file">آپلود فایل (اختیاری):</label>
+                                                <input type="file" class="form-control-file" name="file{{ practice.id }}">
+                                                {% if practice_data.answer_practice.file %}
+                                                    <p>فایل فعلی: <a href="{{ practice_data.answer_practice.file.url }}" download>دانلود فایل</a></p>
+                                                {% endif %}
+                                            </div>
+                                            <button type="submit" class="btn btn-block btn-primary">ثبت</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
-
-
-
-
-                {#                {% if questionnaires_weekly is not None %}#}
-                {#                    <div class="row">#}
-                {#                        <div class="col-lg-12">#}
-                {#                            <div class="card">#}
-                {#                                <div class="card-header">#}
-                {#                                    <h3>پرسشنامه های هفتگی</h3>#}
-                {#                                </div>#}
-                {#                                <div class="card-body d-flex flex-wrap">#}
-                {#                                    {% for questionnaire in questionnaires_weekly %}#}
-                {#                                        <div class="col-md-3 col-sm-6 col-12">#}
-                {#                                            <div class="info-box bg-info">#}
-                {#                                                <span class="info-box-icon"><i class="far fa-bookmark"></i></span>#}
-                {##}
-                {#                                                <div class="info-box-content">#}
-                {#                                                    <a href="/content/questionnaire_weekly/{{ questionnaire.id }}/{{ healing_week_id }}/"#}
-                {#                                                       style="color: white">#}
-                {#                                                        <h5>{{ questionnaire.title }}</h5></a>#}
-                {#                                                </div>#}
-                {#                                            </div>#}
-                {#                                        </div>#}
-                {#                                    {% endfor %}#}
-                {#                                </div>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {#                {% endif %}#}
-
             </div>
         </section>
-
     </div>
 {% endblock %}

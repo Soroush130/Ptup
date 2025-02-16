@@ -73,7 +73,7 @@ admin.site.register(QuestionPractice)
 class AnswerPracticeAdmin(admin.ModelAdmin):
     list_display = [
         "healing_week",
-        "question_practice",
+        "practice",
         "answer",
         "file",
         "customer",

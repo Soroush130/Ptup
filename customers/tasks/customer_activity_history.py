@@ -121,25 +121,38 @@ def get_healing_content(healing_week: QuerySet):
     content_list = HealingContent.objects.filter(healing_week=healing_week)
     return content_list
 
-
+# New get_practices_healing_week function
 def get_practices_healing_week(healing_week):
-    group_by_contents = {}
 
-    for day in range(1, 8):
-        practices_dict = {}
-        practices = Practice.objects.filter(healing_week=healing_week, day=day)
-        for practice in practices:
-            questions = QuestionPractice.objects.filter(practice=practice)
-            contents = PracticeContent.objects.filter(practice=practice)
+    practices_dict = {}
+    practices = Practice.objects.filter(healing_week=healing_week)
+    for practice in practices:
+        contents = PracticeContent.objects.filter(practice=practice)
 
-            practices_dict[practice] = {
-                'questions': list(questions),
-                'contents': list(contents)
-            }
+        practices_dict[practice] = {
+            'contents': list(contents)
+        }
+    return practices_dict
 
-        group_by_contents[day] = practices_dict
-
-    return group_by_contents
+# Old get_practices_healing_week function
+# def get_practices_healing_week(healing_week):
+#     group_by_contents = {}
+#
+#     for day in range(1, 8):
+#         practices_dict = {}
+#         practices = Practice.objects.filter(healing_week=healing_week, day=day)
+#         for practice in practices:
+#             questions = QuestionPractice.objects.filter(practice=practice)
+#             contents = PracticeContent.objects.filter(practice=practice)
+#
+#             practices_dict[practice] = {
+#                 'questions': list(questions),
+#                 'contents': list(contents)
+#             }
+#
+#         group_by_contents[day] = practices_dict
+#
+#     return group_by_contents
 
 
 def get_content_customer(disease_information: QuerySet, week: int, duration_of_treatment: int, healing_week: QuerySet):

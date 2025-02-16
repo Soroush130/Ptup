@@ -70,19 +70,9 @@ class HealingContent(models.Model):
         verbose_name_plural = 'محتواهای درمانی'
 
 
+# New Practice model
 class Practice(models.Model):
     healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته چندم ')
-    # This field is mostly used to group content
-    day = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        default=1,
-        verbose_name='روز هفته',
-        validators=[
-            MinValueValidator(1, message='نباید کمتر از 1 باشید'),
-            MaxValueValidator(7, message='نباید بیشتر از 7 باشد')
-        ]
-    )
     description = models.TextField(verbose_name='توضیحات')
 
     class Meta:
@@ -92,6 +82,30 @@ class Practice(models.Model):
 
     def __str__(self):
         return f"Practice with ID #{self.pk}"
+
+# Old Practice model
+# class Practice(models.Model):
+#     healing_week = models.ForeignKey(HealingWeek, on_delete=models.CASCADE, verbose_name='هفته چندم ')
+#     # This field is mostly used to group content
+#     day = models.PositiveIntegerField(
+#         null=True,
+#         blank=True,
+#         default=1,
+#         verbose_name='روز هفته',
+#         validators=[
+#             MinValueValidator(1, message='نباید کمتر از 1 باشید'),
+#             MaxValueValidator(7, message='نباید بیشتر از 7 باشد')
+#         ]
+#     )
+#     description = models.TextField(verbose_name='توضیحات')
+#
+#     class Meta:
+#         db_table = 'practice'
+#         verbose_name = 'تمرین'
+#         verbose_name_plural = 'تمرین ها'
+#
+#     def __str__(self):
+#         return f"Practice with ID #{self.pk}"
 
 
 class PracticeContent(models.Model):
@@ -131,18 +145,18 @@ class QuestionPractice(models.Model):
         verbose_name = 'سوال'
         verbose_name_plural = 'سوال تمرینات'
 
-
+# New AnswerPractice model
 class AnswerPractice(models.Model):
     healing_week = models.ForeignKey(
         HealingWeek,
         on_delete=models.CASCADE,
         verbose_name='هفته چندم '
     )
-    question_practice = models.ForeignKey(
-        QuestionPractice,
+    practice = models.ForeignKey(
+        Practice,
         on_delete=models.CASCADE,
         related_name='answer_practice',
-        verbose_name='سوال'
+        verbose_name='تمرین'
     )
     answer = models.TextField(
         verbose_name='جواب'
@@ -168,6 +182,44 @@ class AnswerPractice(models.Model):
         db_table = 'answer_practices'
         verbose_name = 'جواب'
         verbose_name_plural = 'جواب تمرینات'
+
+# Old AnswerPractice model
+# class AnswerPractice(models.Model):
+#     healing_week = models.ForeignKey(
+#         HealingWeek,
+#         on_delete=models.CASCADE,
+#         verbose_name='هفته چندم '
+#     )
+#     question_practice = models.ForeignKey(
+#         QuestionPractice,
+#         on_delete=models.CASCADE,
+#         related_name='answer_practice',
+#         verbose_name='سوال'
+#     )
+#     answer = models.TextField(
+#         verbose_name='جواب'
+#     )
+#     file = models.FileField(
+#         upload_to='practices/practice_answer_files/',
+#         null=True,
+#         blank=True,
+#         verbose_name='فایل'
+#     )
+#     customer = models.ForeignKey(
+#         Customer,
+#         on_delete=models.CASCADE,
+#         related_name='customer_answer_practice',
+#         verbose_name='مراجع'
+#     )
+#     time_answer = models.DateTimeField(
+#         auto_now_add=True,
+#         verbose_name='زمان پاسخ'
+#     )
+#
+#     class Meta:
+#         db_table = 'answer_practices'
+#         verbose_name = 'جواب'
+#         verbose_name_plural = 'جواب تمرینات'
 
 
 # =========================================== Questionnaire Week ==========================
