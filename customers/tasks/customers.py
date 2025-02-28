@@ -31,28 +31,18 @@ def increase_week_of_healing_period(request, customer: QuerySet):
         practices = Practice.objects.filter(healing_week=healing_week)
         # questions_in_practice = QuestionPractice.objects.filter(practice__in=practices)
         answers_in_practices = AnswerPractice.objects.filter(practice__in=practices,
-                                                            customer=customer)
+                                                             customer=customer)
 
         if answers_in_practices.exists():
 
             if answers_in_practices.count() == practices.count():
 
-                questionnaire_weekly = QuestionnaireWeek.objects.all()
-                questionnaire_answer_weekly = QuestionnaireWeekAnswer.objects.filter(healing_week=healing_week,
-                                                                                     customer=customer)
+                # Register healing content view log for user
+                create_healing_content_view_log(user=request.user, healing_week=healing_week)
+                disease_information.week_of_healing_period += 1
+                disease_information.save()
+                messages.success(request, "به هفته درمانی جدید خوش آمدید")
 
-                if (questionnaire_answer_weekly.exists()) and (
-                        questionnaire_answer_weekly.count() == questionnaire_weekly.count()):
-
-                    # Register healing content view log for user
-                    create_healing_content_view_log(user=request.user, healing_week=healing_week)
-
-                    disease_information.week_of_healing_period += 1
-                    disease_information.save()
-
-                    messages.success(request, "به هفته درمانی جدید خوش آمدید")
-                else:
-                    messages.warning(request, "هشدار :تمرین ثبت شد، لطفا پرسشنامه های هفتگی را تکمیل کنید")
 
             else:
                 messages.error(request, "لطفا به باقی تمرین ها جواب بدهید")
