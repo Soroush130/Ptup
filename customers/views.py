@@ -235,11 +235,12 @@ def healing_content_each_week(request):
             is_finished=False
         ).first()
 
+        if disease_information is None:
+            messages.error(request, "پرونده درمانی یافت نشد، از دکتر بخواهید برای شما پرونده بسازد")
+            return redirect('home')
+
         # TODO: set time start period
         set_time_healing_period(disease_information)
-        # if disease_information.start_time_period is None:
-        #     disease_information.start_time_period = timezone.now()
-        #     disease_information.save()
 
         week = disease_information.week_of_healing_period
         try:
@@ -303,19 +304,26 @@ class CompletionPractice(View):
             return redirect(request.META.get("HTTP_REFERER", "customers:healing_period_customer"))
 
         with transaction.atomic():
-            answer_practice, created = AnswerPractice.objects.get_or_create(
+            answer_practice = AnswerPractice.objects.filter(
                 customer=customer,
                 healing_week=healing_week,
-                practice=practice,
-                defaults={'answer': answer_text, 'file': uploaded_file}
-            )
-            if not created:
+                practice=practice
+            ).first()
+
+            if answer_practice:
                 answer_practice.answer = answer_text
                 if uploaded_file:
                     answer_practice.file = uploaded_file
                 answer_practice.save()
                 messages.success(request, "جواب تمرین بروزرسانی شد.")
             else:
+                AnswerPractice.objects.create(
+                    customer=customer,
+                    healing_week=healing_week,
+                    practice=practice,
+                    answer=answer_text,
+                    file=uploaded_file
+                )
                 messages.success(request, "جواب تمرین ذخیره شد.")
 
             create_activity_history(

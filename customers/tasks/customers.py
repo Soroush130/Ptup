@@ -9,8 +9,8 @@ from healing_content.models import HealingWeek, QuestionnaireWeekAnswer, AnswerP
 
 
 def create_healing_content_view_log(user, healing_week):
-    HealingWeekViewLog.objects.create(user=user, healing_week=healing_week)
-
+    instance, created = HealingWeekViewLog.objects.get_or_create(user=user, healing_week=healing_week)
+    return instance, created
 
 def increase_week_of_healing_period(request, customer: QuerySet):
     """
