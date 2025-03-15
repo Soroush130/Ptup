@@ -221,10 +221,46 @@ class FoundationCourseCustomer(View):
         }
         return render(request, 'customers/foundation_course_customer.html', context)
 
+@login_required(login_url="accounts:login")
+def healing_contents(request):
+    _URL = request.META.get("HTTP_REFERER")
+    customer = request.user.customer
+
+    disease_information = CustomerDiseaseInformation.objects.filter(
+        customer=customer,
+        is_finished=False
+    ).first()
+
+    if disease_information is None:
+        messages.error(request, "پرونده درمانی یافت نشد، از دکتر بخواهید برای شما پرونده بسازد")
+        return redirect('home')
+
+    week = disease_information.week_of_healing_period
+    try:
+        contents = {}
+        healing_week = HealingWeek.objects.filter(
+            healing_period=disease_information.healing_period,
+            week__lt=week,
+        )
+        for hw in range(1, week):  # اصلاح شده: استفاده از پرانتز به جای براکت
+            contents_in_week = HealingContent.objects.filter(
+                healing_week__week=hw,
+                healing_week__healing_period=disease_information.healing_period
+            )
+            contents[hw] = contents_in_week
+
+        context = {
+            'contents': contents,
+        }
+        return render(request, 'healing_content/healing_contents.html', context=context)
+    except HealingWeek.DoesNotExist:
+        messages.error(request, "هفته درمانی تعریف نشده است")
+        return redirect(_URL)
+
+
+
 
 @login_required(login_url="accounts:login")
-# @pass_foundation_course
-# @not_pass_healing_period
 def healing_content_each_week(request):
     _URL = request.META.get("HTTP_REFERER")
     with transaction.atomic():
@@ -260,8 +296,6 @@ def healing_content_each_week(request):
 
 
 @login_required(login_url="accounts:login")
-# @pass_foundation_course
-# @not_pass_healing_period
 def practice_each_week(request, practice_each_week_id):
     customer = request.user.customer
 

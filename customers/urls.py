@@ -23,6 +23,8 @@ urlpatterns = [
 
     # --------------------------------------------------
 
+    path('healing_contents/', views.healing_contents, name='healing_contents'),
+
     path('healing_period_each_week/', views.healing_content_each_week, name='healing_period_each_week'),
 
     path('practices_each_week/<int:practice_each_week_id>/', views.practice_each_week,
