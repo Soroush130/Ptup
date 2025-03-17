@@ -153,23 +153,24 @@ class DeleteIdentificationDocument(View):
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class ListCustomerEachDoctor(View):
     def get(self, request):
-        customers = Customer.objects.filter(treating_doctor=request.user.doctor).defer("treating_doctor")
+        # بهینه‌سازی Query با select_related و defer
+        customers = Customer.objects.filter(
+            treating_doctor=request.user.doctor
+        ).select_related().defer("treating_doctor")
+
         context = {
             'customers': customers,
         }
         return render(request, 'doctors/list_customers_requested_each_doctor.html', context)
 
     def post(self, request):
-        nick_name_form = NickNameForm(request.POST)
-        if nick_name_form.is_valid():
-            customer_id = nick_name_form.cleaned_data['customer_id']
-            nick_name = nick_name_form.cleaned_data['nick_name']
-            customer = Customer.objects.get(id=int(customer_id))
-            customer.nick_name = nick_name
+        form = NickNameForm(request.POST)
+        if form.is_valid():
+            customer = Customer.objects.get(id=form.cleaned_data['customer_id'])
+            customer.nick_name = form.cleaned_data['nick_name']
             customer.save()
-            messages.info(request, "نام مستعار ویرایش شد")
-            return redirect(request.META.get("HTTP_REFERER"))
+            messages.success(request, "نام مستعار ویرایش شد.")
         else:
-            error_message = show_custom_errors(nick_name_form.errors)
-            messages.error(request, error_message)
-            return redirect(request.META.get("HTTP_REFERER"))
+            messages.error(request, "خطا در ویرایش نام مستعار.")
+
+        return redirect(request.META.get("HTTP_REFERER"))

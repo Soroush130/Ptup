@@ -119,15 +119,9 @@ def delete_session(request, key: str) -> None:
 
 
 # ====================== Show Custom Errors ======================
-def show_custom_errors(erros):
-    """
-    This function used to for show custom messages
-    :param erros:
-    :return: message_error
-    """
-    message_error = []
-    for field, errors in erros.items():
-        error = f"{[error for error in errors][0]}"
-        message_error.append(error)
 
-    return "  ||   ".join(message_error)
+def show_custom_errors(errors):
+    error_list = []
+    for field, error in errors.items():
+        error_list.append(f"{field}: {error[0]}")
+    return " | ".join(error_list)

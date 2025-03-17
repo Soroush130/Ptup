@@ -1,287 +1,146 @@
 {% extends 'shared/_MainLayout.html' %}
 {% load static %}
 
-{% block title %}
-    لیست مراجع
-{% endblock %}
-
-{% block header_ref %}
-    <style>
-        .paction {
-            color: green;
-        }
-
-        .paction:hover {
-            cursor: pointer;
-
-        }
-
-        .maction {
-            color: red;
-        }
-
-        .maction:hover {
-            cursor: pointer;
-
-        }
-    </style>
-{% endblock %}
+{% block title %}لیست مراجع{% endblock %}
 
 {% block content %}
-    <div class="content-wrapper" style="min-height: 1016.95px;">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>مراجعان</h1>
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <h1>لیست مراجع {{ request.user.doctor }}</h1>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">لیست مراجعین</h3>
+                    <div>
+                        <button class="btn btn-primary filter-btn" data-filter="can_started">
+                            مجاز به شروع درمان
+                        </button>
+                        <button class="btn btn-secondary filter-btn" data-filter="can_not_started">
+                            غیرمجاز به شروع درمان
+                        </button>
                     </div>
                 </div>
-            </div><!-- /.container-fluid -->
-        </section>
-
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <section class="content">
-
-                            <!-- Default box -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title" style="float: right">توضیحات</h3>
-
-                                    <div class="card-tools" style="float: left">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"
-                                                data-toggle="tooltip" title="Collapse">
-                                            <i class="fas fa-minus"></i></button>
-                                        <button type="button" class="btn btn-tool" data-card-widget="remove"
-                                                data-toggle="tooltip" title="Remove">
-                                            <i class="fas fa-times"></i></button>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <h6>- <span style="color: red">تذکر :</span> از انتخاب اسم خود مراجع برای ( نام
-                                        مستعار ) بپرهیزید.</h6>
-                                </div>
-                            </div>
-
-                        </section>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title" style="float: right">لیست مراجع {{ request.user.doctor }}</h3>
-
-                                <div class="card-tools" style="float: left">
-                                    <div class="dropdown">
-                                        <button class="btn btn-primary" type="button" data-customer="can_started"
-                                                id="customer_list_can_started">
-                                            مراجعانی که اجازه شروع درمان دارند
-                                        </button>
-                                        <button class="btn btn-primary" type="button" data-customer="can_not_started"
-                                                id="customer_list_can_not_started">
-                                            مراجعانی که اجازه شروع درمان ندارند
-                                        </button>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0" style="height: 300px;">
-                                <table class="table table-head-fixed">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>شماره تلفن</th>
-                                        <th>نام مستعار</th>
-                                        <th>سن</th>
-                                        <th>جنسیت</th>
-                                        <th>اجازه شروع درمان</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbody_table">
-                                    {% for customer in customers %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>
-                                                <a href="{% url 'customers:determining_customer_illness' customer.id %}">{{ customer.phone }}</a>
-                                            </td>
-                                            <td>
-                                                <form action="" method="POST">
-                                                    {% csrf_token %}
-                                                    <div class="row">
-                                                        <div class="col-lg-6">
-                                                            <input type="hidden" name="customer_id"
-                                                                   value="{{ customer.id }}">
-
-                                                            <div class="form-group">
-                                                                <input type="text" name="nick_name" class="form-control"
-                                                                       placeholder="نام مستعار"
-                                                                       value="{{ customer.nick_name }}">
-                                                            </div>
-
-                                                        </div>
-                                                        <div class="col-lg-3">
-                                                            <button type="submit" class="btn btn-block btn-info">
-                                                                ویرایش
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </td>
-                                            <td>{{ customer.age }}</td>
-                                            <td>{{ customer.gender }}</td>
-                                            <td>
-                                                {% if customer.permission_start_treatment == True %}
-                                                    <i class="fas fa-check" style="color: green"></i>
-                                                {% else %}
-                                                    <i class="fas fa-minus-circle" style="color: red"></i>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>شماره تلفن</th>
+                                <th>نام مستعار</th>
+                                <th>سن</th>
+                                <th>جنسیت</th>
+                                <th>اجازه شروع درمان</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customer-table-body">
+                            {% for customer in customers %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        <a href="{% url 'customers:determining_customer_illness' customer.id %}">
+                                            {{ customer.phone }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="customer_id" value="{{ customer.id }}">
+                                            <input type="text" name="nick_name" value="{{ customer.nick_name }}" class="form-control" placeholder="نام مستعار">
+                                            <button type="submit" class="btn btn-info mt-1">ویرایش</button>
+                                        </form>
+                                    </td>
+                                    <td>{{ customer.age }}</td>
+                                    <td>{{ customer.gender }}</td>
+                                    <td>
+                                        {% if customer.permission_start_treatment %}
+                                            <i class="fas fa-check text-success"></i>
+                                        {% else %}
+                                            <i class="fas fa-times text-danger"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </section>
-        <!-- /.content -->
-    </div>
+        </div>
+    </section>
+</div>
 {% endblock %}
 
 {% block footer_ref %}
-    <script>
-        var btn_filter_customer_list_can_started = document.getElementById("customer_list_can_started"),
-            btn_filter_customer_list_can_not_started = document.getElementById("customer_list_can_not_started");
+<script>
 
-        var tbody_table = document.getElementById("tbody_table");
+    document.addEventListener('DOMContentLoaded', () => {
+        const tableBody = document.getElementById('customer-table-body');
+        const filterButtons = document.querySelectorAll('.filter-btn');
 
-        btn_filter_customer_list_can_started.addEventListener("click", function () {
-            var type_filter = btn_filter_customer_list_can_started.getAttribute("data-customer");
-            $.ajax({
-                data: {'type_filter': type_filter},
-                url: "{% url 'customers:filter_customer' %}",
-                // on success
-                success: function (response) {
-                    if (response.is_taken == true) {
-                        if (response.type_filter == 'can_started') {
-                            Add_Row_In_Table(tbody_table, response.customers)
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterType = button.getAttribute('data-filter');
+
+                fetch(`{% url 'customers:filter_customer' %}?type_filter=${filterType}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        tableBody.innerHTML = ''; // ابتدا جدول خالی می‌شود
+
+                        if (data.customers.length === 0) {
+                            // نمایش پیام در صورت نبود داده
+                            tableBody.innerHTML = `
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">
+                                        هیچ بیماری یافت نشد
+                                    </td>
+                                </tr>
+                            `;
                         } else {
-
+                            // پر کردن جدول در صورت وجود داده
+                            data.customers.forEach((customer, index) => {
+                                tableBody.innerHTML += `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>
+                                            <a href="/customers/determining_customer_illness/${customer.id}">${customer.phone}</a>
+                                        </td>
+                                        <td>
+                                            <form method="POST" action="">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="customer_id" value="${customer.id}">
+                                                <input type="text" name="nick_name" value="${customer.nick_name || ''}" class="form-control">
+                                                <button type="submit" class="btn btn-info mt-1">ویرایش</button>
+                                            </form>
+                                        </td>
+                                        <td>${customer.age || '-'}</td>
+                                        <td>${customer.gender || '-'}</td>
+                                        <td>
+                                            ${customer.permission_start_treatment ?
+                                                '<i class="fas fa-check text-success"></i>' :
+                                                '<i class="fas fa-times text-danger"></i>'}
+                                        </td>
+                                    </tr>
+                                `;
+                            });
                         }
-                    } else {
-                        console.log("")
-                    }
-
-                },
-                // on error
-                error: function (response) {
-                    console.log(response.responseJSON.errors)
-                }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="6" class="text-center text-danger">
+                                    خطا در دریافت اطلاعات!
+                                </td>
+                            </tr>
+                        `;
+                    });
             });
         });
-
-
-        btn_filter_customer_list_can_not_started.addEventListener("click", function () {
-            var type_filter = btn_filter_customer_list_can_not_started.getAttribute("data-customer");
-            $.ajax({
-                data: {'type_filter': type_filter},
-                url: "{% url 'customers:filter_customer' %}",
-                // on success
-                success: function (response) {
-                    if (response.is_taken == true) {
-                        if (response.type_filter == 'can_not_started') {
-                            Add_Row_In_Table(tbody_table, response.customers)
-                        } else {
-
-                        }
-                    } else {
-                        console.log("")
-                    }
-
-                },
-                // on error
-                error: function (response) {
-                    console.log(response.responseJSON.errors)
-                }
-            });
-        });
-
-        function Add_Row_In_Table(body, data) {
-            body.innerText = '';
-
-            var keys = Object.keys(data);
-            var length = keys.length;
-            for (let i = 0; i < length; i++) {
-                var key = keys[i];
-                var row = createRow(i + 1, data[key]);
-                body.appendChild(row);
-            }
-        }
-
-        function createRow(index, info_row) {
-            var new_row = document.createElement('tr');
-
-            var forloop_counter = document.createElement('td');
-            forloop_counter.innerText = index.toString();
-            new_row.appendChild(forloop_counter);
-
-            for (let key in info_row) {
-                if (key !== 'id') {
-                    var td = createTd(key, info_row[key], info_row['id']);
-                    new_row.appendChild(td);
-                }
-            }
-            return new_row
-        }
-
-        function createTd(key, content, customer_id) {
-            var new_td = document.createElement("td");
-
-            if (key === 'nick_name') {
-                new_td.innerHTML = `<form action="URLFORM" method="POST">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <input type="hidden" name="customer_id"
-                                value="CUSTOMERID">
-
-                            <div class="form-group">
-                                <input type="text" name="nick_name" class="form-control"
-                                    placeholder="نام مستعار"
-                                        value="NICKNAME">
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <button type="submit" class="btn btn-block btn-info">
-                                ویرایش
-                            </button>
-                        </div>
-                    </div>
-                </form>`.replace('URLFORM', '').replace('CUSTOMERID', customer_id).replace('NICKNAME', content)
-            } else if (key === 'permission_start_treatment') {
-                if (content === true) {
-                    new_td.innerHTML = `<i class="fas fa-check" style="color: green"></i>`
-                } else {
-                    new_td.innerHTML = `<i class="fas fa-minus-circle" style="color: red"></i>`
-                }
-            } else if (key === 'phone') {
-                new_td.innerHTML = `<a href="/customers/determining_customer_illness/CUSTOMERID">PHONE</a>`.replace('CUSTOMERID', customer_id).replace('PHONE', content)
-            } else {
-                new_td.innerText = content;
-            }
-
-            return new_td
-        }
-    </script>
+    });
+</script>
 {% endblock %}
+

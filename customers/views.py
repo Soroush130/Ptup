@@ -94,25 +94,35 @@ class CompletionInformationCostumer(View):
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')
 class FilterCustomer(View):
     def get(self, request):
-        type_filter = request.GET['type_filter']
-        if type_filter == "can_started":
-            queryset = Customer.objects.filter(permission_start_treatment=True, treating_doctor=request.user.doctor)
-            serializer = normalize_data_filter_customer(queryset)
-            response = {
-                'is_taken': True,
-                'type_filter': type_filter,
-                'customers': serializer,
+        type_filter = request.GET.get('type_filter')
+
+        if type_filter not in ['can_started', 'can_not_started']:
+            return JsonResponse({'error': 'Invalid filter type'}, status=400)
+
+        # بهینه‌سازی کوئری با select_related و فیلتر مستقیم
+        queryset = Customer.objects.filter(
+            permission_start_treatment=(type_filter == 'can_started'),
+            treating_doctor=request.user.doctor
+        ).select_related()
+
+        # سریالایز کردن بهینه
+        customers = [
+            {
+                "id": customer.id,
+                "phone": customer.phone,
+                "nick_name": customer.nick_name,
+                "age": customer.age,
+                "gender": customer.gender,
+                "permission_start_treatment": customer.permission_start_treatment,
             }
-            return JsonResponse(response)
-        else:
-            queryset = Customer.objects.filter(permission_start_treatment=False, treating_doctor=request.user.doctor)
-            serializer = normalize_data_filter_customer(queryset)
-            response = {
-                'is_taken': True,
-                'type_filter': type_filter,
-                'customers': serializer,
-            }
-            return JsonResponse(response)
+            for customer in queryset
+        ]
+
+        return JsonResponse({
+            'is_taken': bool(customers),
+            'type_filter': type_filter,
+            'customers': customers,
+        })
 
 
 @method_decorator(login_required(login_url="accounts:login"), name='dispatch')

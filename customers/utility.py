@@ -3,15 +3,15 @@ from django.db.models import QuerySet
 from customers.models import Customer
 
 
-def normalize_data_filter_customer(customers: QuerySet) -> dict:
+def normalize_data_filter_customer(customers: QuerySet) -> list:
     """
-        This function used to convert data queryset to json
-    :param customers:
-    :return:
+    This function converts a queryset to a JSON-friendly list of dictionaries.
+
+    :param customers: QuerySet
+    :return: list of dict
     """
-    customers_dict = {}
-    for customer in customers:
-        customers_dict[customer.id] = {
+    return [
+        {
             "id": customer.id,
             "phone": customer.phone,
             "nick_name": customer.nick_name,
@@ -19,7 +19,8 @@ def normalize_data_filter_customer(customers: QuerySet) -> dict:
             "gender": customer.gender,
             "permission_start_treatment": customer.permission_start_treatment,
         }
-    return customers_dict
+        for customer in customers
+    ]
 
 
 def check_information_customer(user: QuerySet) -> bool:
