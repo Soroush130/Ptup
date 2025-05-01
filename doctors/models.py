@@ -113,7 +113,11 @@ def send_sms_by_doctor_to_customers(sender, instance, action, **kwargs):
     if action == 'post_add':
         api = KavenegarAPI(api_key)
         for customer in instance.customers.all():
-            receptor = phone_number_decryption(phone_number=customer.user.phone)
+
+            if customer.user.phone.isdigit():
+                receptor = customer.user.phone
+            else:
+                receptor = phone_number_decryption(phone_number=customer.user.phone)
 
             params = {
                 'sender': Sender_Phone,
