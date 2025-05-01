@@ -104,9 +104,20 @@ class SendSms(models.Model):
         verbose_name = 'پیامک'
         verbose_name_plural = 'پیامک ها'
 
+class SmsSendError(models.Model):
+    nick_name = models.CharField(max_length=255, verbose_name="نام مستعار")
+    phone = models.CharField(max_length=20, verbose_name="شماره تلفن")
+    message_text = models.TextField(verbose_name="متن پیامک")
+    error_message = models.TextField(verbose_name="پیام خطا")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ثبت")
+
+    def __str__(self):
+        return f"{self.nick_name} - {self.phone}"
+
 
 @receiver(m2m_changed, sender=SendSms.customers.through)
 def send_sms_by_doctor_to_customers(sender, instance, action, **kwargs):
+    from customers.models import Customer
     api_key = '4B7A74474B48663357344144706B2B3656594E553459484B566A56517857664C746F6F6D7655346F434C633D'
     Sender_Phone = '9982002631'
 
@@ -119,10 +130,18 @@ def send_sms_by_doctor_to_customers(sender, instance, action, **kwargs):
             else:
                 receptor = phone_number_decryption(phone_number=customer.user.phone)
 
-            params = {
-                'sender': Sender_Phone,
-                'receptor': receptor,
-                'message': instance.message,
-            }
-            response = api.sms_send(params)
+            try:
+                params = {
+                    'sender': Sender_Phone,
+                    'receptor': receptor,
+                    'message': instance.message,
+                }
+                api.sms_send(params)
+            except (APIException, HTTPException, Exception) as e:
+                SmsSendError.objects.create(
+                    nick_name=customer.nick_name,
+                    phone=customer.user.phone,
+                    message_text=instance.message,
+                    error_message=str(e),
+                )
 

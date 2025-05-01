@@ -1,7 +1,17 @@
 from django.contrib import admin
 from .models import Customer, CustomerDiseaseInformation, CustomerActivityHistory
 
-admin.site.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = [
+        'get_user_phone',
+        'nick_name'
+    ]
+
+    @admin.display(description='شماره تلفن')
+    def get_user_phone(self, obj):
+        return obj.user.phone
+
+admin.site.register(Customer, CustomerAdmin)
 
 admin.site.register(CustomerDiseaseInformation)
 

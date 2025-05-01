@@ -30,7 +30,9 @@ def login_page(request):
                                            login_form.cleaned_data.get('remember_me', False)
 
             doctor = authenticate(request, phone=phone, password=password)
-            customer = authenticate(request, phone=phone_number_encryption(phone), password=password)
+
+            encrypted_phone = phone if phone.isdigit() else phone_number_encryption(phone)
+            customer = authenticate(request, phone=encrypted_phone, password=password)
 
             user = doctor if doctor is not None else customer
 

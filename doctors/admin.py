@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Doctor, IdentificationDocument, ApproachUsedTreatment, SendSms
+from .models import Doctor, IdentificationDocument, ApproachUsedTreatment, SendSms, SmsSendError
 
 admin.site.register(Doctor)
 admin.site.register(IdentificationDocument)
@@ -14,3 +14,12 @@ class SendSmsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SendSms, SendSmsAdmin)
+
+
+class SmsSendErrorAdmin(admin.ModelAdmin):
+    list_display = [
+        'nick_name',
+        'phone',
+        'error_message'
+    ]
+admin.site.register(SmsSendError, SmsSendErrorAdmin)
